@@ -8,6 +8,7 @@
     "start": "node server.js",
     "updater": "node updater.js",
     "init-db": "node init-db.js",
+    "build": "vite build",
     "build-api": "node build-api.js",
     "dev": "vite"
   },

@@ -16,7 +16,8 @@ const initDB = async () => {
       host: process.env.DB_HOST || 'localhost',
       user: process.env.DB_USER || 'root',
       password: process.env.DB_PASSWORD || '',
-      multipleStatements: true 
+      multipleStatements: true,
+      ssl: process.env.DB_HOST && process.env.DB_HOST !== 'localhost' ? { rejectUnauthorized: true } : undefined
     });
 
     const schemaPath = path.join(__dirname, 'schema.sql');
