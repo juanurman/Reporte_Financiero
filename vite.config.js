@@ -3,5 +3,5 @@ import vue from '@vitejs/plugin-vue';
 
 export default defineConfig({
   plugins: [vue()],
-  base: './', // Permite que los archivos estáticos carguen bien en GitHub Pages
+  base: './', // Permite que los archivos se carguen usando rutas relativas en GitHub Pages
 });
