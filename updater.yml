@@ -1,0 +1,31 @@
+name: Actualizador Financiero Diario
+
+on:
+  schedule:
+    # Se ejecuta a las 20:30 UTC (17:30 Hora Argentina) de Lunes a Viernes
+    - cron: '30 20 * * 1-5'
+  workflow_dispatch: # Te permite ejecutarlo manualmente desde la web de GitHub con un click
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Ejecutar Recolector de Precios
+        env:
+          # GitHub inyectará tus contraseñas secretas aquí de forma segura
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+        run: npm run updater
