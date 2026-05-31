@@ -1,6 +1,5 @@
 import axios from 'axios';
 import mysql from 'mysql2/promise';
-import cron from 'node-cron';
 import dotenv from 'dotenv';
 
 // Cargamos las variables de entorno
@@ -130,18 +129,15 @@ const actualizarPrecios = async () => {
     console.log(` - Se eliminaron ${cleanResult.affectedRows} registros antiguos.`);
 
     console.log('Actualización completada con éxito.');
+    
+    // Cerramos el pool de conexiones para que Node.js pueda finalizar y cerrarse
+    await pool.end();
   } catch (error) {
     console.error('Error durante la actualización de precios:', error.message);
+    await pool.end();
+    process.exit(1); // Forzamos la salida con error para que GitHub Actions lo marque en rojo
   }
 };
 
-// Programar el Cron Job (Lunes a Viernes a las 17:30 - Hora Argentina)
-cron.schedule('30 17 * * 1-5', actualizarPrecios, {
-  scheduled: true,
-  timezone: "America/Argentina/Buenos_Aires"
-});
-
-console.log('🚀 Cron job configurado. El script se ejecutará de Lunes a Viernes a las 17:30 hs (ART).');
-
-// Ejecutamos la recolección de datos inmediatamente al iniciar el script por primera vez
+// Ejecutamos la recolección de datos (GitHub Actions se encarga de llamar a este script diariamente)
 actualizarPrecios();
