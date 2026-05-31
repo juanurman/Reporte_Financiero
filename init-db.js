@@ -21,9 +21,14 @@ const initDB = async () => {
     });
 
     const schemaPath = path.join(__dirname, 'schema.sql');
-    const schema = fs.readFileSync(schemaPath, 'utf8');
+    let schema = fs.readFileSync(schemaPath, 'utf8');
     
-    console.log('⏳ Ejecutando schema.sql...');
+    // Reemplazamos "finanzas" por la base de datos que tengas en tu .env o Github Secrets
+    const dbName = process.env.DB_NAME || 'finanzas';
+    schema = schema.replace(/CREATE DATABASE IF NOT EXISTS finanzas;/gi, `CREATE DATABASE IF NOT EXISTS \`${dbName}\`;`);
+    schema = schema.replace(/USE finanzas;/gi, `USE \`${dbName}\`;`);
+    
+    console.log(`⏳ Ejecutando schema.sql en la base de datos: ${dbName}...`);
     await connection.query(schema);
     
     console.log('✅ Base de datos inicializada correctamente.');

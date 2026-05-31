@@ -360,7 +360,7 @@ const rentYield = computed(() => {
 const fetchLivePrices = async () => {
   try {
     // En producción (GitHub Pages) lee el JSON ultrarrápido; en tu PC usa tu server.js local
-    const apiUrl = import.meta.env.PROD ? './precios.json' : 'http://localhost:3000/api/precios';
+    const apiUrl = import.meta.env.PROD ? './precios.json' : 'http://localhost:4000/api/precios';
     const response = await fetch(apiUrl);
     livePrices.value = await response.json();
   } catch (error) {

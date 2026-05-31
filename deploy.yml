@@ -43,6 +43,9 @@ jobs:
       - name: Instalar dependencias
         run: npm ci
         
+      - name: 0. Inicializar/Verificar BD (init-db)
+        run: npm run init-db
+        
       - name: 1. Actualizar TiDB con precios nuevos (Updater)
         run: npm run updater
         
