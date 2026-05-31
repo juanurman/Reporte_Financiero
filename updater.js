@@ -63,8 +63,8 @@ const actualizarPrecios = async () => {
 
     const promesasYahoo = simbolosYahoo.map(async (simbolo) => {
       try {
-        // Pedimos range=5d (en lugar de 1y) para ser eficientes pero cubrir fines de semana o feriados
-        const url = `https://query1.finance.yahoo.com/v8/finance/chart/${simbolo}?interval=1d&range=5d`;
+        // Pedimos range=1y para traer el historial completo y poder calcular las variaciones a 1 mes, 3 meses, 6 meses y 1 año.
+        const url = `https://query1.finance.yahoo.com/v8/finance/chart/${simbolo}?interval=1d&range=1y`;
         const { data } = await axios.get(url, { headers: { 'User-Agent': 'Mozilla/5.0' } });
         const result = data?.chart?.result?.[0];
         

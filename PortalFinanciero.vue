@@ -109,13 +109,27 @@
 
       <!-- Explorador de Mercados (Categorías Dinámicas) -->
       <section>
-        <h2 class="text-3xl font-bold mb-6 dark:text-white text-slate-800 flex items-center gap-3">
-          <span class="relative flex h-3 w-3">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-          </span>
-          Explorar Mercados en Vivo
-        </h2>
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <h2 class="text-3xl font-bold dark:text-white text-slate-800 flex items-center gap-3">
+            <span class="relative flex h-3 w-3">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+            </span>
+            Explorar Mercados en Vivo
+          </h2>
+          <div class="flex items-center gap-2">
+            <label class="text-sm font-semibold uppercase tracking-wider dark:text-slate-400 text-slate-500">Variación:</label>
+            <select v-model="marketPeriod" class="dark:bg-slate-900 bg-white border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-sm">
+              <option value="1w">1 Semana</option>
+              <option value="1m">1 Mes</option>
+              <option value="3m">3 Meses</option>
+              <option value="6m">6 Meses</option>
+              <option value="1y">1 Año</option>
+              <option value="3y">3 Años</option>
+              <option value="5y">5 Años</option>
+            </select>
+          </div>
+        </div>
         
         <div v-if="livePrices.length === 0" class="dark:text-slate-400 text-slate-500 italic font-medium mb-6">⏳ Cargando cotizaciones en vivo...</div>
         
@@ -175,7 +189,7 @@
                   <div class="text-[10px] dark:text-slate-500 text-slate-400 font-bold tracking-widest uppercase">{{ activo.simbolo }}</div>
                   <div class="font-bold dark:text-white text-slate-800 leading-tight mb-1 truncate" :title="activo.nombre">{{ activo.nombre }}</div>
                   <div class="text-xl font-black" :class="activo.categoria === 'Moneda' ? 'dark:text-amber-400 text-amber-600' : 'dark:text-emerald-400 text-emerald-600'">{{ formatAssetPrice(activo) }}</div>
-                  <div :class="activo.variaciones[selectedPeriod] >= 0 ? 'dark:text-emerald-500 text-emerald-600' : 'dark:text-red-500 text-red-600'" class="text-sm font-bold mt-1">{{ activo.variaciones[selectedPeriod] >= 0 ? '▲' : '▼' }} {{ Math.abs(activo.variaciones[selectedPeriod]) }}% <span class="dark:text-slate-500 text-slate-400 font-normal text-xs">({{ periodLabels[selectedPeriod] }})</span></div>
+                  <div :class="activo.variaciones[marketPeriod] >= 0 ? 'dark:text-emerald-500 text-emerald-600' : 'dark:text-red-500 text-red-600'" class="text-sm font-bold mt-1">{{ activo.variaciones[marketPeriod] >= 0 ? '▲' : '▼' }} {{ Math.abs(activo.variaciones[marketPeriod]) }}% <span class="dark:text-slate-500 text-slate-400 font-normal text-xs">({{ marketPeriodLabels[marketPeriod] }})</span></div>
                 </div>
               </div>
             </div>
@@ -202,6 +216,8 @@ const results = ref([]);
 const funnyPhrase = ref('');
 const equivalencyText = ref('');
 const periodLabels = { '1w': 'semanal', '1m': 'mensual', '3m': 'trimestral', '6m': 'semestral', '1y': 'Fiebre electoral', '3y': 'Post-pandemia', '5y': 'Pre-pandemia' };
+const marketPeriod = ref('1m');
+const marketPeriodLabels = { '1w': '1 Semana', '1m': '1 Mes', '3m': '3 Meses', '6m': '6 Meses', '1y': '1 Año', '3y': '3 Años', '5y': '5 Años' };
 
 const handleCurrencyChange = () => {
   // Buscamos el Dólar Oficial de los precios en vivo (si ya cargaron)
