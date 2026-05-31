@@ -132,6 +132,7 @@ const actualizarPrecios = async () => {
     
     // Cerramos el pool de conexiones para que Node.js pueda finalizar y cerrarse
     await pool.end();
+    process.exit(0); // Forzamos el cierre inmediato del script (0 = Éxito)
   } catch (error) {
     console.error('Error durante la actualización de precios:', error.message);
     await pool.end();
