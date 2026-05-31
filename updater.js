@@ -66,8 +66,8 @@ const actualizarPrecios = async () => {
     ];
     for (const simbolo of simbolosYahoo) {
       try {
-        // Pedimos range=1y e interval=1d para tener la evolución DIARIA
-        const url = `https://query1.finance.yahoo.com/v8/finance/chart/${simbolo}?interval=1d&range=1y`;
+        // Pedimos range=5d (en lugar de 1y) para ser eficientes pero cubrir fines de semana o feriados
+        const url = `https://query1.finance.yahoo.com/v8/finance/chart/${simbolo}?interval=1d&range=5d`;
         const { data } = await axios.get(url, { headers: { 'User-Agent': 'Mozilla/5.0' } });
         const result = data?.chart?.result?.[0];
         
@@ -85,19 +85,10 @@ const actualizarPrecios = async () => {
       }
     }
 
-    // 2. Obtener datos de los dólares (DolarAPI + ArgentinaDatos histórico)
-    console.log('Consultando Dólares (Actual + Histórico de 1 Año)...');
+    // 2. Obtener datos de los dólares (Sólo DolarAPI actual)
+    console.log('Consultando Dólares (Actual)...');
     const { data: dolares } = await axios.get('https://dolarapi.com/v1/dolares');
     
-    let dolaresHistorico = [];
-    try {
-      // Utilizamos ArgentinaDatos para obtener el histórico del dólar
-      const { data } = await axios.get('https://api.argentinadatos.com/v1/cotizaciones/dolares');
-      dolaresHistorico = data;
-    } catch (error) {
-      console.log(' ⚠️ Error al obtener histórico de dólares:', error.message);
-    }
-
     // Mapeo para adaptar los nombres de DolarAPI a los de nuestra base de datos
     const mapaDolares = {
       'oficial': 'DOLAR_OFICIAL',
@@ -111,19 +102,11 @@ const actualizarPrecios = async () => {
       if (simboloDolar && dolar.venta) {
         // Guardamos el precio de hoy
         await guardarPrecio(connection, simboloDolar, dolar.venta, fechaActual);
-        
-        // Guardamos todo el historial DIARIO del último año
-        const pasados = dolaresHistorico
-          .filter(d => d.casa === dolar.casa && d.fecha >= fechaPasada);
-          
-        for (const pasado of pasados) {
-          await guardarPrecio(connection, simboloDolar, pasado.venta, pasado.fecha);
-        }
       }
     }
 
-    // 3. Simular datos de Real Estate (M2 y Alquileres)
-    console.log('Generando histórico de M2 y Alquileres...');
+    // 3. Simular datos de Real Estate (M2 y Alquileres - Solo el día de hoy)
+    console.log('Generando cotización del día para M2 y Alquileres...');
     const realEstateMocks = [
       { simbolo: 'M2_NUN', base: 2600, tendencia: 0.05 },  // Base USD 2600, subió 5% anual
       { simbolo: 'M2_BEL', base: 2800, tendencia: 0.04 },
@@ -132,17 +115,16 @@ const actualizarPrecios = async () => {
       { simbolo: 'ALQ_YIELD', base: 4.5, tendencia: 0.15 } // Base 4.5% anual
     ];
 
-    const unDia = 24 * 60 * 60 * 1000;
     for (const re of realEstateMocks) {
-      for (let i = 0; i <= 365; i++) {
-        const fechaObj = new Date(fechaHaceUnAnio.getTime() + (i * unDia));
-        const fechaStr = fechaObj.toLocaleDateString('en-CA', { timeZone: 'America/Argentina/Buenos_Aires' });
-        const progreso = i / 365;
-        const ruido = 1 + ((Math.random() - 0.5) * 0.015); // Añadimos fluctuaciones realistas de mercado (+/- 0.75%)
-        const valor = Number((re.base * (1 + (re.tendencia * progreso)) * ruido).toFixed(2));
-        await guardarPrecio(connection, re.simbolo, valor, fechaStr);
-      }
+      const ruido = 1 + ((Math.random() - 0.5) * 0.015); // Añadimos fluctuaciones realistas de mercado (+/- 0.75%)
+      const valor = Number((re.base * (1 + re.tendencia) * ruido).toFixed(2));
+      await guardarPrecio(connection, re.simbolo, valor, fechaActual);
     }
+
+    // 4. Limpieza: Eliminar registros más viejos a 1 año
+    console.log('🧹 Limpiando base de datos (eliminando registros anteriores a 1 año)...');
+    const [cleanResult] = await connection.execute('DELETE FROM precios_historicos WHERE fecha < ?', [fechaPasada]);
+    console.log(` - Se eliminaron ${cleanResult.affectedRows} registros antiguos.`);
 
     console.log('Actualización completada con éxito.');
   } catch (error) {
