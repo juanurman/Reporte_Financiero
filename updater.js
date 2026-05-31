@@ -20,9 +20,9 @@ const pool = mysql.createPool({
 });
 
 // Función para guardar precio adaptada al modelo relacional (schema.sql)
-const guardarPrecio = async (connection, simbolo, valor, fecha) => {
+const guardarPrecio = async (simbolo, valor, fecha) => {
   // 1. Buscar el ID del activo en la BD
-  const [activos] = await connection.execute('SELECT id FROM activos WHERE simbolo = ?', [simbolo]);
+  const [activos] = await pool.execute('SELECT id FROM activos WHERE simbolo = ?', [simbolo]);
   
   if (activos.length === 0) {
     console.log(` ⚠️ Activo ignorado/no encontrado en DB: ${simbolo}`);
@@ -37,18 +37,15 @@ const guardarPrecio = async (connection, simbolo, valor, fecha) => {
     VALUES (?, ?, ?)
     ON DUPLICATE KEY UPDATE valor = VALUES(valor)
   `;
-  await connection.execute(query, [activoId, fecha, valor]);
+  await pool.execute(query, [activoId, fecha, valor]);
   console.log(` - Guardado exitoso: ${simbolo} -> $${valor}`);
 };
 
 // Lógica principal de recolección de datos
 const actualizarPrecios = async () => {
   console.log(`\n[${new Date().toLocaleString('es-AR')}] Iniciando actualización de precios...`);
-  let connection;
 
   try {
-    connection = await pool.getConnection();
-    
     // Obtener fecha actual en formato YYYY-MM-DD respetando la zona horaria de Argentina
     const fechaActual = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Argentina/Buenos_Aires' });
     
@@ -64,7 +61,8 @@ const actualizarPrecios = async () => {
       'YPF', 'GGAL', 'PAM', 'BMA', // Merval (ADRs en USD)
       'IRS', 'CRESY' // Real Estate (ADRs en USD)
     ];
-    for (const simbolo of simbolosYahoo) {
+
+    const promesasYahoo = simbolosYahoo.map(async (simbolo) => {
       try {
         // Pedimos range=5d (en lugar de 1y) para ser eficientes pero cubrir fines de semana o feriados
         const url = `https://query1.finance.yahoo.com/v8/finance/chart/${simbolo}?interval=1d&range=5d`;
@@ -76,14 +74,17 @@ const actualizarPrecios = async () => {
             const precioHistorico = result.indicators.quote[0].close[i];
             if (precioHistorico) {
               const fechaHistorica = new Date(result.timestamp[i] * 1000).toLocaleDateString('en-CA', { timeZone: 'America/Argentina/Buenos_Aires' });
-              await guardarPrecio(connection, simbolo, precioHistorico, fechaHistorica);
+              await guardarPrecio(simbolo, precioHistorico, fechaHistorica);
             }
           }
         }
       } catch (err) {
         console.log(` ⚠️ Error al obtener ${simbolo}: ${err.message}`);
       }
-    }
+    });
+
+    // Ejecutamos TODAS las peticiones a Yahoo en paralelo (ultrarrápido)
+    await Promise.all(promesasYahoo);
 
     // 2. Obtener datos de los dólares (Sólo DolarAPI actual)
     console.log('Consultando Dólares (Actual)...');
@@ -97,13 +98,14 @@ const actualizarPrecios = async () => {
       'contadoconliqui': 'DOLAR_CCL'
     };
 
-    for (const dolar of dolares) {
+    const promesasDolares = dolares.map(async (dolar) => {
       const simboloDolar = mapaDolares[dolar.casa];
       if (simboloDolar && dolar.venta) {
         // Guardamos el precio de hoy
-        await guardarPrecio(connection, simboloDolar, dolar.venta, fechaActual);
+        await guardarPrecio(simboloDolar, dolar.venta, fechaActual);
       }
-    }
+    });
+    await Promise.all(promesasDolares);
 
     // 3. Simular datos de Real Estate (M2 y Alquileres - Solo el día de hoy)
     console.log('Generando cotización del día para M2 y Alquileres...');
@@ -115,22 +117,21 @@ const actualizarPrecios = async () => {
       { simbolo: 'ALQ_YIELD', base: 4.5, tendencia: 0.15 } // Base 4.5% anual
     ];
 
-    for (const re of realEstateMocks) {
+    const promesasRealEstate = realEstateMocks.map(async (re) => {
       const ruido = 1 + ((Math.random() - 0.5) * 0.015); // Añadimos fluctuaciones realistas de mercado (+/- 0.75%)
       const valor = Number((re.base * (1 + re.tendencia) * ruido).toFixed(2));
-      await guardarPrecio(connection, re.simbolo, valor, fechaActual);
-    }
+      await guardarPrecio(re.simbolo, valor, fechaActual);
+    });
+    await Promise.all(promesasRealEstate);
 
     // 4. Limpieza: Eliminar registros más viejos a 1 año
     console.log('🧹 Limpiando base de datos (eliminando registros anteriores a 1 año)...');
-    const [cleanResult] = await connection.execute('DELETE FROM precios_historicos WHERE fecha < ?', [fechaPasada]);
+    const [cleanResult] = await pool.execute('DELETE FROM precios_historicos WHERE fecha < ?', [fechaPasada]);
     console.log(` - Se eliminaron ${cleanResult.affectedRows} registros antiguos.`);
 
     console.log('Actualización completada con éxito.');
   } catch (error) {
     console.error('Error durante la actualización de precios:', error.message);
-  } finally {
-    if (connection) connection.release();
   }
 };
 
