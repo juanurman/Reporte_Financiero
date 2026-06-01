@@ -63,6 +63,18 @@ const actualizarPrecios = async () => {
   console.log(`\n[${new Date().toLocaleString('es-AR')}] Iniciando actualización de precios...`);
 
   try {
+    // Asegurarnos de que los nuevos activos tecnológicos existan en la base de datos
+    console.log('Verificando existencia de nuevos activos en la BD...');
+    const [activosExistentes] = await pool.execute('SELECT simbolo FROM activos WHERE simbolo IN ("MU", "TSM")');
+    const simbolos = activosExistentes.map(a => a.simbolo);
+    
+    if (!simbolos.includes('MU')) {
+      await pool.execute(`INSERT INTO activos (nombre, simbolo, categoria, emoji) VALUES ('Micron Technology', 'MU', 'Wall Street', '💾')`);
+    }
+    if (!simbolos.includes('TSM')) {
+      await pool.execute(`INSERT INTO activos (nombre, simbolo, categoria, emoji) VALUES ('Taiwan Semiconductor', 'TSM', 'Wall Street', '🏭')`);
+    }
+
     // 0. Inyectamos la base de datos histórica inmutable de Real Estate
     await inyectarHistoricoInmobiliario(pool);
 
@@ -77,29 +89,32 @@ const actualizarPrecios = async () => {
       'IRS', 'CRESY' // Real Estate (ADRs en USD)
     ];
 
-    const promesasYahoo = simbolosYahoo.map(async (simbolo) => {
+    // Ejecutamos las peticiones a Yahoo de forma SECUENCIAL para evitar ETIMEDOUT o bloqueos de Rate Limiting
+    for (const simbolo of simbolosYahoo) {
       try {
         // Pedimos range=1y para traer el historial completo y poder calcular las variaciones a 1 mes, 3 meses, 6 meses y 1 año.
         const url = `https://query1.finance.yahoo.com/v8/finance/chart/${simbolo}?interval=1d&range=1y`;
-        const { data } = await axios.get(url, { headers: { 'User-Agent': 'Mozilla/5.0' } });
+        const { data } = await axios.get(url, { 
+          headers: { 'User-Agent': 'Mozilla/5.0' },
+          timeout: 10000 // 10 segundos de timeout máximo para que no congele el script entero
+        });
         const result = data?.chart?.result?.[0];
         
         if (result && result.timestamp && result.indicators.quote[0].close) {
           for (let i = 0; i < result.timestamp.length; i++) {
             const precioHistorico = result.indicators.quote[0].close[i];
-            if (precioHistorico) {
+            if (precioHistorico !== null && precioHistorico !== undefined) {
               const fechaHistorica = new Date(result.timestamp[i] * 1000).toLocaleDateString('en-CA', { timeZone: 'America/Argentina/Buenos_Aires' });
               await guardarPrecio(simbolo, precioHistorico, fechaHistorica);
             }
           }
         }
+        // Pausa de 500ms entre peticiones para ser "amigables" con el servidor de Yahoo
+        await new Promise(resolve => setTimeout(resolve, 500));
       } catch (err) {
         console.log(` ⚠️ Error al obtener ${simbolo}: ${err.message}`);
       }
-    });
-
-    // Ejecutamos TODAS las peticiones a Yahoo en paralelo (ultrarrápido)
-    await Promise.all(promesasYahoo);
+    }
 
     // 2. Obtener datos de los dólares (Sólo DolarAPI actual)
     console.log('Consultando Dólares (Actual)...');
