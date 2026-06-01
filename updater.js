@@ -72,7 +72,7 @@ const actualizarPrecios = async () => {
     // 1. Obtener datos de Yahoo Finance (Wall Street, Merval, Bonos)
     console.log('Consultando Yahoo Finance (Histórico de 1 Año)...');
     const simbolosYahoo = [
-      'SPY', 'AAPL', 'GOOGL', 'MSFT', 'NVDA', 'AMZN', 'META', // Wall Street
+      'SPY', 'AAPL', 'GOOGL', 'MSFT', 'NVDA', 'AMZN', 'META', 'TSM', // Wall Street
       'YPF', 'GGAL', 'PAM', 'BMA', // Merval (ADRs en USD)
       'IRS', 'CRESY' // Real Estate (ADRs en USD)
     ];
