@@ -107,6 +107,92 @@
         </div>
       </section>
 
+      <!-- Mi Cartera (Dashboard de Inversión) -->
+      <section class="animate-fade-in relative z-10">
+        <h2 class="text-3xl font-bold dark:text-white text-slate-800 flex items-center gap-3 mb-6">
+          💼 Mi Cartera <span class="text-sm dark:bg-slate-800 bg-slate-200 px-3 py-1 rounded-full dark:text-slate-300 text-slate-600 font-semibold tracking-widest uppercase">Tech & AI</span>
+        </h2>
+        
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+          <!-- Tarjeta 1: Valor Consolidado -->
+          <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl p-6 shadow-xl flex flex-col justify-center transform transition-transform hover:-translate-y-1">
+            <div class="text-sm font-bold dark:text-slate-400 text-slate-500 uppercase tracking-wider mb-2">Valor Consolidado</div>
+            <div class="font-mono font-black text-3xl md:text-4xl dark:text-white text-slate-900 tracking-tight">
+              {{ formatUSD(portfolioTotalValue) }}
+            </div>
+          </div>
+          
+          <!-- Tarjeta 2: P&L Histórico -->
+          <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl p-6 shadow-xl flex flex-col justify-center transform transition-transform hover:-translate-y-1">
+            <div class="text-sm font-bold dark:text-slate-400 text-slate-500 uppercase tracking-wider mb-2">P&L Histórico</div>
+            <div class="font-black text-2xl md:text-3xl flex items-center gap-2" :class="portfolioTotalPL >= 0 ? 'text-emerald-400' : 'text-red-400'">
+              <span>{{ portfolioTotalPL >= 0 ? '▲' : '▼' }} {{ formatUSD(Math.abs(portfolioTotalPL)) }}</span>
+              <span class="text-lg opacity-80 font-bold bg-current/10 px-2 py-1 rounded-lg">
+                {{ portfolioTotalPLPercent >= 0 ? '+' : '' }}{{ portfolioTotalPLPercent.toFixed(2) }}%
+              </span>
+            </div>
+          </div>
+          
+          <!-- Tarjeta 3: Asignación de Activos -->
+          <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl p-6 shadow-xl flex flex-col justify-center transform transition-transform hover:-translate-y-1">
+            <div class="text-sm font-bold dark:text-slate-400 text-slate-500 uppercase tracking-wider mb-2">Asignación de Activos</div>
+            <div class="flex items-center gap-3">
+              <div class="flex-1 bg-slate-200 dark:bg-slate-700 rounded-full h-3 overflow-hidden flex">
+                <div class="bg-indigo-500 w-[55%]" title="Semiconductores"></div>
+                <div class="bg-cyan-400 w-[45%]" title="Software & AI"></div>
+              </div>
+            </div>
+            <div class="mt-3 flex justify-between text-[11px] font-bold dark:text-slate-300 text-slate-600 uppercase tracking-wider">
+              <span>🧠 Hardware (55%)</span>
+              <span>💻 Software AI (45%)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gráfico de Evolución Temporal -->
+        <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl p-6 shadow-xl mb-6 h-72 relative">
+           <canvas id="portfolioChart" ref="portfolioChartRef"></canvas>
+        </div>
+
+        <!-- Tabla de Tenencias -->
+        <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl overflow-hidden shadow-xl overflow-x-auto mb-16">
+          <table class="w-full text-left border-collapse whitespace-nowrap">
+            <thead>
+              <tr class="dark:bg-slate-800/80 bg-slate-100 border-b dark:border-slate-700 border-slate-200 text-xs uppercase tracking-wider dark:text-slate-400 text-slate-500 font-bold">
+                <th class="px-6 py-4">Activo</th>
+                <th class="px-6 py-4 text-right">Cantidad</th>
+                <th class="px-6 py-4 text-right">PPC</th>
+                <th class="px-6 py-4 text-right">Precio Actual</th>
+                <th class="px-6 py-4 text-right">Ganancia / Pérdida</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y dark:divide-slate-700/50 divide-slate-200">
+              <tr v-for="asset in enrichedPortfolio" :key="asset.symbol" class="dark:hover:bg-slate-800/40 hover:bg-slate-50 transition-colors group cursor-pointer">
+                <td class="px-6 py-4 flex items-center gap-3">
+                  <span class="text-2xl group-hover:scale-110 transition-transform">{{ asset.emoji }}</span>
+                  <div>
+                    <div class="font-bold dark:text-white text-slate-900">{{ asset.symbol }}</div>
+                    <div class="text-xs dark:text-slate-400 text-slate-500 font-medium">{{ asset.name }}</div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 text-right font-medium dark:text-slate-300 text-slate-700">{{ asset.quantity }}</td>
+                <td class="px-6 py-4 text-right font-medium dark:text-slate-300 text-slate-700">{{ formatUSD(asset.avgPrice) }}</td>
+                <td class="px-6 py-4 text-right font-black dark:text-white text-slate-900">{{ formatUSD(asset.currentPrice) }}</td>
+                <td class="px-6 py-4 text-right">
+                  <div class="font-black" :class="asset.profitLoss >= 0 ? 'text-emerald-500' : 'text-red-500'">
+                     {{ asset.profitLoss >= 0 ? '+' : '-' }}{{ formatUSD(Math.abs(asset.profitLoss)) }}
+                  </div>
+                  <div class="text-[11px] font-bold mt-0.5 tracking-wider" :class="asset.profitLoss >= 0 ? 'text-emerald-400/80' : 'text-red-400/80'">
+                     {{ asset.profitLoss >= 0 ? '▲' : '▼' }} {{ Math.abs(asset.profitLossPercent).toFixed(2) }}%
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
       <!-- Explorador de Mercados (Categorías Dinámicas) -->
       <section>
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
@@ -372,6 +458,10 @@ const formatMoney = (value) => {
   return new Intl.NumberFormat('es-AR', { style: 'currency', currency: currency.value, minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(value);
 };
 
+const formatUSD = (value) => {
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
+};
+
 const formatAssetPrice = (activo) => {
   const val = Number(activo.precio);
   if (activo.simbolo === 'ALQ_YIELD') return `${val.toFixed(2)}%`;
@@ -383,6 +473,92 @@ const formatAssetPrice = (activo) => {
 // Integración con la API Express (Base de Datos)
 const livePrices = ref([]);
 const selectedCategory = ref(null);
+const portfolioChartRef = ref(null);
+
+// Lógica y Estado de "Mi Cartera"
+const portfolioHoldings = ref([
+  { symbol: 'MU', name: 'Micron Technology', emoji: '💾', quantity: 150, avgPrice: 85.50, fallbackPrice: 130.00 },
+  { symbol: 'TSM', name: 'Taiwan Semiconductor', emoji: '🏭', quantity: 80, avgPrice: 110.00, fallbackPrice: 155.00 },
+  { symbol: 'GOOGL', name: 'Alphabet Inc.', emoji: '🔍', quantity: 120, avgPrice: 135.20, fallbackPrice: 175.00 },
+  { symbol: 'MSFT', name: 'Microsoft Corp.', emoji: '💻', quantity: 45, avgPrice: 310.00, fallbackPrice: 420.00 }
+]);
+
+const enrichedPortfolio = computed(() => {
+  return portfolioHoldings.value.map(holding => {
+    const liveData = livePrices.value.find(p => p.simbolo === holding.symbol);
+    const currentPrice = liveData ? Number(liveData.precio) : holding.fallbackPrice;
+    const totalValue = currentPrice * holding.quantity;
+    const totalCost = holding.avgPrice * holding.quantity;
+    const profitLoss = totalValue - totalCost;
+    const profitLossPercent = (profitLoss / totalCost) * 100;
+    
+    return { ...holding, currentPrice, totalValue, totalCost, profitLoss, profitLossPercent };
+  });
+});
+
+const portfolioTotalValue = computed(() => enrichedPortfolio.value.reduce((acc, h) => acc + h.totalValue, 0));
+const portfolioTotalCost = computed(() => enrichedPortfolio.value.reduce((acc, h) => acc + h.totalCost, 0));
+const portfolioTotalPL = computed(() => portfolioTotalValue.value - portfolioTotalCost.value);
+const portfolioTotalPLPercent = computed(() => portfolioTotalCost.value === 0 ? 0 : (portfolioTotalPL.value / portfolioTotalCost.value) * 100);
+
+// Inyección de Chart.js y renderizado "Clean"
+const loadChartJs = () => {
+  return new Promise((resolve) => {
+    if (window.Chart) return resolve(window.Chart);
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+    script.onload = () => resolve(window.Chart);
+    document.head.appendChild(script);
+  });
+};
+
+const renderChart = async () => {
+  if (!portfolioChartRef.value) return;
+  const ChartJS = await loadChartJs();
+  
+  // Simulación de curva suavizada hacia el valor actual para efecto visual estilo Robinhood
+  const baseValue = portfolioTotalCost.value;
+  const finalValue = portfolioTotalValue.value;
+  const dataPoints = Array.from({length: 12}).map((_, i) => {
+    const progress = i / 11;
+    const noise = (Math.random() - 0.5) * 0.05 * baseValue; 
+    return baseValue + (finalValue - baseValue) * progress + noise;
+  });
+  dataPoints[11] = finalValue; // Match exacto al final
+  const labels = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+
+  if (window.portfolioChartInstance) window.portfolioChartInstance.destroy();
+  const ctx = portfolioChartRef.value.getContext('2d');
+  
+  // Degradado sutil de relleno #34d399 (emerald-400)
+  const gradient = ctx.createLinearGradient(0, 0, 0, portfolioChartRef.value.height || 300);
+  gradient.addColorStop(0, 'rgba(52, 211, 153, 0.4)');
+  gradient.addColorStop(1, 'rgba(52, 211, 153, 0.0)');
+
+  window.portfolioChartInstance = new ChartJS(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        data: dataPoints,
+        borderColor: '#34d399',
+        backgroundColor: gradient,
+        borderWidth: 3,
+        pointRadius: 0,
+        pointHoverRadius: 6,
+        fill: true,
+        tension: 0.4 // Línea suavizada
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } },
+      scales: { x: { display: false }, y: { display: false } }, // Minimalista sin grilla
+      interaction: { mode: 'nearest', axis: 'x', intersect: false }
+    }
+  });
+};
 
 const categoryMeta = {
   'Merval': { emoji: '🇦🇷', gradient: 'dark:from-indigo-900/50 dark:to-purple-900/50 from-indigo-100 to-purple-100', borderHighlight: 'border-indigo-500/50', desc: 'Acciones locales y ADRs.' },
@@ -507,6 +683,7 @@ const fetchLivePrices = async () => {
     const apiUrl = import.meta.env.PROD ? './precios.json' : 'http://localhost:4000/api/precios';
     const response = await fetch(apiUrl);
     livePrices.value = await response.json();
+    setTimeout(renderChart, 150); // Dibuja el gráfico luego de tener la data
   } catch (error) {
     console.error('Error al conectar con la API:', error);
   }
