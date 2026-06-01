@@ -140,7 +140,14 @@
                class="cursor-pointer dark:bg-slate-900 bg-white border dark:border-white/5 border-slate-200 rounded-[2rem] p-8 dark:text-white text-slate-800 shadow-xl transform transition hover:-translate-y-2 hover:shadow-2xl flex flex-col justify-between group"
                :class="`hover:border-opacity-50 dark:hover:${categoryMeta[categoryName]?.borderHighlight} hover:border-slate-400`">
             <div>
-              <div class="text-5xl mb-4 group-hover:scale-110 transition-transform origin-left">{{ categoryMeta[categoryName]?.emoji || '📊' }}</div>
+              <div class="flex justify-between items-start mb-4">
+                <div class="text-5xl group-hover:scale-110 transition-transform origin-left">{{ categoryMeta[categoryName]?.emoji || '📊' }}</div>
+                <div v-if="categoryPerformance[categoryName] !== undefined" 
+                     class="text-lg font-black px-3 py-1 rounded-xl shadow-inner"
+                     :class="Number(categoryPerformance[categoryName]) >= 0 ? 'dark:bg-emerald-500/20 bg-emerald-100 dark:text-emerald-400 text-emerald-700' : 'dark:bg-red-500/20 bg-red-100 dark:text-red-400 text-red-700'">
+                  {{ Number(categoryPerformance[categoryName]) >= 0 ? '▲' : '▼' }} {{ Math.abs(Number(categoryPerformance[categoryName])).toFixed(2) }}%
+                </div>
+              </div>
               <h3 class="text-2xl font-bold mb-2">{{ categoryName }}</h3>
               <p class="font-medium mb-6 opacity-90">{{ categoryMeta[categoryName]?.desc || 'Ver activos de esta categoría' }}</p>
             </div>
@@ -358,6 +365,38 @@ const groupedAssets = computed(() => {
     groups[asset.categoria].push(asset);
   });
   return groups;
+});
+
+const categoryPerformance = computed(() => {
+  const result = {};
+  if (livePrices.value.length === 0) return result;
+
+  const getVariation = (simbolo) => Number(livePrices.value.find(a => a.simbolo === simbolo)?.variaciones[marketPeriod.value] || 0);
+  const getAvgVariation = (categoria, filterFn = null) => {
+    let items = livePrices.value.filter(a => a.categoria === categoria);
+    if (filterFn) items = items.filter(filterFn);
+    return items.length ? items.reduce((acc, a) => acc + Number(a.variaciones[marketPeriod.value] || 0), 0) / items.length : 0;
+  };
+
+  Object.keys(groupedAssets.value).forEach(categoryName => {
+    let val = 0;
+    if (categoryName === 'Moneda') {
+      val = getVariation('DOLAR_OFICIAL');
+    } else if (categoryName === 'Índice/ETF') {
+      val = getVariation('SPY');
+    } else if (categoryName === 'Wall Street') {
+      val = getAvgVariation('Wall Street');
+    } else if (categoryName === 'Merval') {
+      val = getAvgVariation('Merval');
+    } else if (categoryName === 'Real Estate') {
+      val = getAvgVariation('Real Estate', a => a.simbolo.startsWith('M2_'));
+    } else {
+      val = getAvgVariation(categoryName);
+    }
+    result[categoryName] = Number(val).toFixed(2);
+  });
+
+  return result;
 });
 
 const m2AveragePrice = computed(() => {
