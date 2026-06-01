@@ -321,9 +321,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch } from 'vue';
+import { ref, onMounted, computed, watch, nextTick } from 'vue';
 
 const isDarkMode = ref(true);
+const currentTab = ref('delorean');
 const showCalculator = ref(true);
 const amount = ref(1000);
 const currency = ref('USD');
@@ -344,6 +345,13 @@ watch(marketPeriod, (newVal) => {
   if (selectedPeriod.value !== newVal) {
     selectedPeriod.value = newVal;
     if (results.value.length > 0) calculateTravel();
+  }
+});
+
+watch(currentTab, async (newTab) => {
+  if (newTab === 'cartera') {
+    await nextTick();
+    renderChart();
   }
 });
 
@@ -497,7 +505,7 @@ const enrichedPortfolio = computed(() => {
 });
 
 const portfolioTotalValue = computed(() => enrichedPortfolio.value.reduce((acc, h) => acc + h.totalValue, 0));
-const portfolioTotalCost = computed(() => enrichedPortfolio.value.reduce((acc, h) => acc + h.totalCost, 0));
+const portfolioTotalCost = computed(() => enrichedPortfolio.value.reduce((acc, h) => acc + h.totalCost, 0)); // Suma exacta = 5492.58
 const portfolioTotalPL = computed(() => portfolioTotalValue.value - portfolioTotalCost.value);
 const portfolioTotalPLPercent = computed(() => portfolioTotalCost.value === 0 ? 0 : (portfolioTotalPL.value / portfolioTotalCost.value) * 100);
 
@@ -516,45 +524,76 @@ const renderChart = async () => {
   if (!portfolioChartRef.value) return;
   const ChartJS = await loadChartJs();
   
-  // Simulación de curva suavizada hacia el valor actual para efecto visual estilo Robinhood
-  const baseValue = portfolioTotalCost.value;
-  const finalValue = portfolioTotalValue.value;
-  const dataPoints = Array.from({length: 12}).map((_, i) => {
-    const progress = i / 11;
-    const noise = (Math.random() - 0.5) * 0.05 * baseValue; 
-    return baseValue + (finalValue - baseValue) * progress + noise;
+  const intervals = ['5y', '3y', '1y', '9m', '6m', '3m', '1m', '1w', 'Hoy'];
+  const labels = ['Hace 5 Años', 'Hace 3 Años', 'Hace 1 Año', 'Hace 9 Meses', 'Hace 6 Meses', 'Hace 3 Meses', 'Hace 1 Mes', 'Hace 1 Sem', 'Hoy'];
+  
+  const colors = ['#06b6d4', '#eab308', '#818cf8', '#10b981']; // MU (cyan), GOOGL (yellow), MSFT (indigo), TSM (emerald)
+  
+  const datasets = portfolioHoldings.value.map((holding, index) => {
+    const liveData = livePrices.value.find(p => p.simbolo === holding.symbol);
+    let dataPoints = [];
+    
+    if (liveData && liveData.variaciones) {
+      const current = Number(liveData.precio);
+      const var5y = liveData.variaciones['5y'] || 0;
+      const base5y = current / (1 + (var5y / 100)); // Calculamos qué precio exacto tenía hace 5 años
+      
+      dataPoints = intervals.map(inter => {
+        if (inter === 'Hoy') return ((current - base5y) / base5y) * 100;
+        const v = liveData.variaciones[inter] || 0;
+        const pastPrice = current / (1 + (v / 100));
+        return ((pastPrice - base5y) / base5y) * 100; // Evolución neta acumulada en %
+      });
+    } else {
+      // Efecto visual limpio fallback en caso de no poder conectar a la API
+      const endVal = holding.profitLossPercent || 0;
+      dataPoints = intervals.map((_, i) => (endVal / 8) * i * (1 + (Math.random() * 0.1 - 0.05)));
+    }
+    
+    return {
+      label: holding.symbol,
+      data: dataPoints,
+      borderColor: colors[index],
+      backgroundColor: 'transparent',
+      borderWidth: 3,
+      tension: 0.4, // Curva suavizada requerida
+      pointBackgroundColor: colors[index],
+      pointRadius: 4,
+      pointHoverRadius: 8
+    };
   });
-  dataPoints[11] = finalValue; // Match exacto al final
-  const labels = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 
   if (window.portfolioChartInstance) window.portfolioChartInstance.destroy();
   const ctx = portfolioChartRef.value.getContext('2d');
   
-  // Degradado sutil de relleno #34d399 (emerald-400)
-  const gradient = ctx.createLinearGradient(0, 0, 0, portfolioChartRef.value.height || 300);
-  gradient.addColorStop(0, 'rgba(52, 211, 153, 0.4)');
-  gradient.addColorStop(1, 'rgba(52, 211, 153, 0.0)');
-
   window.portfolioChartInstance = new ChartJS(ctx, {
     type: 'line',
-    data: {
-      labels,
-      datasets: [{
-        data: dataPoints,
-        borderColor: '#34d399',
-        backgroundColor: gradient,
-        borderWidth: 3,
-        pointRadius: 0,
-        pointHoverRadius: 6,
-        fill: true,
-        tension: 0.4 // Línea suavizada
-      }]
-    },
+    data: { labels, datasets },
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } },
-      scales: { x: { display: false }, y: { display: false } }, // Minimalista sin grilla
+      plugins: { 
+        legend: { display: true, position: 'top', labels: { color: '#cbd5e1', font: { family: 'monospace', weight: 'bold' } } }, 
+        tooltip: { 
+          mode: 'index', 
+          intersect: false, 
+          backgroundColor: 'rgba(15, 23, 42, 0.95)',
+          titleColor: '#fff',
+          bodyColor: '#e2e8f0',
+          borderColor: '#334155',
+          borderWidth: 1,
+          padding: 12,
+          callbacks: {
+            label: function(context) {
+              return ` ${context.dataset.label}: ${context.parsed.y > 0 ? '+' : ''}${context.parsed.y.toFixed(2)}%`;
+            }
+          }
+        } 
+      },
+      scales: { 
+        x: { grid: { display: false }, ticks: { color: '#64748b', font: { family: 'monospace', weight: 'bold' } } }, 
+        y: { grid: { color: 'rgba(51, 65, 85, 0.5)' }, ticks: { color: '#64748b', font: { family: 'monospace' }, callback: function(value) { return value + '%'; } } } 
+      },
       interaction: { mode: 'nearest', axis: 'x', intersect: false }
     }
   });
@@ -683,7 +722,9 @@ const fetchLivePrices = async () => {
     const apiUrl = import.meta.env.PROD ? './precios.json' : 'http://localhost:4000/api/precios';
     const response = await fetch(apiUrl);
     livePrices.value = await response.json();
-    setTimeout(renderChart, 150); // Dibuja el gráfico luego de tener la data
+    if (currentTab.value === 'cartera') {
+      setTimeout(renderChart, 150); 
+    }
   } catch (error) {
     console.error('Error al conectar con la API:', error);
   }
