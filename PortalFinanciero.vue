@@ -179,10 +179,18 @@
             <div class="text-center">
               <div class="text-xs md:text-sm font-bold dark:text-slate-400 text-slate-500 uppercase">M2 Promedio (Top 4)</div>
               <div class="text-2xl md:text-3xl font-black dark:text-emerald-400 text-emerald-600">US$ {{ m2AveragePrice.toLocaleString('es-AR') }}</div>
+              <div class="text-xs md:text-sm font-bold mt-1" :class="m2AverageVariation >= 0 ? 'dark:text-emerald-400 text-emerald-600' : 'dark:text-red-400 text-red-600'">
+                {{ marketPeriodLabels[marketPeriod] }}: US$ {{ m2HistoricAveragePrice.toLocaleString('es-AR') }} 
+                ({{ m2AverageVariation >= 0 ? '▲' : '▼' }} {{ Math.abs(m2AverageVariation) }}%)
+              </div>
             </div>
             <div class="text-center">
               <div class="text-xs md:text-sm font-bold dark:text-slate-400 text-slate-500 uppercase">Alquiler Promedio</div>
               <div class="text-2xl md:text-3xl font-black dark:text-amber-400 text-amber-600">{{ rentYield }}% <span class="text-sm dark:text-slate-500 text-slate-400 font-bold">anual</span></div>
+              <div class="text-xs md:text-sm font-bold mt-1" :class="rentYieldVariation >= 0 ? 'dark:text-emerald-400 text-emerald-600' : 'dark:text-red-400 text-red-600'">
+                {{ marketPeriodLabels[marketPeriod] }}: {{ rentYieldHistoric }}% 
+                ({{ rentYieldVariation >= 0 ? '▲' : '▼' }} {{ Math.abs(rentYieldVariation) }}%)
+              </div>
             </div>
           </div>
 
@@ -190,13 +198,29 @@
           <div class="p-6 md:p-8 overflow-y-auto dark:bg-slate-950/50 bg-slate-100/50">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <div v-for="activo in groupedAssets[selectedCategory]" :key="activo.id" 
-                   class="dark:bg-slate-900 bg-white p-5 rounded-2xl border dark:border-slate-800 border-slate-200 shadow-sm dark:hover:border-slate-600 hover:border-slate-400 transition flex items-center gap-4 group">
-                <div class="text-4xl dark:bg-slate-950 bg-slate-50 p-3 rounded-xl border dark:border-white/5 border-slate-200 group-hover:scale-110 transition-transform">{{ activo.emoji }}</div>
-                <div class="flex-1 min-w-0">
-                  <div class="text-[10px] dark:text-slate-500 text-slate-400 font-bold tracking-widest uppercase">{{ activo.simbolo }}</div>
-                  <div class="font-bold dark:text-white text-slate-800 leading-tight mb-1 truncate" :title="activo.nombre">{{ activo.nombre }}</div>
-                  <div class="text-xl font-black" :class="activo.categoria === 'Moneda' ? 'dark:text-amber-400 text-amber-600' : 'dark:text-emerald-400 text-emerald-600'">{{ formatAssetPrice(activo) }}</div>
-                  <div :class="activo.variaciones[marketPeriod] >= 0 ? 'dark:text-emerald-500 text-emerald-600' : 'dark:text-red-500 text-red-600'" class="text-sm font-bold mt-1">{{ activo.variaciones[marketPeriod] >= 0 ? '▲' : '▼' }} {{ Math.abs(activo.variaciones[marketPeriod]) }}% <span class="dark:text-slate-500 text-slate-400 font-normal text-xs">({{ marketPeriodLabels[marketPeriod] }})</span></div>
+                   class="dark:bg-slate-900 bg-white p-5 rounded-2xl border dark:border-slate-800 border-slate-200 shadow-sm dark:hover:border-slate-600 hover:border-slate-400 transition flex flex-col justify-between group">
+                <div class="flex items-center gap-4 mb-4">
+                  <div class="text-4xl dark:bg-slate-950 bg-slate-50 p-3 rounded-xl border dark:border-white/5 border-slate-200 group-hover:scale-110 transition-transform">{{ activo.emoji }}</div>
+                  <div class="flex-1 min-w-0">
+                    <div class="text-[10px] dark:text-slate-500 text-slate-400 font-bold tracking-widest uppercase">{{ activo.simbolo }}</div>
+                    <div class="font-bold dark:text-white text-slate-800 leading-tight truncate" :title="activo.nombre">{{ activo.nombre }}</div>
+                  </div>
+                </div>
+                <div class="bg-slate-50 dark:bg-slate-950 p-4 rounded-xl border border-slate-200 dark:border-slate-800 relative">
+                  <div class="flex justify-between items-end mb-2">
+                     <span class="text-xs font-bold text-slate-500 dark:text-slate-400">Actual:</span>
+                     <span class="text-lg font-black" :class="activo.categoria === 'Moneda' ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'">{{ formatAssetPrice(activo) }}</span>
+                  </div>
+                  <div class="flex justify-between items-end mb-3">
+                     <span class="text-xs font-bold text-slate-500 dark:text-slate-400">{{ marketPeriodLabels[marketPeriod] }}:</span>
+                     <span class="text-sm font-bold text-slate-600 dark:text-slate-300">{{ getPastPriceFormatted(activo) }}</span>
+                  </div>
+                  <div class="pt-3 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center">
+                     <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase">Rendimiento Real</span>
+                     <div :class="getDynamicRendimiento(activo) >= 0 ? 'dark:text-emerald-500 text-emerald-600' : 'dark:text-red-500 text-red-600'" class="text-sm font-black bg-white dark:bg-slate-900 px-2 py-1 rounded-md shadow-sm border border-slate-100 dark:border-slate-700">
+                       {{ getDynamicRendimiento(activo) >= 0 ? '▲' : '▼' }} {{ Math.abs(getDynamicRendimiento(activo)) }}%
+                     </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -211,7 +235,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 
 const isDarkMode = ref(true);
 const showCalculator = ref(true);
@@ -223,8 +247,19 @@ const results = ref([]);
 const funnyPhrase = ref('');
 const equivalencyText = ref('');
 const periodLabels = { '1w': 'semanal', '1m': 'mensual', '3m': 'trimestral', '6m': 'semestral', '1y': 'Fiebre electoral', '3y': 'Post-pandemia', '5y': 'Pre-pandemia' };
-const marketPeriod = ref('1m');
+const marketPeriod = ref('1y');
 const marketPeriodLabels = { '1w': '1 Semana', '1m': '1 Mes', '3m': '3 Meses', '6m': '6 Meses', '1y': '1 Año', '3y': '3 Años', '5y': '5 Años' };
+
+watch(selectedPeriod, (newVal) => {
+  if (marketPeriod.value !== newVal) marketPeriod.value = newVal;
+});
+
+watch(marketPeriod, (newVal) => {
+  if (selectedPeriod.value !== newVal) {
+    selectedPeriod.value = newVal;
+    if (results.value.length > 0) calculateTravel();
+  }
+});
 
 const handleCurrencyChange = () => {
   // Buscamos el Dólar Oficial de los precios en vivo (si ya cargaron)
@@ -399,12 +434,66 @@ const categoryPerformance = computed(() => {
   return result;
 });
 
+const getDynamicRendimiento = (activo) => {
+  const varAPI = activo.variaciones[marketPeriod.value] || 0;
+  const current = Number(activo.precio);
+  const past = current / (1 + varAPI / 100);
+  if (!past || past === 0) return 0;
+  const rendimiento = ((current - past) / past) * 100;
+  return Number(rendimiento.toFixed(2));
+};
+
+const getPastPriceFormatted = (activo) => {
+  const varAPI = activo.variaciones[marketPeriod.value] || 0;
+  const pastPrice = Number(activo.precio) / (1 + varAPI / 100);
+  if (activo.simbolo === 'ALQ_YIELD') return `${pastPrice.toFixed(2)}%`;
+  if (activo.categoria === 'Moneda') return `AR$ ${pastPrice.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  if (activo.simbolo.startsWith('M2_')) return `US$ ${pastPrice.toLocaleString('es-AR', { maximumFractionDigits: 0 })}`;
+  return `US$ ${pastPrice.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+};
+
+const m2HistoricAveragePrice = computed(() => {
+  const symbols = ['M2_NUN', 'M2_BEL', 'M2_PAL', 'M2_REC'];
+  const items = livePrices.value.filter(a => symbols.includes(a.simbolo));
+  if (!items.length) return 0;
+  
+  const avg = items.reduce((acc, a) => {
+    const varAPI = a.variaciones[marketPeriod.value] || 0;
+    const past = Number(a.precio) / (1 + varAPI / 100);
+    return acc + past;
+  }, 0) / items.length;
+  
+  return Math.round(avg);
+});
+
+const m2AverageVariation = computed(() => {
+  const past = m2HistoricAveragePrice.value;
+  const current = m2AveragePrice.value;
+  if (!past) return 0;
+  return Number((((current - past) / past) * 100).toFixed(2));
+});
+
 const m2AveragePrice = computed(() => {
   const symbols = ['M2_NUN', 'M2_BEL', 'M2_PAL', 'M2_REC'];
   const items = livePrices.value.filter(a => symbols.includes(a.simbolo));
   if (!items.length) return 0;
   const avg = items.reduce((acc, a) => acc + Number(a.precio), 0) / items.length;
   return Math.round(avg);
+});
+
+const rentYieldHistoric = computed(() => {
+  const item = livePrices.value.find(a => a.simbolo === 'ALQ_YIELD');
+  if (!item) return 0;
+  const varAPI = item.variaciones[marketPeriod.value] || 0;
+  const past = Number(item.precio) / (1 + varAPI / 100);
+  return Number(past.toFixed(2));
+});
+
+const rentYieldVariation = computed(() => {
+  const past = rentYieldHistoric.value;
+  const current = Number(rentYield.value);
+  if (!past) return 0;
+  return Number((((current - past) / past) * 100).toFixed(2));
 });
 
 const rentYield = computed(() => {

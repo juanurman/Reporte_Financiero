@@ -54,22 +54,9 @@ app.get('/api/precios', async (req, res) => {
       };
 
       const calcularVariacion = (dias) => {
-        if (dias <= 365) {
-          return Number((((actual - getPrecioAtras(dias)) / getPrecioAtras(dias)) * 100).toFixed(2));
-        } else {
-          // Mock histórico (3 y 5 años) para la calculadora del Delorean
-          const isARS = activo.categoria === 'Moneda';
-          const isM2 = activo.simbolo.startsWith('M2');
-          if (isARS) {
-            if (dias === 3 * 365) return 850.5;  // MEP saltó de ~150 a ~1430
-            if (dias === 5 * 365) return 3100.2; // MEP saltó de ~45 a ~1430
-          } else if (isM2) {
-            return dias === 3 * 365 ? -15.5 : -25.2; // Caída real del M2
-          } else {
-            return dias === 3 * 365 ? 45.3 : 125.8;  // Renta variable en USD (SPY, Big6)
-          }
-          return 0;
-        }
+        const precioAtras = getPrecioAtras(dias);
+        if (!precioAtras) return 0;
+        return Number((((actual - precioAtras) / precioAtras) * 100).toFixed(2));
       };
 
       return {

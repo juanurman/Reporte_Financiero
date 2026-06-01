@@ -46,13 +46,9 @@ const buildApi = async () => {
       };
 
       const calcularVariacion = (dias) => {
-        if (dias <= 365) return Number((((actual - getPrecioAtras(dias)) / getPrecioAtras(dias)) * 100).toFixed(2));
-        // Mocks para años pasados (calculadora Delorean)
-        const isARS = activo.categoria === 'Moneda';
-        const isM2 = activo.simbolo.startsWith('M2');
-        if (isARS) return dias === 3 * 365 ? 850.5 : 3100.2;
-        if (isM2) return dias === 3 * 365 ? -15.5 : -25.2;
-        return dias === 3 * 365 ? 45.3 : 125.8;
+        const precioAtras = getPrecioAtras(dias);
+        if (!precioAtras) return 0;
+        return Number((((actual - precioAtras) / precioAtras) * 100).toFixed(2));
       };
 
       return {
