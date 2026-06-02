@@ -81,8 +81,8 @@ const actualizarPrecios = async () => {
     // Obtener fecha actual en formato YYYY-MM-DD respetando la zona horaria de Argentina
     const fechaActual = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Argentina/Buenos_Aires' });
     
-    // 1. Obtener datos de Yahoo Finance (Wall Street, Merval, Bonos)
-    console.log('Consultando Yahoo Finance (Histórico de 1 Año)...');
+    // 1. Obtener datos de Yahoo Finance (Solo últimos días para actualizar)
+    console.log('Consultando Yahoo Finance (Últimos 5 días)...');
     const simbolosYahoo = [
       'SPY', 'AAPL', 'GOOGL', 'MSFT', 'NVDA', 'AMZN', 'META', 'MU', 'TSM', // Wall Street
       'YPF', 'GGAL', 'PAM', 'BMA', // Merval (ADRs en USD)
@@ -92,8 +92,8 @@ const actualizarPrecios = async () => {
     // Ejecutamos las peticiones a Yahoo de forma SECUENCIAL para evitar ETIMEDOUT o bloqueos de Rate Limiting
     for (const simbolo of simbolosYahoo) {
       try {
-        // Pedimos range=1y para traer el historial completo y poder calcular las variaciones a 1 mes, 3 meses, 6 meses y 1 año.
-        const url = `https://query1.finance.yahoo.com/v8/finance/chart/${simbolo}?interval=1d&range=1y`;
+        // Pedimos range=5d para traer solo los días recientes y no sobrecargar el actualizador. La DB ya tiene el resto.
+        const url = `https://query1.finance.yahoo.com/v8/finance/chart/${simbolo}?interval=1d&range=5d`;
         const { data } = await axios.get(url, { 
           headers: { 'User-Agent': 'Mozilla/5.0' },
           timeout: 10000 // 10 segundos de timeout máximo para que no congele el script entero
@@ -171,6 +171,21 @@ const actualizarPrecios = async () => {
         const nuevoValor = Number((ultimoValor * (1 + ajusteDiario)).toFixed(2));
         await guardarPrecio(simbolo, nuevoValor, fechaActual);
       }
+    }
+
+    // 4. Limpieza de base de datos (Eliminar mayor a 1 año + 1 día)
+    console.log('Limpiando historial antiguo (manteniendo 366 días)...');
+    try {
+      // Usamos DELETE con JOIN para preservar los datos de Real Estate (que tienen fechas estáticas de hace 5 años)
+      const [resultado] = await pool.execute(`
+        DELETE p FROM precios_historicos p
+        INNER JOIN activos a ON p.activo_id = a.id
+        WHERE p.fecha < DATE_SUB(CURDATE(), INTERVAL 366 DAY)
+        AND a.categoria != 'Real Estate'
+      `);
+      console.log(` - Registros antiguos eliminados: ${resultado.affectedRows}`);
+    } catch (error) {
+      console.log(` ⚠️ Error al limpiar historial: ${error.message}`);
     }
 
     console.log('Actualización completada con éxito.');

@@ -14,6 +14,15 @@
         <p class="text-lg md:text-xl dark:text-slate-400 text-slate-600 font-medium">
           Rendimientos, timba y la cruda realidad de tus ahorros.
         </p>
+        <div class="inline-flex items-center justify-center gap-2 bg-slate-200/50 dark:bg-slate-800/50 px-4 py-1.5 rounded-full border border-slate-300 dark:border-slate-700 shadow-sm mt-2">
+          <span class="relative flex h-2.5 w-2.5">
+            <span v-if="livePrices.length > 0" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5" :class="livePrices.length > 0 ? 'bg-emerald-500' : 'bg-amber-500'"></span>
+          </span>
+          <span class="text-xs md:text-sm font-bold dark:text-slate-500 text-slate-600">
+            Actualizado al: <span class="dark:text-slate-300 text-slate-800">{{ lastUpdatedDate }}</span>
+          </span>
+        </div>
       </header>
 
       <!-- Navegación de Pestañas -->
@@ -500,6 +509,20 @@ const formatAssetPrice = (activo) => {
 const livePrices = ref([]);
 const selectedCategory = ref(null);
 const portfolioChartRef = ref(null);
+
+const lastUpdatedDate = computed(() => {
+  if (livePrices.value.length === 0) return 'Cargando...';
+  
+  // Tomamos la fecha del primer activo devuelto por la API
+  const rawDate = livePrices.value[0]?.fecha;
+  if (!rawDate) return 'Desconocida';
+  
+  // Extraemos YYYY, MM, DD para evitar problemas de desfase horario (UTC)
+  const datePart = rawDate.split('T')[0];
+  const [year, month, day] = datePart.split('-');
+  const dateObj = new Date(year, month - 1, day);
+  return dateObj.toLocaleDateString('es-AR', { day: '2-digit', month: 'long', year: 'numeric' });
+});
 
 // Lógica y Estado de "Mi Cartera"
 const portfolioHoldings = ref([
