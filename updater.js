@@ -52,6 +52,26 @@ const guardarPrecio = async (simbolo, valor, fecha) => {
   await executeWithRetry(() => pool.execute(query, [activoId, fecha, valor]));
 };
 
+// Función para guardar MUCHOS precios en bloque (Bulk Insert) para máxima velocidad en la nube
+const guardarPreciosLote = async (simbolo, registros) => {
+  const activoId = cacheActivos[simbolo];
+  if (!activoId || registros.length === 0) return;
+
+  const chunkSize = 250; // Insertamos de a 250 registros para no saturar la red ni la BD
+  for (let i = 0; i < registros.length; i += chunkSize) {
+    const chunk = registros.slice(i, i + chunkSize);
+    const placeholders = chunk.map(() => '(?, ?, ?)').join(', ');
+    const values = chunk.flatMap(r => [activoId, r.fecha, r.valor]);
+    
+    const query = `
+      INSERT INTO precios_historicos (activo_id, fecha, valor)
+      VALUES ${placeholders}
+      ON DUPLICATE KEY UPDATE valor = VALUES(valor)
+    `;
+    await executeWithRetry(() => pool.execute(query, values));
+  }
+};
+
 // Función asincrónica para inyectar la serie histórica y científica de Real Estate
 const inyectarHistoricoInmobiliario = async (connection) => {
   console.log('🏗️ Inyectando dataset histórico científico de Real Estate...');
@@ -134,20 +154,17 @@ const actualizarPrecios = async () => {
           const totalDias = result.timestamp.length;
           process.stdout.write(`   ⬇️ Procesando ${totalDias} días para ${simbolo}... `);
           
-          const promesas = [];
+          const registros = [];
           for (let i = 0; i < result.timestamp.length; i++) {
             const precioHistorico = result.indicators.quote[0].close[i];
             if (precioHistorico !== null && precioHistorico !== undefined) {
               const fechaHistorica = new Date(result.timestamp[i] * 1000).toLocaleDateString('en-CA', { timeZone: 'America/Argentina/Buenos_Aires' });
-              promesas.push(guardarPrecio(simbolo, precioHistorico, fechaHistorica));
+              registros.push({ fecha: fechaHistorica, valor: precioHistorico });
             }
           }
           
-          // Ejecutamos las inserciones en lotes de 100 para no ahogar la base de datos
-          const chunkSize = 100;
-          for (let i = 0; i < promesas.length; i += chunkSize) {
-            await Promise.all(promesas.slice(i, i + chunkSize));
-          }
+          // Inserción masiva ultra-rápida
+          await guardarPreciosLote(simbolo, registros);
           console.log(`✅ ¡Listo!`);
         }
         // Pausa de 500ms entre peticiones para ser "amigables" con el servidor de Yahoo
