@@ -16,6 +16,19 @@
         </p>
       </header>
 
+      <!-- Navegación de Pestañas -->
+      <div class="flex flex-col sm:flex-row justify-center gap-2 sm:gap-4 bg-slate-200 dark:bg-slate-800/50 p-1.5 rounded-2xl w-fit mx-auto backdrop-blur-sm border border-slate-300 dark:border-slate-700">
+        <button @click="currentTab = 'mercados'" :class="currentTab === 'mercados' ? 'bg-white dark:bg-slate-700 shadow-md text-indigo-600 dark:text-indigo-400' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'" class="px-6 py-2.5 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2">
+          📈 Mercados & Calculadora
+        </button>
+        <button @click="currentTab = 'cartera'" :class="currentTab === 'cartera' ? 'bg-white dark:bg-slate-700 shadow-md text-indigo-600 dark:text-indigo-400' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'" class="px-6 py-2.5 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2">
+          💼 Mi Cartera
+        </button>
+      </div>
+
+      <!-- PESTAÑA: MERCADOS Y CALCULADORA -->
+      <div v-if="currentTab === 'mercados'" class="space-y-10 animate-fade-in">
+
       <!-- El Delorean Financiero -->
       <section class="dark:bg-slate-900/80 bg-white border dark:border-white/10 border-slate-200 rounded-[2.5rem] p-6 md:p-10 shadow-2xl relative overflow-hidden dark:text-white text-slate-900 transition-all duration-300">
         <div class="absolute top-0 right-0 -mt-10 -mr-10 opacity-10 text-9xl pointer-events-none">🚗⚡</div>
@@ -107,94 +120,8 @@
         </div>
       </section>
 
-      <!-- Mi Cartera (Dashboard de Inversión) -->
-      <section class="animate-fade-in relative z-10">
-        <h2 class="text-3xl font-bold dark:text-white text-slate-800 flex items-center gap-3 mb-6">
-          💼 Mi Cartera <span class="text-sm dark:bg-slate-800 bg-slate-200 px-3 py-1 rounded-full dark:text-slate-300 text-slate-600 font-semibold tracking-widest uppercase">Tech & AI</span>
-        </h2>
-        
-        <!-- KPI Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-          <!-- Tarjeta 1: Valor Consolidado -->
-          <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl p-6 shadow-xl flex flex-col justify-center transform transition-transform hover:-translate-y-1">
-            <div class="text-sm font-bold dark:text-slate-400 text-slate-500 uppercase tracking-wider mb-2">Valor Consolidado</div>
-            <div class="font-mono font-black text-3xl md:text-4xl dark:text-white text-slate-900 tracking-tight">
-              {{ formatUSD(portfolioTotalValue) }}
-            </div>
-          </div>
-          
-          <!-- Tarjeta 2: P&L Histórico -->
-          <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl p-6 shadow-xl flex flex-col justify-center transform transition-transform hover:-translate-y-1">
-            <div class="text-sm font-bold dark:text-slate-400 text-slate-500 uppercase tracking-wider mb-2">P&L Histórico</div>
-            <div class="font-black text-2xl md:text-3xl flex items-center gap-2" :class="portfolioTotalPL >= 0 ? 'text-emerald-400' : 'text-red-400'">
-              <span>{{ portfolioTotalPL >= 0 ? '▲' : '▼' }} {{ formatUSD(Math.abs(portfolioTotalPL)) }}</span>
-              <span class="text-lg opacity-80 font-bold bg-current/10 px-2 py-1 rounded-lg">
-                {{ portfolioTotalPLPercent >= 0 ? '+' : '' }}{{ portfolioTotalPLPercent.toFixed(2) }}%
-              </span>
-            </div>
-          </div>
-          
-          <!-- Tarjeta 3: Asignación de Activos -->
-          <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl p-6 shadow-xl flex flex-col justify-center transform transition-transform hover:-translate-y-1">
-            <div class="text-sm font-bold dark:text-slate-400 text-slate-500 uppercase tracking-wider mb-2">Asignación de Activos</div>
-            <div class="flex items-center gap-3">
-              <div class="flex-1 bg-slate-200 dark:bg-slate-700 rounded-full h-3 overflow-hidden flex">
-                <div class="bg-indigo-500 w-[55%]" title="Semiconductores"></div>
-                <div class="bg-cyan-400 w-[45%]" title="Software & AI"></div>
-              </div>
-            </div>
-            <div class="mt-3 flex justify-between text-[11px] font-bold dark:text-slate-300 text-slate-600 uppercase tracking-wider">
-              <span>🧠 Hardware (55%)</span>
-              <span>💻 Software AI (45%)</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Gráfico de Evolución Temporal -->
-        <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl p-6 shadow-xl mb-6 h-72 relative">
-           <canvas id="portfolioChart" ref="portfolioChartRef"></canvas>
-        </div>
-
-        <!-- Tabla de Tenencias -->
-        <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl overflow-hidden shadow-xl overflow-x-auto mb-16">
-          <table class="w-full text-left border-collapse whitespace-nowrap">
-            <thead>
-              <tr class="dark:bg-slate-800/80 bg-slate-100 border-b dark:border-slate-700 border-slate-200 text-xs uppercase tracking-wider dark:text-slate-400 text-slate-500 font-bold">
-                <th class="px-6 py-4">Activo</th>
-                <th class="px-6 py-4 text-right">Cantidad</th>
-                <th class="px-6 py-4 text-right">PPC</th>
-                <th class="px-6 py-4 text-right">Precio Actual</th>
-                <th class="px-6 py-4 text-right">Ganancia / Pérdida</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y dark:divide-slate-700/50 divide-slate-200">
-              <tr v-for="asset in enrichedPortfolio" :key="asset.symbol" class="dark:hover:bg-slate-800/40 hover:bg-slate-50 transition-colors group cursor-pointer">
-                <td class="px-6 py-4 flex items-center gap-3">
-                  <span class="text-2xl group-hover:scale-110 transition-transform">{{ asset.emoji }}</span>
-                  <div>
-                    <div class="font-bold dark:text-white text-slate-900">{{ asset.symbol }}</div>
-                    <div class="text-xs dark:text-slate-400 text-slate-500 font-medium">{{ asset.name }}</div>
-                  </div>
-                </td>
-                <td class="px-6 py-4 text-right font-medium dark:text-slate-300 text-slate-700">{{ asset.quantity }}</td>
-                <td class="px-6 py-4 text-right font-medium dark:text-slate-300 text-slate-700">{{ formatUSD(asset.avgPrice) }}</td>
-                <td class="px-6 py-4 text-right font-black dark:text-white text-slate-900">{{ formatUSD(asset.currentPrice) }}</td>
-                <td class="px-6 py-4 text-right">
-                  <div class="font-black" :class="asset.profitLoss >= 0 ? 'text-emerald-500' : 'text-red-500'">
-                     {{ asset.profitLoss >= 0 ? '+' : '-' }}{{ formatUSD(Math.abs(asset.profitLoss)) }}
-                  </div>
-                  <div class="text-[11px] font-bold mt-0.5 tracking-wider" :class="asset.profitLoss >= 0 ? 'text-emerald-400/80' : 'text-red-400/80'">
-                     {{ asset.profitLoss >= 0 ? '▲' : '▼' }} {{ Math.abs(asset.profitLossPercent).toFixed(2) }}%
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
       <!-- Explorador de Mercados (Categorías Dinámicas) -->
-      <section>
+      <section class="animate-fade-in relative z-10">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <h2 class="text-3xl font-bold dark:text-white text-slate-800 flex items-center gap-3">
             <span class="relative flex h-3 w-3">
@@ -244,6 +171,97 @@
           </div>
         </div>
       </section>
+      
+      </div> <!-- Fin Pestaña Mercados -->
+
+      <!-- PESTAÑA: PORTAFOLIO -->
+      <div v-if="currentTab === 'cartera'" class="space-y-10 animate-fade-in">
+        <!-- Mi Cartera (Dashboard de Inversión) -->
+        <section class="animate-fade-in relative z-10">
+          <h2 class="text-3xl font-bold dark:text-white text-slate-800 flex items-center gap-3 mb-6">
+            💼 Mi Cartera <span class="text-sm dark:bg-slate-800 bg-slate-200 px-3 py-1 rounded-full dark:text-slate-300 text-slate-600 font-semibold tracking-widest uppercase">Tech & AI</span>
+          </h2>
+          
+          <!-- KPI Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <!-- Tarjeta 1: Valor Consolidado -->
+            <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl p-6 shadow-xl flex flex-col justify-center transform transition-transform hover:-translate-y-1">
+              <div class="text-sm font-bold dark:text-slate-400 text-slate-500 uppercase tracking-wider mb-2">Valor Consolidado</div>
+              <div class="font-mono font-black text-3xl md:text-4xl dark:text-white text-slate-900 tracking-tight">
+                {{ formatUSD(portfolioTotalValue) }}
+              </div>
+            </div>
+            
+            <!-- Tarjeta 2: P&L Histórico -->
+            <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl p-6 shadow-xl flex flex-col justify-center transform transition-transform hover:-translate-y-1">
+              <div class="text-sm font-bold dark:text-slate-400 text-slate-500 uppercase tracking-wider mb-2">P&L Histórico</div>
+              <div class="font-black text-2xl md:text-3xl flex items-center gap-2" :class="portfolioTotalPL >= 0 ? 'text-emerald-400' : 'text-red-400'">
+                <span>{{ portfolioTotalPL >= 0 ? '▲' : '▼' }} {{ formatUSD(Math.abs(portfolioTotalPL)) }}</span>
+                <span class="text-lg opacity-80 font-bold bg-current/10 px-2 py-1 rounded-lg">
+                  {{ portfolioTotalPLPercent >= 0 ? '+' : '' }}{{ portfolioTotalPLPercent.toFixed(2) }}%
+                </span>
+              </div>
+            </div>
+            
+            <!-- Tarjeta 3: Asignación de Activos -->
+            <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl p-6 shadow-xl flex flex-col justify-center transform transition-transform hover:-translate-y-1">
+              <div class="text-sm font-bold dark:text-slate-400 text-slate-500 uppercase tracking-wider mb-2">Asignación de Activos</div>
+              <div class="flex items-center gap-3">
+                <div class="flex-1 bg-slate-200 dark:bg-slate-700 rounded-full h-3 overflow-hidden flex">
+                  <div class="bg-indigo-500 w-[55%]" title="Semiconductores"></div>
+                  <div class="bg-cyan-400 w-[45%]" title="Software & AI"></div>
+                </div>
+              </div>
+              <div class="mt-3 flex justify-between text-[11px] font-bold dark:text-slate-300 text-slate-600 uppercase tracking-wider">
+                <span>🧠 Hardware (55%)</span>
+                <span>💻 Software AI (45%)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Gráfico de Evolución Temporal -->
+          <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl p-6 shadow-xl mb-6 h-72 relative">
+             <canvas id="portfolioChart" ref="portfolioChartRef"></canvas>
+          </div>
+
+          <!-- Tabla de Tenencias -->
+          <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl overflow-hidden shadow-xl overflow-x-auto mb-16">
+            <table class="w-full text-left border-collapse whitespace-nowrap">
+              <thead>
+                <tr class="dark:bg-slate-800/80 bg-slate-100 border-b dark:border-slate-700 border-slate-200 text-xs uppercase tracking-wider dark:text-slate-400 text-slate-500 font-bold">
+                  <th class="px-6 py-4">Activo</th>
+                  <th class="px-6 py-4 text-right">Cantidad</th>
+                  <th class="px-6 py-4 text-right">PPC</th>
+                  <th class="px-6 py-4 text-right">Precio Actual</th>
+                  <th class="px-6 py-4 text-right">Ganancia / Pérdida</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y dark:divide-slate-700/50 divide-slate-200">
+                <tr v-for="asset in enrichedPortfolio" :key="asset.symbol" class="dark:hover:bg-slate-800/40 hover:bg-slate-50 transition-colors group cursor-pointer">
+                  <td class="px-6 py-4 flex items-center gap-3">
+                    <span class="text-2xl group-hover:scale-110 transition-transform">{{ asset.emoji }}</span>
+                    <div>
+                      <div class="font-bold dark:text-white text-slate-900">{{ asset.symbol }}</div>
+                      <div class="text-xs dark:text-slate-400 text-slate-500 font-medium">{{ asset.name }}</div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 text-right font-medium dark:text-slate-300 text-slate-700">{{ asset.quantity }}</td>
+                  <td class="px-6 py-4 text-right font-medium dark:text-slate-300 text-slate-700">{{ formatUSD(asset.avgPrice) }}</td>
+                  <td class="px-6 py-4 text-right font-black dark:text-white text-slate-900">{{ formatUSD(asset.currentPrice) }}</td>
+                  <td class="px-6 py-4 text-right">
+                    <div class="font-black" :class="asset.profitLoss >= 0 ? 'text-emerald-500' : 'text-red-500'">
+                       {{ asset.profitLoss >= 0 ? '+' : '-' }}{{ formatUSD(Math.abs(asset.profitLoss)) }}
+                    </div>
+                    <div class="text-[11px] font-bold mt-0.5 tracking-wider" :class="asset.profitLoss >= 0 ? 'text-emerald-400/80' : 'text-red-400/80'">
+                       {{ asset.profitLoss >= 0 ? '▲' : '▼' }} {{ Math.abs(asset.profitLossPercent).toFixed(2) }}%
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div> <!-- Fin Pestaña Portafolio -->
 
       <!-- Modal de Detalle de Categoría -->
       <Transition name="modal-fade">
@@ -324,7 +342,7 @@
 import { ref, onMounted, computed, watch, nextTick } from 'vue';
 
 const isDarkMode = ref(true);
-const currentTab = ref('delorean');
+const currentTab = ref('mercados');
 const showCalculator = ref(true);
 const amount = ref(1000);
 const currency = ref('USD');
@@ -485,10 +503,10 @@ const portfolioChartRef = ref(null);
 
 // Lógica y Estado de "Mi Cartera"
 const portfolioHoldings = ref([
-  { symbol: 'MU', name: 'Micron Technology', emoji: '💾', quantity: 150, avgPrice: 85.50, fallbackPrice: 130.00 },
-  { symbol: 'TSM', name: 'Taiwan Semiconductor', emoji: '🏭', quantity: 80, avgPrice: 110.00, fallbackPrice: 155.00 },
-  { symbol: 'GOOGL', name: 'Alphabet Inc.', emoji: '🔍', quantity: 120, avgPrice: 135.20, fallbackPrice: 175.00 },
-  { symbol: 'MSFT', name: 'Microsoft Corp.', emoji: '💻', quantity: 45, avgPrice: 310.00, fallbackPrice: 420.00 }
+  { symbol: 'MU', name: 'Micron Technology', emoji: '💾', quantity: 3.2, avgPrice: 394.69, fallbackPrice: 1064.10 },
+  { symbol: 'TSM', name: 'Taiwan Semiconductor', emoji: '🏭', quantity: 13.67, avgPrice: 111.73, fallbackPrice: 446.69 },
+  { symbol: 'GOOGL', name: 'Alphabet Inc.', emoji: '🔍', quantity: 5.88, avgPrice: 172.87, fallbackPrice: 361.85 },
+  { symbol: 'MSFT', name: 'Microsoft Corp.', emoji: '💻', quantity: 2.53, avgPrice: 400.24, fallbackPrice: 441.31 }
 ]);
 
 const enrichedPortfolio = computed(() => {
@@ -719,7 +737,7 @@ const rentYield = computed(() => {
 const fetchLivePrices = async () => {
   try {
     // En producción (GitHub Pages) lee el JSON ultrarrápido; en tu PC usa tu server.js local
-    const apiUrl = import.meta.env.PROD ? './precios.json' : 'http://localhost:4000/api/precios';
+    const apiUrl = import.meta.env.PROD ? './precios.json' : 'http://localhost:3000/api/precios';
     const response = await fetch(apiUrl);
     livePrices.value = await response.json();
     if (currentTab.value === 'cartera') {
