@@ -100,8 +100,13 @@ const actualizarPrecios = async () => {
     // Obtener fecha actual en formato YYYY-MM-DD respetando la zona horaria de Argentina
     const fechaActual = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Argentina/Buenos_Aires' });
     
-    // 1. Obtener datos de Yahoo Finance (Solo últimos días para actualizar)
-    console.log('Consultando Yahoo Finance (Últimos 5 días)...');
+    // 1. Obtener datos de Yahoo Finance (Rango dinámico)
+    console.log('Verificando volumen de historial en la BD...');
+    const [countRows] = await pool.execute('SELECT COUNT(*) as c FROM precios_historicos');
+    // Si la BD ya tiene los 5 años (más de 5000 registros), pedimos solo 5 días para que el deploy no se cuelgue
+    const rangoYahoo = countRows[0].c > 5000 ? '5d' : '5y';
+    console.log(`Consultando Yahoo Finance (Rango dinámico: ${rangoYahoo})...`);
+
     const simbolosYahoo = [
       'SPY', 'AAPL', 'GOOGL', 'MSFT', 'NVDA', 'AMZN', 'META', 'MU', 'TSM', // Wall Street
       'YPF', 'GGAL', 'PAM', 'BMA', // Merval (ADRs en USD)
@@ -111,8 +116,7 @@ const actualizarPrecios = async () => {
     // Ejecutamos las peticiones a Yahoo de forma SECUENCIAL para evitar ETIMEDOUT o bloqueos de Rate Limiting
     for (const simbolo of simbolosYahoo) {
       try {
-        // Pedimos range=5y para traer el historial completo y cubrir fechas de compra antiguas
-        const url = `https://query1.finance.yahoo.com/v8/finance/chart/${simbolo}?interval=1d&range=5y`;
+        const url = `https://query1.finance.yahoo.com/v8/finance/chart/${simbolo}?interval=1d&range=${rangoYahoo}`;
         const { data } = await axios.get(url, { 
           headers: { 'User-Agent': 'Mozilla/5.0' },
           timeout: 10000 // 10 segundos de timeout máximo para que no congele el script entero
