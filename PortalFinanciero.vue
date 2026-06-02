@@ -526,10 +526,10 @@ const lastUpdatedDate = computed(() => {
 
 // Lógica y Estado de "Mi Cartera"
 const portfolioHoldings = ref([
-  { symbol: 'MU', name: 'Micron Technology', emoji: '💾', quantity: 3.2, avgPrice: 394.69, fallbackPrice: 1064.10 },
-  { symbol: 'TSM', name: 'Taiwan Semiconductor', emoji: '🏭', quantity: 13.67, avgPrice: 111.73, fallbackPrice: 446.69 },
-  { symbol: 'GOOGL', name: 'Alphabet Inc.', emoji: '🔍', quantity: 5.88, avgPrice: 172.87, fallbackPrice: 361.85 },
-  { symbol: 'MSFT', name: 'Microsoft Corp.', emoji: '💻', quantity: 2.53, avgPrice: 400.24, fallbackPrice: 441.31 }
+  { symbol: 'MU', name: 'Micron Technology', emoji: '💾', quantity: 3.2, avgPrice: 394.69, fallbackPrice: 1064.10, purchaseDate: '2026-02-06' },
+  { symbol: 'TSM', name: 'Taiwan Semiconductor', emoji: '🏭', quantity: 13.67, avgPrice: 147.08, fallbackPrice: 446.69, purchaseDate: '2025-04-04' },
+  { symbol: 'GOOGL', name: 'Alphabet Inc.', emoji: '🔍', quantity: 5.88, avgPrice: 167.15, fallbackPrice: 361.85, purchaseDate: '2025-03-05' },
+  { symbol: 'MSFT', name: 'Microsoft Corp.', emoji: '💻', quantity: 2.53, avgPrice: 388.64, fallbackPrice: 441.31, purchaseDate: '2025-03-05' }
 ]);
 
 const enrichedPortfolio = computed(() => {
@@ -576,14 +576,24 @@ const renderChart = async () => {
     
     if (liveData && liveData.variaciones) {
       const current = Number(liveData.precio);
-      const var5y = liveData.variaciones['5y'] || 0;
-      const base5y = current / (1 + (var5y / 100)); // Calculamos qué precio exacto tenía hace 5 años
+      const now = new Date();
+      const purchase = new Date(holding.purchaseDate + 'T00:00:00'); // Forzamos medianoche local
+      const intervalsDays = { '5y': 1825, '3y': 1095, '1y': 365, '9m': 270, '6m': 180, '3m': 90, '1m': 30, '1w': 7, 'Hoy': 0 };
       
       dataPoints = intervals.map(inter => {
-        if (inter === 'Hoy') return ((current - base5y) / base5y) * 100;
+        if (inter === 'Hoy') return ((current - holding.avgPrice) / holding.avgPrice) * 100;
+        
+        const daysAgo = intervalsDays[inter];
+        const intervalDate = new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000);
+        
+        // Si la fecha del intervalo en el gráfico es anterior a cuando compraste, no tenías el activo
+        if (intervalDate < purchase) {
+          return null; // Chart.js no dibujará línea aquí
+        }
+        
         const v = liveData.variaciones[inter] || 0;
         const pastPrice = current / (1 + (v / 100));
-        return ((pastPrice - base5y) / base5y) * 100; // Evolución neta acumulada en %
+        return ((pastPrice - holding.avgPrice) / holding.avgPrice) * 100; // Evolución desde TU precio de compra
       });
     } else {
       // Efecto visual limpio fallback en caso de no poder conectar a la API
@@ -600,7 +610,8 @@ const renderChart = async () => {
       tension: 0.4, // Curva suavizada requerida
       pointBackgroundColor: colors[index],
       pointRadius: 4,
-      pointHoverRadius: 8
+      pointHoverRadius: 8,
+      spanGaps: true // Si hay un null (antes de comprar), Chart.js simplemente empieza a dibujar en el primer punto válido
     };
   });
 
@@ -760,7 +771,7 @@ const rentYield = computed(() => {
 const fetchLivePrices = async () => {
   try {
     // En producción (GitHub Pages) lee el JSON ultrarrápido; en tu PC usa tu server.js local
-    const apiUrl = import.meta.env.PROD ? './precios.json' : 'http://localhost:3000/api/precios';
+    const apiUrl = import.meta.env.PROD ? './precios.json' : 'http://localhost:4000/api/precios';
     const response = await fetch(apiUrl);
     livePrices.value = await response.json();
     if (currentTab.value === 'cartera') {

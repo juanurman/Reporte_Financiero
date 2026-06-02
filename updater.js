@@ -34,28 +34,22 @@ const executeWithRetry = async (fn, maxRetries = 3, delay = 2000) => {
   }
 };
 
+// Cache global para no hacer una consulta por cada uno de los miles de precios
+const cacheActivos = {};
+
 // Función para guardar precio adaptada al modelo relacional (schema.sql)
 const guardarPrecio = async (simbolo, valor, fecha) => {
-  await executeWithRetry(async () => {
-    // 1. Buscar el ID del activo en la BD
-    const [activos] = await pool.execute('SELECT id FROM activos WHERE simbolo = ?', [simbolo]);
-    
-    if (activos.length === 0) {
-      console.log(` ⚠️ Activo ignorado/no encontrado en DB: ${simbolo}`);
-      return;
-    }
-    
-    const activoId = activos[0].id;
+  const activoId = cacheActivos[simbolo];
+  if (!activoId) return; // Si el activo no está en la BD, lo ignoramos silenciosamente
 
-    // 2. Insertar precio con su activo_id
-    const query = `
-      INSERT INTO precios_historicos (activo_id, fecha, valor)
-      VALUES (?, ?, ?)
-      ON DUPLICATE KEY UPDATE valor = VALUES(valor)
-    `;
-    await pool.execute(query, [activoId, fecha, valor]);
-  });
-  console.log(` - Guardado exitoso: ${simbolo} -> $${valor}`);
+  const query = `
+    INSERT INTO precios_historicos (activo_id, fecha, valor)
+    VALUES (?, ?, ?)
+    ON DUPLICATE KEY UPDATE valor = VALUES(valor)
+  `;
+  
+  // Usamos executeWithRetry por si la base de datos tiene micro-cortes
+  await executeWithRetry(() => pool.execute(query, [activoId, fecha, valor]));
 };
 
 // Función asincrónica para inyectar la serie histórica y científica de Real Estate
@@ -95,6 +89,11 @@ const actualizarPrecios = async () => {
       }
     });
 
+    // Precargamos TODOS los IDs de activos en memoria al iniciar para volar a máxima velocidad
+    console.log('Precargando diccionario de activos para acelerar la carga...');
+    const [activosDB] = await pool.execute('SELECT id, simbolo FROM activos');
+    activosDB.forEach(a => { cacheActivos[a.simbolo] = a.id; });
+
     // 0. Inyectamos la base de datos histórica inmutable de Real Estate
     await inyectarHistoricoInmobiliario(pool);
 
@@ -112,8 +111,8 @@ const actualizarPrecios = async () => {
     // Ejecutamos las peticiones a Yahoo de forma SECUENCIAL para evitar ETIMEDOUT o bloqueos de Rate Limiting
     for (const simbolo of simbolosYahoo) {
       try {
-        // Pedimos range=5d para traer solo los días recientes y no sobrecargar el actualizador. La DB ya tiene el resto.
-        const url = `https://query1.finance.yahoo.com/v8/finance/chart/${simbolo}?interval=1d&range=5d`;
+        // Pedimos range=5y para traer el historial completo y cubrir fechas de compra antiguas
+        const url = `https://query1.finance.yahoo.com/v8/finance/chart/${simbolo}?interval=1d&range=5y`;
         const { data } = await axios.get(url, { 
           headers: { 'User-Agent': 'Mozilla/5.0' },
           timeout: 10000 // 10 segundos de timeout máximo para que no congele el script entero
@@ -121,13 +120,24 @@ const actualizarPrecios = async () => {
         const result = data?.chart?.result?.[0];
         
         if (result && result.timestamp && result.indicators.quote[0].close) {
+          const totalDias = result.timestamp.length;
+          process.stdout.write(`   ⬇️ Procesando ${totalDias} días para ${simbolo}... `);
+          
+          const promesas = [];
           for (let i = 0; i < result.timestamp.length; i++) {
             const precioHistorico = result.indicators.quote[0].close[i];
             if (precioHistorico !== null && precioHistorico !== undefined) {
               const fechaHistorica = new Date(result.timestamp[i] * 1000).toLocaleDateString('en-CA', { timeZone: 'America/Argentina/Buenos_Aires' });
-              await guardarPrecio(simbolo, precioHistorico, fechaHistorica);
+              promesas.push(guardarPrecio(simbolo, precioHistorico, fechaHistorica));
             }
           }
+          
+          // Ejecutamos las inserciones en lotes de 100 para no ahogar la base de datos
+          const chunkSize = 100;
+          for (let i = 0; i < promesas.length; i += chunkSize) {
+            await Promise.all(promesas.slice(i, i + chunkSize));
+          }
+          console.log(`✅ ¡Listo!`);
         }
         // Pausa de 500ms entre peticiones para ser "amigables" con el servidor de Yahoo
         await new Promise(resolve => setTimeout(resolve, 500));
@@ -138,7 +148,7 @@ const actualizarPrecios = async () => {
 
     // 2. Obtener datos de los dólares (Sólo DolarAPI actual)
     console.log('Consultando Dólares (Actual)...');
-    const { data: dolares } = await axios.get('https://dolarapi.com/v1/dolares');
+    const { data: dolares } = await axios.get('https://dolarapi.com/v1/dolares', { timeout: 10000 });
     
     // Mapeo para adaptar los nombres de DolarAPI a los de nuestra base de datos
     const mapaDolares = {
@@ -199,15 +209,15 @@ const actualizarPrecios = async () => {
       }
     }
 
-    // 4. Limpieza de base de datos (Eliminar mayor a 1 año + 1 día)
-    console.log('Limpiando historial antiguo (manteniendo 366 días)...');
+    // 4. Limpieza de base de datos (Eliminar mayor a 5 años)
+    console.log('Limpiando historial antiguo (manteniendo 1826 días / 5 años)...');
     try {
       // Usamos DELETE con JOIN para preservar los datos de Real Estate (que tienen fechas estáticas de hace 5 años)
       await executeWithRetry(async () => {
         const [resultado] = await pool.execute(`
           DELETE p FROM precios_historicos p
           INNER JOIN activos a ON p.activo_id = a.id
-          WHERE p.fecha < DATE_SUB(CURDATE(), INTERVAL 366 DAY)
+          WHERE p.fecha < DATE_SUB(CURDATE(), INTERVAL 1826 DAY)
           AND a.categoria != 'Real Estate'
         `);
         console.log(` - Registros antiguos eliminados: ${resultado.affectedRows}`);
