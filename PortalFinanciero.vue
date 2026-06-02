@@ -192,8 +192,25 @@
 
       <!-- PESTAÑA: PORTAFOLIO -->
       <div v-if="currentTab === 'cartera'" class="space-y-10 animate-fade-in">
+        <!-- Pantalla de Bloqueo -->
+        <div v-if="!isPortfolioUnlocked" class="flex flex-col items-center justify-center py-10 md:py-20 animate-fade-in relative z-10">
+          <div class="dark:bg-slate-900 bg-white p-8 rounded-[2rem] shadow-2xl border dark:border-slate-800 border-slate-200 max-w-md w-full text-center relative overflow-hidden">
+            <div class="absolute top-0 right-0 -mt-8 -mr-8 opacity-5 text-8xl pointer-events-none">🔒</div>
+            <div class="text-6xl mb-6 relative z-10">🤫</div>
+            <h2 class="text-2xl font-bold dark:text-white text-slate-800 mb-2 relative z-10">Área Privada</h2>
+            <p class="dark:text-slate-400 text-slate-500 mb-8 relative z-10">Ingresá la contraseña para ver la billetera.</p>
+            <form @submit.prevent="unlockPortfolio" class="flex flex-col gap-4 relative z-10">
+              <input type="password" v-model="portfolioPassword" placeholder="Contraseña secreta" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-center font-bold tracking-widest" />
+              <p v-if="portfolioError" class="text-red-500 text-sm font-bold animate-pulse">{{ portfolioError }}</p>
+              <button type="submit" class="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white font-black text-lg py-3 rounded-xl transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(99,102,241,0.4)]">
+                Desbloquear
+              </button>
+            </form>
+          </div>
+        </div>
+
         <!-- Mi Cartera (Dashboard de Inversión) -->
-        <section class="animate-fade-in relative z-10">
+        <section v-else class="animate-fade-in relative z-10">
           <h2 class="text-3xl font-bold dark:text-white text-slate-800 flex items-center gap-3 mb-6">
             💼 Mi Cartera <span class="text-sm dark:bg-slate-800 bg-slate-200 px-3 py-1 rounded-full dark:text-slate-300 text-slate-600 font-semibold tracking-widest uppercase">Tech & AI</span>
           </h2>
@@ -383,7 +400,7 @@ watch(marketPeriod, (newVal) => {
 });
 
 watch(currentTab, async (newTab) => {
-  if (newTab === 'cartera') {
+  if (newTab === 'cartera' && isPortfolioUnlocked.value) {
     await nextTick();
     renderChart();
   }
@@ -516,6 +533,21 @@ const formatAssetPrice = (activo) => {
 const livePrices = ref([]);
 const selectedCategory = ref(null);
 const portfolioChartRef = ref(null);
+
+// Lógica de Bloqueo de Portafolio
+const isPortfolioUnlocked = ref(false);
+const portfolioPassword = ref('');
+const portfolioError = ref('');
+const unlockPortfolio = async () => {
+  if (portfolioPassword.value === '1234') { // <-- Cambiá 'argento' por la clave que quieras
+    isPortfolioUnlocked.value = true;
+    portfolioError.value = '';
+    await nextTick();
+    renderChart();
+  } else {
+    portfolioError.value = 'Contraseña incorrecta';
+  }
+};
 
 const lastUpdatedDate = computed(() => {
   if (livePrices.value.length === 0) return 'Cargando...';
