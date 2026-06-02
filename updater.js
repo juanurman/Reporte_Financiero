@@ -15,28 +15,46 @@ const pool = mysql.createPool({
   ssl: process.env.DB_HOST && process.env.DB_HOST !== 'localhost' ? { rejectUnauthorized: true } : undefined,
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0
+  queueLimit: 0,
+  connectTimeout: 20000,
+  enableKeepAlive: true
 });
+
+// Función auxiliar para reintentar operaciones de red o base de datos
+const executeWithRetry = async (fn, maxRetries = 3, delay = 2000) => {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      if (attempt === maxRetries) throw error;
+      const waitTime = delay * Math.pow(2, attempt - 1);
+      console.log(`   ⚠️ Intento ${attempt} fallido (${error.message}). Reintentando en ${waitTime}ms...`);
+      await new Promise(resolve => setTimeout(resolve, waitTime));
+    }
+  }
+};
 
 // Función para guardar precio adaptada al modelo relacional (schema.sql)
 const guardarPrecio = async (simbolo, valor, fecha) => {
-  // 1. Buscar el ID del activo en la BD
-  const [activos] = await pool.execute('SELECT id FROM activos WHERE simbolo = ?', [simbolo]);
-  
-  if (activos.length === 0) {
-    console.log(` ⚠️ Activo ignorado/no encontrado en DB: ${simbolo}`);
-    return;
-  }
-  
-  const activoId = activos[0].id;
+  await executeWithRetry(async () => {
+    // 1. Buscar el ID del activo en la BD
+    const [activos] = await pool.execute('SELECT id FROM activos WHERE simbolo = ?', [simbolo]);
+    
+    if (activos.length === 0) {
+      console.log(` ⚠️ Activo ignorado/no encontrado en DB: ${simbolo}`);
+      return;
+    }
+    
+    const activoId = activos[0].id;
 
-  // 2. Insertar precio con su activo_id
-  const query = `
-    INSERT INTO precios_historicos (activo_id, fecha, valor)
-    VALUES (?, ?, ?)
-    ON DUPLICATE KEY UPDATE valor = VALUES(valor)
-  `;
-  await pool.execute(query, [activoId, fecha, valor]);
+    // 2. Insertar precio con su activo_id
+    const query = `
+      INSERT INTO precios_historicos (activo_id, fecha, valor)
+      VALUES (?, ?, ?)
+      ON DUPLICATE KEY UPDATE valor = VALUES(valor)
+    `;
+    await pool.execute(query, [activoId, fecha, valor]);
+  });
   console.log(` - Guardado exitoso: ${simbolo} -> $${valor}`);
 };
 
@@ -65,15 +83,17 @@ const actualizarPrecios = async () => {
   try {
     // Asegurarnos de que los nuevos activos tecnológicos existan en la base de datos
     console.log('Verificando existencia de nuevos activos en la BD...');
-    const [activosExistentes] = await pool.execute('SELECT simbolo FROM activos WHERE simbolo IN ("MU", "TSM")');
-    const simbolos = activosExistentes.map(a => a.simbolo);
-    
-    if (!simbolos.includes('MU')) {
-      await pool.execute(`INSERT INTO activos (nombre, simbolo, categoria, emoji) VALUES ('Micron Technology', 'MU', 'Wall Street', '💾')`);
-    }
-    if (!simbolos.includes('TSM')) {
-      await pool.execute(`INSERT INTO activos (nombre, simbolo, categoria, emoji) VALUES ('Taiwan Semiconductor', 'TSM', 'Wall Street', '🏭')`);
-    }
+    await executeWithRetry(async () => {
+      const [activosExistentes] = await pool.execute('SELECT simbolo FROM activos WHERE simbolo IN ("MU", "TSM")');
+      const simbolos = activosExistentes.map(a => a.simbolo);
+      
+      if (!simbolos.includes('MU')) {
+        await pool.execute(`INSERT INTO activos (nombre, simbolo, categoria, emoji) VALUES ('Micron Technology', 'MU', 'Wall Street', '💾')`);
+      }
+      if (!simbolos.includes('TSM')) {
+        await pool.execute(`INSERT INTO activos (nombre, simbolo, categoria, emoji) VALUES ('Taiwan Semiconductor', 'TSM', 'Wall Street', '🏭')`);
+      }
+    });
 
     // 0. Inyectamos la base de datos histórica inmutable de Real Estate
     await inyectarHistoricoInmobiliario(pool);
@@ -142,11 +162,14 @@ const actualizarPrecios = async () => {
     
     // Función auxiliar para obtener la variación diaria de un activo bursátil
     const getVariacionDiaria = async (simbolo) => {
-      const [rows] = await pool.execute(`
-        SELECT p.valor FROM precios_historicos p
-        JOIN activos a ON p.activo_id = a.id
-        WHERE a.simbolo = ? ORDER BY p.fecha DESC LIMIT 2
-      `, [simbolo]);
+      const rows = await executeWithRetry(async () => {
+        const [result] = await pool.execute(`
+          SELECT p.valor FROM precios_historicos p
+          JOIN activos a ON p.activo_id = a.id
+          WHERE a.simbolo = ? ORDER BY p.fecha DESC LIMIT 2
+        `, [simbolo]);
+        return result;
+      });
       if (rows.length < 2) return 0;
       return (rows[0].valor - rows[1].valor) / rows[1].valor;
     };
@@ -160,11 +183,14 @@ const actualizarPrecios = async () => {
     const realEstateAssets = ['M2_NUN', 'M2_BEL', 'M2_PAL', 'M2_REC', 'ALQ_YIELD'];
     for (const simbolo of realEstateAssets) {
       // Tomamos el último valor histórico ANTERIOR a hoy (garantiza idempotencia si se ejecuta 2 veces)
-      const [rows] = await pool.execute(`
-        SELECT p.valor FROM precios_historicos p
-        JOIN activos a ON p.activo_id = a.id
-        WHERE a.simbolo = ? AND p.fecha < ? ORDER BY p.fecha DESC LIMIT 1
-      `, [simbolo, fechaActual]);
+      const rows = await executeWithRetry(async () => {
+        const [result] = await pool.execute(`
+          SELECT p.valor FROM precios_historicos p
+          JOIN activos a ON p.activo_id = a.id
+          WHERE a.simbolo = ? AND p.fecha < ? ORDER BY p.fecha DESC LIMIT 1
+        `, [simbolo, fechaActual]);
+        return result;
+      });
 
       if (rows.length > 0) {
         const ultimoValor = rows[0].valor;
@@ -177,13 +203,15 @@ const actualizarPrecios = async () => {
     console.log('Limpiando historial antiguo (manteniendo 366 días)...');
     try {
       // Usamos DELETE con JOIN para preservar los datos de Real Estate (que tienen fechas estáticas de hace 5 años)
-      const [resultado] = await pool.execute(`
-        DELETE p FROM precios_historicos p
-        INNER JOIN activos a ON p.activo_id = a.id
-        WHERE p.fecha < DATE_SUB(CURDATE(), INTERVAL 366 DAY)
-        AND a.categoria != 'Real Estate'
-      `);
-      console.log(` - Registros antiguos eliminados: ${resultado.affectedRows}`);
+      await executeWithRetry(async () => {
+        const [resultado] = await pool.execute(`
+          DELETE p FROM precios_historicos p
+          INNER JOIN activos a ON p.activo_id = a.id
+          WHERE p.fecha < DATE_SUB(CURDATE(), INTERVAL 366 DAY)
+          AND a.categoria != 'Real Estate'
+        `);
+        console.log(` - Registros antiguos eliminados: ${resultado.affectedRows}`);
+      });
     } catch (error) {
       console.log(` ⚠️ Error al limpiar historial: ${error.message}`);
     }
