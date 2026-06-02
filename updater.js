@@ -95,23 +95,47 @@ const actualizarPrecios = async () => {
   console.log(`\n[${new Date().toLocaleString('es-AR')}] Iniciando actualización de precios...`);
 
   try {
-    // Asegurarnos de que los nuevos activos tecnológicos existan en la base de datos
-    console.log('Verificando existencia de nuevos activos en la BD...');
+    // Semilla Base: Solo se usa para registrar activos iniciales si la DB está vacía
+    const activosSeed = [
+      { simbolo: 'SPY', nombre: 'S&P 500', categoria: 'Índice/ETF', emoji: '📈' },
+      { simbolo: 'AAPL', nombre: 'Apple', categoria: 'Wall Street', emoji: '🍎' },
+      { simbolo: 'GOOGL', nombre: 'Alphabet Inc.', categoria: 'Wall Street', emoji: '🔍' },
+      { simbolo: 'MSFT', nombre: 'Microsoft Corp.', categoria: 'Wall Street', emoji: '💻' },
+      { simbolo: 'NVDA', nombre: 'NVIDIA Corp.', categoria: 'Wall Street', emoji: '🎮' },
+      { simbolo: 'AMZN', nombre: 'Amazon', categoria: 'Wall Street', emoji: '📦' },
+      { simbolo: 'META', nombre: 'Meta Platforms', categoria: 'Wall Street', emoji: '🌐' },
+      { simbolo: 'MU', nombre: 'Micron Technology', categoria: 'Wall Street', emoji: '💾' },
+      { simbolo: 'TSM', nombre: 'Taiwan Semiconductor', categoria: 'Wall Street', emoji: '🏭' },
+      { simbolo: 'YPF', nombre: 'YPF S.A.', categoria: 'Merval', emoji: '🛢️' },
+      { simbolo: 'GGAL', nombre: 'Grupo Fin. Galicia', categoria: 'Merval', emoji: '🏦' },
+      { simbolo: 'PAM', nombre: 'Pampa Energía', categoria: 'Merval', emoji: '⚡' },
+      { simbolo: 'BMA', nombre: 'Banco Macro', categoria: 'Merval', emoji: '🏛️' },
+      { simbolo: 'IRS', nombre: 'IRSA', categoria: 'Real Estate', emoji: '🏢' },
+      { simbolo: 'CRESY', nombre: 'Cresud', categoria: 'Real Estate', emoji: '🌾' },
+      // NUEVOS ACTIVOS: Bonos
+      { simbolo: 'AL30.BA', nombre: 'Bono AL30 (AR$)', categoria: 'Bonos', emoji: '🇦🇷' },
+      { simbolo: 'TLT', nombre: 'iShares 20+ Yr Treasury', categoria: 'Bonos', emoji: '🦅' }
+    ];
+
+    console.log('Verificando semilla inicial de activos...');
     await executeWithRetry(async () => {
-      const [activosExistentes] = await pool.execute('SELECT simbolo FROM activos WHERE simbolo IN ("MU", "TSM")');
-      const simbolos = activosExistentes.map(a => a.simbolo);
+      const [activosExistentes] = await pool.execute('SELECT simbolo FROM activos');
+      const simbolosDB = activosExistentes.map(a => a.simbolo);
       
-      if (!simbolos.includes('MU')) {
-        await pool.execute(`INSERT INTO activos (nombre, simbolo, categoria, emoji) VALUES ('Micron Technology', 'MU', 'Wall Street', '💾')`);
-      }
-      if (!simbolos.includes('TSM')) {
-        await pool.execute(`INSERT INTO activos (nombre, simbolo, categoria, emoji) VALUES ('Taiwan Semiconductor', 'TSM', 'Wall Street', '🏭')`);
+      for (const activo of activosSeed) {
+        if (!simbolosDB.includes(activo.simbolo)) {
+          await pool.execute(
+            `INSERT INTO activos (nombre, simbolo, categoria, emoji) VALUES (?, ?, ?, ?)`,
+            [activo.nombre, activo.simbolo, activo.categoria, activo.emoji]
+          );
+          console.log(` ➕ Nuevo activo registrado automáticamente: ${activo.simbolo}`);
+        }
       }
     });
 
     // Precargamos TODOS los IDs de activos en memoria al iniciar para volar a máxima velocidad
     console.log('Precargando diccionario de activos para acelerar la carga...');
-    const [activosDB] = await pool.execute('SELECT id, simbolo FROM activos');
+    const [activosDB] = await pool.execute('SELECT id, simbolo, categoria FROM activos');
     activosDB.forEach(a => { cacheActivos[a.simbolo] = a.id; });
 
     // 0. Inyectamos la base de datos histórica inmutable de Real Estate
@@ -120,22 +144,26 @@ const actualizarPrecios = async () => {
     // Obtener fecha actual en formato YYYY-MM-DD respetando la zona horaria de Argentina
     const fechaActual = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Argentina/Buenos_Aires' });
     
-    // 1. Obtener datos de Yahoo Finance (Rango dinámico)
-    console.log('Verificando volumen de historial en la BD...');
-    const [countRows] = await pool.execute('SELECT COUNT(*) as c FROM precios_historicos');
-    // Si la BD ya tiene los 5 años (más de 5000 registros), pedimos solo 5 días para que el deploy no se cuelgue
-    const rangoYahoo = countRows[0].c > 5000 ? '5d' : '5y';
-    console.log(`Consultando Yahoo Finance (Rango dinámico: ${rangoYahoo})...`);
+    // 1. Obtener datos de Yahoo Finance (Rango dinámico INDIVIDUAL por activo)
+    console.log('Analizando volumen de historial por cada activo...');
+    const [conteoRows] = await pool.execute('SELECT activo_id, COUNT(*) as c FROM precios_historicos GROUP BY activo_id');
+    const historialPorActivo = {};
+    conteoRows.forEach(row => { historialPorActivo[row.activo_id] = row.c; });
 
-    const simbolosYahoo = [
-      'SPY', 'AAPL', 'GOOGL', 'MSFT', 'NVDA', 'AMZN', 'META', 'MU', 'TSM', // Wall Street
-      'YPF', 'GGAL', 'PAM', 'BMA', // Merval (ADRs en USD)
-      'IRS', 'CRESY' // Real Estate (ADRs en USD)
-    ];
+    // Filtramos TODOS los activos de la DB que necesitan actualizarse vía Yahoo
+    const activosYahoo = activosDB.filter(a => a.categoria !== 'Moneda' && a.categoria !== 'Real Estate');
 
     // Ejecutamos las peticiones a Yahoo de forma SECUENCIAL para evitar ETIMEDOUT o bloqueos de Rate Limiting
-    for (const simbolo of simbolosYahoo) {
+    for (const activo of activosYahoo) {
+      const simbolo = activo.simbolo;
+      const activoId = cacheActivos[simbolo];
+      
+      // Si el activo tiene menos de 1000 registros (aprox 4 años hábiles), bajamos 5 años. Sino, sólo 5 días.
+      const registrosPrevios = historialPorActivo[activoId] || 0;
+      const rangoYahoo = registrosPrevios < 1000 ? '5y' : '5d';
+
       try {
+        console.log(`Consultando ${simbolo} (Rango: ${rangoYahoo})...`);
         const url = `https://query1.finance.yahoo.com/v8/finance/chart/${simbolo}?interval=1d&range=${rangoYahoo}`;
         
         // Envolvemos la petición HTTP en nuestro reintentador para evitar el error de TLS / Socket Drop de Yahoo
@@ -152,7 +180,7 @@ const actualizarPrecios = async () => {
         
         if (result && result.timestamp && result.indicators.quote[0].close) {
           const totalDias = result.timestamp.length;
-          process.stdout.write(`   ⬇️ Procesando ${totalDias} días para ${simbolo}... `);
+          process.stdout.write(`   ⬇️ Procesando ${totalDias} días... `);
           
           const registros = [];
           for (let i = 0; i < result.timestamp.length; i++) {

@@ -28,16 +28,75 @@
       <!-- Navegación de Pestañas -->
       <div class="flex flex-col sm:flex-row justify-center gap-2 sm:gap-4 bg-slate-200 dark:bg-slate-800/50 p-1.5 rounded-2xl w-fit mx-auto backdrop-blur-sm border border-slate-300 dark:border-slate-700">
         <button @click="currentTab = 'mercados'" :class="currentTab === 'mercados' ? 'bg-white dark:bg-slate-700 shadow-md text-indigo-600 dark:text-indigo-400' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'" class="px-6 py-2.5 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2">
-          📈 Mercados & Calculadora
+          📈 Mercados
         </button>
         <button @click="currentTab = 'cartera'" :class="currentTab === 'cartera' ? 'bg-white dark:bg-slate-700 shadow-md text-indigo-600 dark:text-indigo-400' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'" class="px-6 py-2.5 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2">
           💼 Mi Cartera
         </button>
+        <button @click="currentTab = 'calculadora'" :class="currentTab === 'calculadora' ? 'bg-white dark:bg-slate-700 shadow-md text-indigo-600 dark:text-indigo-400' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'" class="px-6 py-2.5 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2">
+          ⏱️ Calculadora
+        </button>
       </div>
 
-      <!-- PESTAÑA: MERCADOS Y CALCULADORA -->
+      <!-- PESTAÑA: MERCADOS -->
       <div v-if="currentTab === 'mercados'" class="space-y-10 animate-fade-in">
 
+      <!-- Explorador de Mercados (Categorías Dinámicas) -->
+      <section class="animate-fade-in relative z-10">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <h2 class="text-3xl font-bold dark:text-white text-slate-800 flex items-center gap-3">
+            <span class="relative flex h-3 w-3">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+            </span>
+            Explorar Mercados en Vivo
+          </h2>
+          <div class="flex items-center gap-2">
+            <label class="text-sm font-semibold uppercase tracking-wider dark:text-slate-400 text-slate-500">Variación:</label>
+            <select v-model="marketPeriod" class="dark:bg-slate-900 bg-white border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-sm">
+              <option value="1w">1 Semana</option>
+              <option value="1m">1 Mes</option>
+              <option value="3m">3 Meses</option>
+              <option value="6m">6 Meses</option>
+              <option value="1y">1 Año</option>
+              <option value="3y">3 Años</option>
+              <option value="5y">5 Años</option>
+            </select>
+          </div>
+        </div>
+        
+        <div v-if="livePrices.length === 0" class="dark:text-slate-400 text-slate-500 italic font-medium mb-6">⏳ Cargando cotizaciones en vivo...</div>
+        
+        <!-- Grid de Categorías -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div v-for="(assets, categoryName) in groupedAssets" :key="categoryName" 
+               @click="selectedCategory = categoryName"
+               class="cursor-pointer dark:bg-slate-900 bg-white border dark:border-white/5 border-slate-200 rounded-[2rem] p-8 dark:text-white text-slate-800 shadow-xl transform transition hover:-translate-y-2 hover:shadow-2xl flex flex-col justify-between group"
+               :class="`hover:border-opacity-50 dark:hover:${categoryMeta[categoryName]?.borderHighlight} hover:border-slate-400`">
+            <div>
+              <div class="flex justify-between items-start mb-4">
+                <div class="text-5xl group-hover:scale-110 transition-transform origin-left">{{ categoryMeta[categoryName]?.emoji || '📊' }}</div>
+                <div v-if="categoryPerformance[categoryName] !== undefined" 
+                     class="text-lg font-black px-3 py-1 rounded-xl shadow-inner"
+                     :class="Number(categoryPerformance[categoryName]) >= 0 ? 'dark:bg-emerald-500/20 bg-emerald-100 dark:text-emerald-400 text-emerald-700' : 'dark:bg-red-500/20 bg-red-100 dark:text-red-400 text-red-700'">
+                  {{ Number(categoryPerformance[categoryName]) >= 0 ? '▲' : '▼' }} {{ Math.abs(Number(categoryPerformance[categoryName])).toFixed(2) }}%
+                </div>
+              </div>
+              <h3 class="text-2xl font-bold mb-2">{{ categoryName }}</h3>
+              <p class="font-medium mb-6 opacity-90">{{ categoryMeta[categoryName]?.desc || 'Ver activos de esta categoría' }}</p>
+            </div>
+            <div class="flex items-center justify-between text-sm font-bold dark:bg-black/30 bg-slate-100 rounded-xl p-3 mt-auto border dark:border-white/5 border-slate-200">
+              <span>{{ assets.length }} activos listados</span>
+              <span>Ver detalle ➔</span>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      </div> <!-- Fin Pestaña Mercados -->
+
+      <!-- PESTAÑA: CALCULADORA -->
+      <div v-if="currentTab === 'calculadora'" class="space-y-10 animate-fade-in">
       <!-- El Delorean Financiero -->
       <section class="dark:bg-slate-900/80 bg-white border dark:border-white/10 border-slate-200 rounded-[2.5rem] p-6 md:p-10 shadow-2xl relative overflow-hidden dark:text-white text-slate-900 transition-all duration-300">
         <div class="absolute top-0 right-0 -mt-10 -mr-10 opacity-10 text-9xl pointer-events-none">🚗⚡</div>
@@ -129,59 +188,7 @@
         </div>
       </section>
 
-      <!-- Explorador de Mercados (Categorías Dinámicas) -->
-      <section class="animate-fade-in relative z-10">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-          <h2 class="text-3xl font-bold dark:text-white text-slate-800 flex items-center gap-3">
-            <span class="relative flex h-3 w-3">
-              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-              <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-            </span>
-            Explorar Mercados en Vivo
-          </h2>
-          <div class="flex items-center gap-2">
-            <label class="text-sm font-semibold uppercase tracking-wider dark:text-slate-400 text-slate-500">Variación:</label>
-            <select v-model="marketPeriod" class="dark:bg-slate-900 bg-white border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-sm">
-              <option value="1w">1 Semana</option>
-              <option value="1m">1 Mes</option>
-              <option value="3m">3 Meses</option>
-              <option value="6m">6 Meses</option>
-              <option value="1y">1 Año</option>
-              <option value="3y">3 Años</option>
-              <option value="5y">5 Años</option>
-            </select>
-          </div>
-        </div>
-        
-        <div v-if="livePrices.length === 0" class="dark:text-slate-400 text-slate-500 italic font-medium mb-6">⏳ Cargando cotizaciones en vivo...</div>
-        
-        <!-- Grid de Categorías -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div v-for="(assets, categoryName) in groupedAssets" :key="categoryName" 
-               @click="selectedCategory = categoryName"
-               class="cursor-pointer dark:bg-slate-900 bg-white border dark:border-white/5 border-slate-200 rounded-[2rem] p-8 dark:text-white text-slate-800 shadow-xl transform transition hover:-translate-y-2 hover:shadow-2xl flex flex-col justify-between group"
-               :class="`hover:border-opacity-50 dark:hover:${categoryMeta[categoryName]?.borderHighlight} hover:border-slate-400`">
-            <div>
-              <div class="flex justify-between items-start mb-4">
-                <div class="text-5xl group-hover:scale-110 transition-transform origin-left">{{ categoryMeta[categoryName]?.emoji || '📊' }}</div>
-                <div v-if="categoryPerformance[categoryName] !== undefined" 
-                     class="text-lg font-black px-3 py-1 rounded-xl shadow-inner"
-                     :class="Number(categoryPerformance[categoryName]) >= 0 ? 'dark:bg-emerald-500/20 bg-emerald-100 dark:text-emerald-400 text-emerald-700' : 'dark:bg-red-500/20 bg-red-100 dark:text-red-400 text-red-700'">
-                  {{ Number(categoryPerformance[categoryName]) >= 0 ? '▲' : '▼' }} {{ Math.abs(Number(categoryPerformance[categoryName])).toFixed(2) }}%
-                </div>
-              </div>
-              <h3 class="text-2xl font-bold mb-2">{{ categoryName }}</h3>
-              <p class="font-medium mb-6 opacity-90">{{ categoryMeta[categoryName]?.desc || 'Ver activos de esta categoría' }}</p>
-            </div>
-            <div class="flex items-center justify-between text-sm font-bold dark:bg-black/30 bg-slate-100 rounded-xl p-3 mt-auto border dark:border-white/5 border-slate-200">
-              <span>{{ assets.length }} activos listados</span>
-              <span>Ver detalle ➔</span>
-            </div>
-          </div>
-        </div>
-      </section>
-      
-      </div> <!-- Fin Pestaña Mercados -->
+      </div> <!-- Fin Pestaña Calculadora -->
 
       <!-- PESTAÑA: PORTAFOLIO -->
       <div v-if="currentTab === 'cartera'" class="space-y-10 animate-fade-in">
@@ -500,7 +507,7 @@ const formatUSD = (value) => {
 const formatAssetPrice = (activo) => {
   const val = Number(activo.precio);
   if (activo.simbolo === 'ALQ_YIELD') return `${val.toFixed(2)}%`;
-  if (activo.categoria === 'Moneda') return `AR$ ${val.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  if (activo.categoria === 'Moneda' || activo.simbolo.endsWith('.BA') || activo.nombre.includes('AR$')) return `AR$ ${val.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   if (activo.simbolo.startsWith('M2_')) return `US$ ${val.toLocaleString('es-AR', { maximumFractionDigits: 0 })}`;
   return `US$ ${val.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 };
@@ -657,7 +664,9 @@ const categoryMeta = {
   'Moneda': { emoji: '💵', gradient: 'dark:from-emerald-900/50 dark:to-green-900/50 from-emerald-100 to-green-100', borderHighlight: 'border-emerald-500/50', desc: 'Cotizaciones del dólar en el país.' },
   'Índice/ETF': { emoji: '📈', gradient: 'dark:from-amber-900/50 dark:to-orange-900/50 from-amber-100 to-orange-100', borderHighlight: 'border-amber-500/50', desc: 'Rendimiento del mercado.' },
   'Bonos': { emoji: '📜', gradient: 'dark:from-red-900/50 dark:to-pink-900/50 from-red-100 to-pink-100', borderHighlight: 'border-red-500/50', desc: 'Deuda e instrumentos de renta fija.' },
-  'Real Estate': { emoji: '🏢', gradient: 'dark:from-orange-900/50 dark:to-red-900/50 from-orange-100 to-red-100', borderHighlight: 'border-orange-500/50', desc: 'Inmobiliarias, M2 y construcción.' }
+  'Real Estate': { emoji: '🏢', gradient: 'dark:from-orange-900/50 dark:to-red-900/50 from-orange-100 to-red-100', borderHighlight: 'border-orange-500/50', desc: 'Inmobiliarias, M2 y construcción.' },
+  // Agrega aquí cualquier categoría nueva que vayas a inventar en el add-ticker.js
+  'Cripto': { emoji: '₿', gradient: 'dark:from-yellow-900/50 dark:to-orange-900/50 from-yellow-100 to-orange-100', borderHighlight: 'border-yellow-500/50', desc: 'Criptomonedas y activos digitales.' }
 };
 
 const groupedAssets = computed(() => {
@@ -714,7 +723,7 @@ const getPastPriceFormatted = (activo) => {
   const varAPI = activo.variaciones[marketPeriod.value] || 0;
   const pastPrice = Number(activo.precio) / (1 + varAPI / 100);
   if (activo.simbolo === 'ALQ_YIELD') return `${pastPrice.toFixed(2)}%`;
-  if (activo.categoria === 'Moneda') return `AR$ ${pastPrice.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  if (activo.categoria === 'Moneda' || activo.simbolo.endsWith('.BA') || activo.nombre.includes('AR$')) return `AR$ ${pastPrice.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   if (activo.simbolo.startsWith('M2_')) return `US$ ${pastPrice.toLocaleString('es-AR', { maximumFractionDigits: 0 })}`;
   return `US$ ${pastPrice.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 };
