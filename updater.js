@@ -117,10 +117,17 @@ const actualizarPrecios = async () => {
     for (const simbolo of simbolosYahoo) {
       try {
         const url = `https://query1.finance.yahoo.com/v8/finance/chart/${simbolo}?interval=1d&range=${rangoYahoo}`;
-        const { data } = await axios.get(url, { 
-          headers: { 'User-Agent': 'Mozilla/5.0' },
-          timeout: 10000 // 10 segundos de timeout máximo para que no congele el script entero
-        });
+        
+        // Envolvemos la petición HTTP en nuestro reintentador para evitar el error de TLS / Socket Drop de Yahoo
+        const { data } = await executeWithRetry(() => axios.get(url, { 
+          headers: { 
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+            'Accept': 'application/json',
+            'Connection': 'keep-alive'
+          },
+          timeout: 15000 // 15 segundos para dar margen al handshake TLS
+        }), 3, 3000); // 3 reintentos, empezando con 3 segundos de pausa
+        
         const result = data?.chart?.result?.[0];
         
         if (result && result.timestamp && result.indicators.quote[0].close) {
@@ -152,7 +159,8 @@ const actualizarPrecios = async () => {
 
     // 2. Obtener datos de los dólares (Sólo DolarAPI actual)
     console.log('Consultando Dólares (Actual)...');
-    const { data: dolares } = await axios.get('https://dolarapi.com/v1/dolares', { timeout: 10000 });
+    // También envolvemos a DolarAPI por precaución
+    const { data: dolares } = await executeWithRetry(() => axios.get('https://dolarapi.com/v1/dolares', { timeout: 10000 }));
     
     // Mapeo para adaptar los nombres de DolarAPI a los de nuestra base de datos
     const mapaDolares = {
