@@ -17,7 +17,7 @@ const buildApi = async () => {
       password: process.env.DB_PASSWORD || '',
       database: process.env.DB_NAME || 'finanzas',
       ssl: process.env.DB_HOST && process.env.DB_HOST !== 'localhost' ? { rejectUnauthorized: true } : undefined,
-      connectTimeout: 15000
+      connectTimeout: 30000 // Increased connectTimeout to 30 seconds
     });
 
     // Aseguramos que los nombres de los símbolos no tengan espacios raros que rompan el JOIN
@@ -117,8 +117,12 @@ const buildApi = async () => {
 
     await connection.end();
   } catch (error) {
-    console.error('❌ Error generando precios.json:', error.message);
-    process.exit(1); // Importante salir con error para que el GitHub Action falle si no se puede conectar a TiDB
+    console.error('❌ Error durante la generación de JSON estático:', error.message);
+    process.exit(1);
+  } finally {
+    if (connection && connection.end) {
+      await connection.end();
+    }
   }
 };
 
