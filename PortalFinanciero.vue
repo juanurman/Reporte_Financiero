@@ -344,7 +344,6 @@
           <div class="p-6 md:p-8 overflow-y-auto custom-scrollbar dark:bg-slate-950/50 bg-slate-100/50">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <div v-for="activo in groupedAssets[selectedCategory]" :key="activo.id" 
-                   class="dark:bg-slate-900 bg-white p-5 rounded-2xl border dark:border-slate-800 border-slate-200 shadow-sm dark:hover:border-slate-600 hover:border-slate-400 transition flex flex-col justify-between group">
                    class="dark:bg-slate-900 bg-white p-5 rounded-2xl border dark:border-slate-800 border-slate-200 shadow-sm dark:hover:border-slate-600 hover:border-slate-400 transition flex flex-col justify-between group relative">
                 
                 <!-- Botón de Eliminar (Solo Admin) -->
@@ -382,10 +381,6 @@
 
       <!-- PESTAÑA: ADMIN -->
       <div v-if="currentTab === 'admin'" class="space-y-10 animate-fade-in relative z-10 py-8">
-        <section class="dark:bg-slate-900 bg-white p-8 rounded-[2rem] shadow-2xl border dark:border-slate-800 border-slate-200 max-w-2xl mx-auto">
-          <h2 class="text-3xl font-bold dark:text-white text-slate-800 mb-2 flex items-center gap-3">
-            ⚙️ Agregar Activo
-          </h2>
         <!-- Pantalla de Login Admin -->
         <section v-if="!isAdmin" class="dark:bg-slate-900 bg-white p-8 rounded-[2rem] shadow-2xl border dark:border-slate-800 border-slate-200 max-w-md mx-auto text-center">
           <div class="text-6xl mb-6">🔐</div>
@@ -414,10 +409,6 @@
           </p>
           
           <form @submit.prevent="submitAdminForm" class="space-y-4">
-            <div class="mb-4">
-              <label class="block text-sm font-bold dark:text-slate-400 text-slate-500 mb-1">Clave de Administrador</label>
-              <input type="password" v-model="adminForm.adminPassword" required placeholder="Tu contraseña secreta" class="w-full md:w-1/2 dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 font-bold" />
-            </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label class="block text-sm font-bold dark:text-slate-400 text-slate-500 mb-1">Símbolo (Ticker)</label>
@@ -991,7 +982,6 @@ const m2AveragePrice = computed(() => {
 });
 
 // --- Lógica de la sección Admin ---
-const adminForm = ref({ simbolo: '', nombre: '', categoria: 'Wall Street', emoji: '📈', adminPassword: '' });
 const isAdmin = ref(false);
 const adminLoginUser = ref('');
 const adminLoginPass = ref('');
@@ -1026,13 +1016,11 @@ const submitAdminForm = async () => {
     const response = await fetch(`${API_BASE_URL}/api/activos`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(adminForm.value)
       body: JSON.stringify({ ...adminForm.value, adminPassword: adminLoginPass.value })
     });
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || 'Error de conexión.');
     adminMessage.value = data.message;
-    adminForm.value = { simbolo: '', nombre: '', categoria: 'Wall Street', emoji: '📈', adminPassword: adminForm.value.adminPassword }; // Limpiamos pero recordamos la clave
     adminForm.value = { simbolo: '', nombre: '', categoria: 'Wall Street', emoji: '📈' }; 
     
     // ¡EL IDA Y VUELTA! -> Disparamos la actualización del frontend instantáneamente
