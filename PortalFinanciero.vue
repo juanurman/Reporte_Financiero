@@ -685,7 +685,7 @@ const portfolioChartRef = ref(null);
 
 // Lógica de Bloqueo de Portafolio
 const isPortfolioUnlocked = ref(false);
-const loginUser = ref('Diego');
+const loginUser = ref('');
 const portfolioPassword = ref('');
 const portfolioError = ref('');
 
@@ -721,7 +721,7 @@ const lastUpdatedDate = computed(() => {
 });
 
 // Lógica y Estado de "Mi Cartera"
-const currentUser = ref('Diego');
+const currentUser = ref('');
 const portfolioHoldings = ref([]);
 
 const fetchPortfolio = async () => {
