@@ -142,10 +142,15 @@ app.get('/api/cartera', async (req, res) => {
   const { usuario } = req.query;
   try {
     const [filas] = await pool.execute(`
-      SELECT c.simbolo, a.nombre, a.emoji, c.cantidad, c.precio_compra as avgPrice, c.fecha as purchaseDate
+      SELECT 
+        c.simbolo, a.nombre, a.emoji, 
+        SUM(c.cantidad) as cantidad, 
+        SUM(c.cantidad * c.precio_compra) / SUM(c.cantidad) as avgPrice, 
+        MIN(c.fecha) as purchaseDate
       FROM cartera c
       JOIN activos a ON c.simbolo = a.simbolo
       WHERE c.usuario = ?
+      GROUP BY c.simbolo, a.nombre, a.emoji
     `, [usuario || 'Diego']);
     res.json(filas);
   } catch (error) {

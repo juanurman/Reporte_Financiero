@@ -21,14 +21,16 @@ CREATE TABLE IF NOT EXISTS precios_historicos (
     CONSTRAINT fk_activo FOREIGN KEY (activo_id) REFERENCES activos(id) ON DELETE CASCADE
 );
 
--- Tabla de cartera de usuarios
+-- Tabla de transacciones (El historial real de compras/ventas)
 CREATE TABLE IF NOT EXISTS cartera (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario VARCHAR(50) NOT NULL,
     simbolo VARCHAR(50) NOT NULL,
-    cantidad DECIMAL(15, 4) NOT NULL,
-    precio_compra DECIMAL(15, 4) NOT NULL,
+    tipo ENUM('COMPRA', 'VENTA') DEFAULT 'COMPRA',
+    cantidad DECIMAL(15, 4) NOT NULL, -- Siempre positiva
+    precio_compra DECIMAL(15, 4) NOT NULL, -- Precio unitario en USD
     fecha DATE NOT NULL,
+    comisiones DECIMAL(15, 4) DEFAULT 0,
     INDEX idx_usuario (usuario)
 );
 
