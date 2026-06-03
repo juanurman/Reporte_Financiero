@@ -8,7 +8,12 @@ dotenv.config();
 const app = express();
 
 // Habilitamos CORS para que nuestro frontend de Vue pueda hacer peticiones a esta API
-app.use(cors());
+app.use(cors({
+  origin: '*', // En producción podrías poner tu URL de GitHub Pages para más seguridad
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
 
 const pool = mysql.createPool({

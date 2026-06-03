@@ -647,7 +647,7 @@ const formatAssetPrice = (activo) => {
 
 // --- CONFIGURACIÓN DE API ---
 // Si estamos en producción, apunta a Vercel. Si no, a localhost.
-// IMPORTANTE: Reemplaza esta URL por la URL corta de producción de tu Vercel
+// Asegúrate de que esta URL sea la "Production Deployment" de tu dashboard de Vercel
 const API_BASE_URL = import.meta.env.PROD ? 'https://reporte-financiero-juanurman.vercel.app' : 'http://localhost:4000';
 
 // Integración con la API Express (Base de Datos)
