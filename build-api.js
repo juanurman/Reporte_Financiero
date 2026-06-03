@@ -9,9 +9,10 @@ dotenv.config();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const buildApi = async () => {
+  let connection;
   try {
     console.log('⏳ Conectando a la base de datos para generar JSON estático...');
-    const connection = await mysql.createConnection({
+    connection = await mysql.createConnection({
       host: process.env.DB_HOST || 'localhost',
       user: process.env.DB_USER || 'root',
       password: process.env.DB_PASSWORD || '',
