@@ -695,7 +695,7 @@ const fetchPortfolio = async () => {
   try {
     let data = null;
     try {
-      const resLocal = await fetch(`http://192.168.0.1:4000/api/cartera?usuario=${currentUser.value}`);
+      const resLocal = await fetch(`http://192.168.0.82:4000/api/cartera?usuario=${currentUser.value}`);
       if (resLocal.ok) data = await resLocal.json();
     } catch (e) {}
 
@@ -965,7 +965,7 @@ const submitAdminForm = async () => {
   adminMessage.value = '';
   isSubmittingAdmin.value = true;
   try {
-    const response = await fetch('http://192.168.0.1:4000/api/activos', {
+    const response = await fetch('http://192.168.0.82:4000/api/activos', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(adminForm.value)
@@ -995,7 +995,7 @@ const submitTxForm = async () => {
   txMessage.value = '';
   isSubmittingTx.value = true;
   try {
-    const response = await fetch('http://192.168.0.1:4000/api/cartera', {
+    const response = await fetch('http://192.168.0.82:4000/api/cartera', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...txForm.value, usuario: currentUser.value })
@@ -1038,7 +1038,7 @@ const fetchLivePrices = async () => {
     
     // TRUCO DE MAGIA: Si tenés el servidor local encendido en tu PC, intentamos leer la BD en vivo directamente
     try {
-      const resLocal = await fetch('http://192.168.0.1:4000/api/precios');
+      const resLocal = await fetch('http://192.168.0.82:4000/api/precios');
       if (resLocal.ok) data = await resLocal.json();
     } catch (e) {
       // Falla silenciosamente si sos un usuario normal viendo la web (sin servidor local)
