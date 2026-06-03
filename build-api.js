@@ -28,18 +28,18 @@ const buildApi = async () => {
     const [precios] = await connection.execute('SELECT activo_id, fecha, valor FROM precios_historicos ORDER BY fecha DESC');
 
     const resultados = activos.map(activo => {
-      const historial = precios.filter(p => p.activo_id === activo.id);
+      const historial = precios.filter(p => Number(p.activo_id) === Number(activo.id));
 
       // Si el activo no tiene precios aún, lo enviamos con 0 para que sea visible
       if (historial.length === 0) {
         return {
           id: activo.id, nombre: activo.nombre, simbolo: activo.simbolo, categoria: activo.categoria, emoji: activo.emoji,
-          precio: 0, fecha: new Date().toISOString(),
+          precio: 0, fecha: new Date().toISOString().split('T')[0],
           variaciones: { '1w': 0, '1m': 0, '3m': 0, '6m': 0, '9m': 0, '1y': 0, '3y': 0, '5y': 0 }
         };
       }
 
-      const actual = historial[0].valor;
+      const actual = Number(historial[0].valor);
       const fechaActualStr = historial[0].fecha;
 
       const getPrecioAtras = (dias) => {
@@ -54,7 +54,7 @@ const buildApi = async () => {
             break;
           }
         }
-        return closest.valor;
+        return Number(closest.valor);
       };
 
       const calcularVariacion = (dias) => {
