@@ -115,8 +115,10 @@ const actualizarPrecios = async () => {
       { simbolo: 'IRS', nombre: 'IRSA', categoria: 'Real Estate', emoji: '🏢' },
       { simbolo: 'CRESY', nombre: 'Cresud', categoria: 'Real Estate', emoji: '🌾' },
       // NUEVOS ACTIVOS: Bonos
-      { simbolo: 'AL30.BA', nombre: 'Bono AL30 (AR$)', categoria: 'Bonos', emoji: '🇦🇷' },
-      { simbolo: 'TLT', nombre: 'iShares 20+ Yr Treasury', categoria: 'Bonos', emoji: '🦅' }
+      { simbolo: 'AL30D.BA', nombre: 'Bono AL30 (AR$)', categoria: 'Bonos', emoji: '🇦🇷' },
+      { simbolo: 'TLT', nombre: 'iShares 20+ Yr Treasury', categoria: 'Bonos', emoji: '🦅' },
+      { simbolo: 'KO', nombre: 'Coca-Cola', categoria: 'Wall Street', emoji: '🥤' },
+      { simbolo: 'BTC-USD', nombre: 'Bitcoin', categoria: 'Cripto', emoji: '₿' }
     ];
 
     console.log('Verificando semilla inicial de activos...');
@@ -155,8 +157,8 @@ const actualizarPrecios = async () => {
     const historialPorActivo = {};
     conteoRows.forEach(row => { historialPorActivo[row.activo_id] = row.c; });
 
-    // Filtramos TODOS los activos de la DB que necesitan actualizarse vía Yahoo
-    const activosYahoo = activosDB.filter(a => a.categoria !== 'Moneda' && a.categoria !== 'Real Estate');
+    // Filtramos TODOS los activos que necesitan actualizarse vía Yahoo (ignoramos monedas y valores M2 estáticos)
+    const activosYahoo = activosDB.filter(a => a.categoria !== 'Moneda' && !a.simbolo.startsWith('M2_') && a.simbolo !== 'ALQ_YIELD');
 
     // Ejecutamos las peticiones a Yahoo de forma SECUENCIAL para evitar ETIMEDOUT o bloqueos de Rate Limiting
     for (const activo of activosYahoo) {
