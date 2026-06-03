@@ -205,9 +205,38 @@ const actualizarPrecios = async () => {
       }
     }
 
-    // 2. Obtener datos de los dólares (Sólo DolarAPI actual)
-    console.log('Consultando Dólares (Actual)...');
-    // También envolvemos a DolarAPI por precaución
+    // 2. Obtener datos de los dólares (Histórico y Actual)
+    const mepId = cacheActivos['DOLAR_MEP'];
+    const registrosMep = historialPorActivo[mepId] || 0;
+    
+    // Si hay menos de 500 registros, hacemos un backfill histórico masivo de Dólares
+    if (registrosMep < 500) {
+      console.log('Descargando historial completo de dólares (ArgentinaDatos)...');
+      try {
+        const { data: dolaresHist } = await executeWithRetry(() => axios.get('https://api.argentinadatos.com/v1/cotizaciones/dolares', { timeout: 20000 }));
+        const adMapa = { 'oficial': 'DOLAR_OFICIAL', 'blue': 'DOLAR_BLUE', 'mep': 'DOLAR_MEP', 'ccl': 'DOLAR_CCL' };
+        const registrosPorSimbolo = { DOLAR_OFICIAL: [], DOLAR_BLUE: [], DOLAR_MEP: [], DOLAR_CCL: [] };
+        
+        dolaresHist.forEach(d => {
+          const simbolo = adMapa[d.casa];
+          if (simbolo && d.venta) {
+            registrosPorSimbolo[simbolo].push({ fecha: d.fecha.split('T')[0], valor: d.venta });
+          }
+        });
+
+        for (const [simbolo, registros] of Object.entries(registrosPorSimbolo)) {
+          if (registros.length > 0) {
+            process.stdout.write(`   ⬇️ Procesando historial para ${simbolo}... `);
+            await guardarPreciosLote(simbolo, registros);
+            console.log(`✅ ¡Listo!`);
+          }
+        }
+      } catch (err) {
+        console.log(` ⚠️ Error al descargar historial de dólares: ${err.message}`);
+      }
+    }
+
+    console.log('Consultando Dólares (Actual - DolarAPI)...');
     const { data: dolares } = await executeWithRetry(() => axios.get('https://dolarapi.com/v1/dolares', { timeout: 10000 }));
     
     // Mapeo para adaptar los nombres de DolarAPI a los de nuestra base de datos
