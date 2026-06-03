@@ -29,7 +29,12 @@ const pool = mysql.createPool({
 
 // Ruta raíz para verificar que la API está viva
 app.get('/', (req, res) => {
-  res.send('🚀 API de Reporte Financiero funcionando correctamente en Vercel');
+  res.json({
+    estado: 'online',
+    mensaje: '🚀 API de Reporte Financiero funcionando correctamente en Vercel',
+    version: '1.0.0',
+    endpoints: ['/api/precios', '/api/cartera', '/api/activos']
+  });
 });
 
 // Endpoint para obtener todos los activos con su último precio guardado
