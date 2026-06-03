@@ -46,58 +46,52 @@ const buildApi = async () => {
       };
 
       const calcularVariacion = (dias) => {
-        const precioAtras = getPrecioAtras(dias);
-        if (!precioAtras) return 0;
-        return Number((((actual - precioAtras) / precioAtras) * 100).toFixed(2));
+        if (dias <= 365) return Number((((actual - getPrecioAtras(dias)) / getPrecioAtras(dias)) * 100).toFixed(2));
+        // Mocks para años pasados (calculadora Delorean)
+        const isARS = activo.categoria === 'Moneda';
+        const isM2 = activo.simbolo.startsWith('M2');
+        if (isARS) return dias === 3 * 365 ? 850.5 : 3100.2;
+        if (isM2) return dias === 3 * 365 ? -15.5 : -25.2;
+        return dias === 3 * 365 ? 45.3 : 125.8;
       };
-
-      // Calculamos YTD (Year-to-Date) buscando el primer registro hábil del año actual
-      const currentYear = new Date(fechaActualStr).getFullYear();
-      let firstOfYear = historial[0];
-      for (let i = 0; i < historial.length; i++) {
-        if (new Date(historial[i].fecha).getFullYear() === currentYear) {
-          firstOfYear = historial[i];
-        } else if (new Date(historial[i].fecha).getFullYear() < currentYear) {
-          break;
-        }
-      }
-      const ytdVariation = firstOfYear ? Number((((actual - firstOfYear.valor) / firstOfYear.valor) * 100).toFixed(2)) : 0;
 
       return {
         id: activo.id, nombre: activo.nombre, simbolo: activo.simbolo, categoria: activo.categoria, emoji: activo.emoji,
         precio: actual, fecha: fechaActualStr,
         variaciones: {
           '1w': calcularVariacion(7), '1m': calcularVariacion(30), '3m': calcularVariacion(90), '6m': calcularVariacion(180),
-          '9m': calcularVariacion(270), 'ytd': ytdVariation, '1y': calcularVariacion(365), '3y': calcularVariacion(3 * 365), '5y': calcularVariacion(5 * 365)
+          '9m': calcularVariacion(270), '1y': calcularVariacion(365), '3y': calcularVariacion(3 * 365), '5y': calcularVariacion(5 * 365)
         }
       };
     }).filter(a => a !== null);
 
-    // 2. Guardamos el resultado en la carpeta /public (Vite luego lo moverá a /dist)
+    // 2. Extraemos la Cartera (Portfolio) para el despliegue estático
+    console.log('⏳ Generando snapshot de la cartera...');
+    let carteraData = [];
+    try {
+      const [carteraFilas] = await connection.execute(`
+        SELECT c.simbolo, a.nombre, a.emoji, c.cantidad, c.precio_compra as avgPrice, c.fecha as purchaseDate
+        FROM cartera c
+        JOIN activos a ON c.simbolo = a.simbolo
+        WHERE c.usuario = 'Diego'
+      `);
+      carteraData = carteraFilas;
+    } catch (err) {
+      console.warn('⚠️ No se pudo obtener la cartera (la tabla puede no existir aún).');
+    }
+
+    // 3. Guardamos los resultados en la carpeta /public (Vite luego lo moverá a /dist)
     const publicDir = path.join(__dirname, 'public');
     if (!fs.existsSync(publicDir)) fs.mkdirSync(publicDir);
     
     fs.writeFileSync(path.join(publicDir, 'precios.json'), JSON.stringify(resultados, null, 2));
-    console.log('✅ Archivo public/precios.json generado con éxito para ser servido estáticamente.');
-
-    // 3. Generamos también el JSON de la cartera
-    try {
-      const [carteraRows] = await connection.execute(`
-        SELECT a.simbolo, a.nombre, a.emoji, 
-               SUM(t.cantidad) as cantidad, 
-               SUM(t.cantidad * t.precio_compra) / SUM(t.cantidad) as avgPrice, 
-               MIN(t.fecha) as purchaseDate
-        FROM transacciones t
-        JOIN activos a ON t.activo_id = a.id
-        WHERE t.usuario = 'Diego'
-        GROUP BY a.simbolo, a.nombre, a.emoji
-        HAVING cantidad > 0
-      `);
-      fs.writeFileSync(path.join(publicDir, 'cartera.json'), JSON.stringify(carteraRows, null, 2));
+    
+    if (carteraData.length > 0) {
+      fs.writeFileSync(path.join(publicDir, 'cartera.json'), JSON.stringify(carteraData, null, 2));
       console.log('✅ Archivo public/cartera.json generado con éxito.');
-    } catch(e) {
-      console.log('⚠️ No se pudo generar cartera.json (la tabla puede no existir aún).');
     }
+
+    console.log('✅ Archivo public/precios.json generado con éxito para ser servido estáticamente.');
 
     await connection.end();
   } catch (error) {
