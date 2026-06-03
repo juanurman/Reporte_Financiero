@@ -107,11 +107,9 @@ const buildApi = async () => {
     if (!fs.existsSync(publicDir)) fs.mkdirSync(publicDir);
     
     fs.writeFileSync(path.join(publicDir, 'precios.json'), JSON.stringify(resultados, null, 2));
-    
-    if (carteraData.length > 0) {
-      fs.writeFileSync(path.join(publicDir, 'cartera.json'), JSON.stringify(carteraData, null, 2));
-      console.log('✅ Archivo public/cartera.json generado con éxito.');
-    }
+
+    fs.writeFileSync(path.join(publicDir, 'cartera.json'), JSON.stringify(carteraData, null, 2));
+    console.log('✅ Archivo public/cartera.json generado con éxito.');
 
     console.log('✅ Archivo public/precios.json generado con éxito para ser servido estáticamente.');
 

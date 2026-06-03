@@ -705,9 +705,7 @@ const fetchPortfolio = async () => {
     } catch (e) {}
 
     if (!data) {
-      // Aseguramos que la ruta sea absoluta desde la raíz del dominio para GH Pages
-      const base = import.meta.env.BASE_URL.startsWith('/') ? import.meta.env.BASE_URL : `/${import.meta.env.BASE_URL}`;
-      const apiUrl = import.meta.env.PROD ? `${base}cartera.json?t=${Date.now()}` : './cartera.json';
+      const apiUrl = import.meta.env.PROD ? `${import.meta.env.BASE_URL}cartera.json?t=${Date.now()}` : './cartera.json';
       const response = await fetch(apiUrl);
       if (response.ok) data = await response.json();
     }
@@ -1055,9 +1053,7 @@ const fetchLivePrices = async () => {
 
     // Si el servidor local está apagado, leemos la foto estática de GitHub Pages
     if (!data) {
-      // Aseguramos que la ruta sea absoluta desde la raíz del dominio
-      const base = import.meta.env.BASE_URL.startsWith('/') ? import.meta.env.BASE_URL : `/${import.meta.env.BASE_URL}`;
-      const apiUrl = import.meta.env.PROD ? `${base}precios.json?t=${Date.now()}` : './precios.json';
+      const apiUrl = import.meta.env.PROD ? `${import.meta.env.BASE_URL}precios.json?t=${Date.now()}` : './precios.json';
       const response = await fetch(apiUrl);
       data = await response.json();
     }
