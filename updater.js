@@ -96,6 +96,10 @@ const inyectarHistoricoInmobiliario = async (connection) => {
 const actualizarPrecios = async () => {
   console.log(`\n[${new Date().toLocaleString('es-AR')}] Iniciando actualización de precios...`);
 
+  // Si pasamos un símbolo específico (ej. node updater.js "TSLA"), solo actualizamos ese
+  const targetSymbol = process.argv[2];
+  if (targetSymbol) console.log(`🎯 Modo Rápido: Descargando historial exclusivo para ${targetSymbol}`);
+
   try {
     // Semilla Base: Solo se usa para registrar activos iniciales si la DB está vacía
     const activosSeed = [
@@ -121,32 +125,36 @@ const actualizarPrecios = async () => {
       { simbolo: 'BTC-USD', nombre: 'Bitcoin', categoria: 'Cripto', emoji: '₿' }
     ];
 
-    console.log('Verificando semilla inicial de activos...');
-    await executeWithRetry(async () => {
-      // Re-clasificar automáticamente las Big 6 para separarlas del resto de Wall Street en bases de datos existentes
-      await pool.execute(`UPDATE activos SET categoria = 'Big Tech' WHERE simbolo IN ('AAPL', 'GOOGL', 'MSFT', 'NVDA', 'AMZN', 'META')`);
-
-      const [activosExistentes] = await pool.execute('SELECT simbolo FROM activos');
-      const simbolosDB = activosExistentes.map(a => a.simbolo);
-      
-      for (const activo of activosSeed) {
-        if (!simbolosDB.includes(activo.simbolo)) {
-          await pool.execute(
-            `INSERT INTO activos (nombre, simbolo, categoria, emoji) VALUES (?, ?, ?, ?)`,
-            [activo.nombre, activo.simbolo, activo.categoria, activo.emoji]
-          );
-          console.log(` ➕ Nuevo activo registrado automáticamente: ${activo.simbolo}`);
+    if (!targetSymbol) {
+      console.log('Verificando semilla inicial de activos...');
+      await executeWithRetry(async () => {
+        // Re-clasificar automáticamente las Big 6 para separarlas del resto de Wall Street en bases de datos existentes
+        await pool.execute(`UPDATE activos SET categoria = 'Big Tech' WHERE simbolo IN ('AAPL', 'GOOGL', 'MSFT', 'NVDA', 'AMZN', 'META')`);
+  
+        const [activosExistentes] = await pool.execute('SELECT simbolo FROM activos');
+        const simbolosDB = activosExistentes.map(a => a.simbolo);
+        
+        for (const activo of activosSeed) {
+          if (!simbolosDB.includes(activo.simbolo)) {
+            await pool.execute(
+              `INSERT INTO activos (nombre, simbolo, categoria, emoji) VALUES (?, ?, ?, ?)`,
+              [activo.nombre, activo.simbolo, activo.categoria, activo.emoji]
+            );
+            console.log(` ➕ Nuevo activo registrado automáticamente: ${activo.simbolo}`);
+          }
         }
-      }
-    });
+      });
+    }
 
     // Precargamos TODOS los IDs de activos en memoria al iniciar para volar a máxima velocidad
     console.log('Precargando diccionario de activos para acelerar la carga...');
     const [activosDB] = await pool.execute('SELECT id, simbolo, categoria FROM activos');
     activosDB.forEach(a => { cacheActivos[a.simbolo] = a.id; });
 
-    // 0. Inyectamos la base de datos histórica inmutable de Real Estate
-    await inyectarHistoricoInmobiliario(pool);
+    if (!targetSymbol) {
+      // 0. Inyectamos la base de datos histórica inmutable de Real Estate
+      await inyectarHistoricoInmobiliario(pool);
+    }
 
     // Obtener fecha actual en formato YYYY-MM-DD respetando la zona horaria de Argentina
     const fechaActual = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Argentina/Buenos_Aires' });
@@ -158,7 +166,10 @@ const actualizarPrecios = async () => {
     conteoRows.forEach(row => { historialPorActivo[row.activo_id] = row.c; });
 
     // Filtramos TODOS los activos que necesitan actualizarse vía Yahoo (ignoramos monedas y valores M2 estáticos)
-    const activosYahoo = activosDB.filter(a => a.categoria !== 'Moneda' && !a.simbolo.startsWith('M2_') && a.simbolo !== 'ALQ_YIELD');
+    let activosYahoo = activosDB.filter(a => a.categoria !== 'Moneda' && !a.simbolo.startsWith('M2_') && a.simbolo !== 'ALQ_YIELD');
+    if (targetSymbol) {
+      activosYahoo = activosYahoo.filter(a => a.simbolo === targetSymbol.replace(/"/g, ''));
+    }
 
     // Ejecutamos las peticiones a Yahoo de forma SECUENCIAL para evitar ETIMEDOUT o bloqueos de Rate Limiting
     for (const activo of activosYahoo) {
@@ -209,118 +220,120 @@ const actualizarPrecios = async () => {
       }
     }
 
-    // 2. Obtener datos de los dólares (Histórico y Actual)
-    const mepId = cacheActivos['DOLAR_MEP'];
-    const registrosMep = historialPorActivo[mepId] || 0;
-    
-    // Si hay menos de 500 registros, hacemos un backfill histórico masivo de Dólares
-    if (registrosMep < 500) {
-      console.log('Descargando historial completo de dólares (ArgentinaDatos)...');
-      try {
-        const { data: dolaresHist } = await executeWithRetry(() => axios.get('https://api.argentinadatos.com/v1/cotizaciones/dolares', { timeout: 20000 }));
-        // Corregimos los nombres exactos que devuelve la API gubernamental para MEP y CCL
-        const adMapa = { 'oficial': 'DOLAR_OFICIAL', 'blue': 'DOLAR_BLUE', 'bolsa': 'DOLAR_MEP', 'contadoconliqui': 'DOLAR_CCL' };
-        const registrosPorSimbolo = { DOLAR_OFICIAL: [], DOLAR_BLUE: [], DOLAR_MEP: [], DOLAR_CCL: [] };
-        
-        dolaresHist.forEach(d => {
-          const simbolo = adMapa[d.casa];
-          if (simbolo && d.venta) {
-            registrosPorSimbolo[simbolo].push({ fecha: d.fecha.split('T')[0], valor: d.venta });
+    if (!targetSymbol) {
+      // 2. Obtener datos de los dólares (Histórico y Actual)
+      const mepId = cacheActivos['DOLAR_MEP'];
+      const registrosMep = historialPorActivo[mepId] || 0;
+      
+      // Si hay menos de 500 registros, hacemos un backfill histórico masivo de Dólares
+      if (registrosMep < 500) {
+        console.log('Descargando historial completo de dólares (ArgentinaDatos)...');
+        try {
+          const { data: dolaresHist } = await executeWithRetry(() => axios.get('https://api.argentinadatos.com/v1/cotizaciones/dolares', { timeout: 20000 }));
+          // Corregimos los nombres exactos que devuelve la API gubernamental para MEP y CCL
+          const adMapa = { 'oficial': 'DOLAR_OFICIAL', 'blue': 'DOLAR_BLUE', 'bolsa': 'DOLAR_MEP', 'contadoconliqui': 'DOLAR_CCL' };
+          const registrosPorSimbolo = { DOLAR_OFICIAL: [], DOLAR_BLUE: [], DOLAR_MEP: [], DOLAR_CCL: [] };
+          
+          dolaresHist.forEach(d => {
+            const simbolo = adMapa[d.casa];
+            if (simbolo && d.venta) {
+              registrosPorSimbolo[simbolo].push({ fecha: d.fecha.split('T')[0], valor: d.venta });
+            }
+          });
+  
+          for (const [simbolo, registros] of Object.entries(registrosPorSimbolo)) {
+            if (registros.length > 0) {
+              process.stdout.write(`   ⬇️ Procesando historial para ${simbolo}... `);
+              await guardarPreciosLote(simbolo, registros);
+              console.log(`✅ ¡Listo!`);
+            }
           }
-        });
-
-        for (const [simbolo, registros] of Object.entries(registrosPorSimbolo)) {
-          if (registros.length > 0) {
-            process.stdout.write(`   ⬇️ Procesando historial para ${simbolo}... `);
-            await guardarPreciosLote(simbolo, registros);
-            console.log(`✅ ¡Listo!`);
-          }
+        } catch (err) {
+          console.log(` ⚠️ Error al descargar historial de dólares: ${err.message}`);
         }
-      } catch (err) {
-        console.log(` ⚠️ Error al descargar historial de dólares: ${err.message}`);
       }
-    }
-
-    console.log('Consultando Dólares (Actual - DolarAPI)...');
-    const { data: dolares } = await executeWithRetry(() => axios.get('https://dolarapi.com/v1/dolares', { 
-      headers: { 'Accept': 'application/json', 'User-Agent': 'Mozilla/5.0' },
-      timeout: 10000 
-    }));
-    
-    // Mapeo para adaptar los nombres de DolarAPI a los de nuestra base de datos
-    const mapaDolares = {
-      'oficial': 'DOLAR_OFICIAL',
-      'blue': 'DOLAR_BLUE',
-      'bolsa': 'DOLAR_MEP',
-      'contadoconliqui': 'DOLAR_CCL'
-    };
-
-    const promesasDolares = dolares.map(async (dolar) => {
-      const simboloDolar = mapaDolares[dolar.casa];
-      if (simboloDolar && dolar.venta) {
-        // Guardamos el precio de hoy
-        await guardarPrecio(simboloDolar, dolar.venta, fechaActual);
+  
+      console.log('Consultando Dólares (Actual - DolarAPI)...');
+      const { data: dolares } = await executeWithRetry(() => axios.get('https://dolarapi.com/v1/dolares', { 
+        headers: { 'Accept': 'application/json', 'User-Agent': 'Mozilla/5.0' },
+        timeout: 10000 
+      }));
+      
+      // Mapeo para adaptar los nombres de DolarAPI a los de nuestra base de datos
+      const mapaDolares = {
+        'oficial': 'DOLAR_OFICIAL',
+        'blue': 'DOLAR_BLUE',
+        'bolsa': 'DOLAR_MEP',
+        'contadoconliqui': 'DOLAR_CCL'
+      };
+  
+      const promesasDolares = dolares.map(async (dolar) => {
+        const simboloDolar = mapaDolares[dolar.casa];
+        if (simboloDolar && dolar.venta) {
+          // Guardamos el precio de hoy
+          await guardarPrecio(simboloDolar, dolar.venta, fechaActual);
+        }
+      });
+      await Promise.all(promesasDolares);
+  
+      // 3. Algoritmo de Indexación Diaria por Correlación Financiera
+      console.log('Indexando valores de Real Estate de hoy mediante correlación con ADRs Inmobiliarios...');
+      
+      // Función auxiliar para obtener la variación diaria de un activo bursátil
+      const getVariacionDiaria = async (simbolo) => {
+        const rows = await executeWithRetry(async () => {
+          const [result] = await pool.execute(`
+            SELECT p.valor FROM precios_historicos p
+            JOIN activos a ON p.activo_id = a.id
+            WHERE a.simbolo = ? ORDER BY p.fecha DESC LIMIT 2
+          `, [simbolo]);
+          return result;
+        });
+        if (rows.length < 2) return 0;
+        return (rows[0].valor - rows[1].valor) / rows[1].valor;
+      };
+  
+      const varPromedio = (await getVariacionDiaria('IRS') + await getVariacionDiaria('CRESY')) / 2;
+      const factorSensibilidad = 0.15; // Ladrillos son menos volátiles que las acciones
+      const ajusteDiario = varPromedio * factorSensibilidad;
+  
+      console.log(` - Variación promedio ADRs (IRS/CRESY): ${(varPromedio * 100).toFixed(2)}%. Ajuste M2 aplicado: ${(ajusteDiario * 100).toFixed(4)}%`);
+  
+      const realEstateAssets = ['M2_NUN', 'M2_BEL', 'M2_PAL', 'M2_REC', 'ALQ_YIELD'];
+      for (const simbolo of realEstateAssets) {
+        // Tomamos el último valor histórico ANTERIOR a hoy (garantiza idempotencia si se ejecuta 2 veces)
+        const rows = await executeWithRetry(async () => {
+          const [result] = await pool.execute(`
+            SELECT p.valor FROM precios_historicos p
+            JOIN activos a ON p.activo_id = a.id
+            WHERE a.simbolo = ? AND p.fecha < ? ORDER BY p.fecha DESC LIMIT 1
+          `, [simbolo, fechaActual]);
+          return result;
+        });
+  
+        if (rows.length > 0) {
+          const ultimoValor = rows[0].valor;
+          const nuevoValor = Number((ultimoValor * (1 + ajusteDiario)).toFixed(2));
+          await guardarPrecio(simbolo, nuevoValor, fechaActual);
+        }
       }
-    });
-    await Promise.all(promesasDolares);
-
-    // 3. Algoritmo de Indexación Diaria por Correlación Financiera
-    console.log('Indexando valores de Real Estate de hoy mediante correlación con ADRs Inmobiliarios...');
-    
-    // Función auxiliar para obtener la variación diaria de un activo bursátil
-    const getVariacionDiaria = async (simbolo) => {
-      const rows = await executeWithRetry(async () => {
-        const [result] = await pool.execute(`
-          SELECT p.valor FROM precios_historicos p
-          JOIN activos a ON p.activo_id = a.id
-          WHERE a.simbolo = ? ORDER BY p.fecha DESC LIMIT 2
-        `, [simbolo]);
-        return result;
-      });
-      if (rows.length < 2) return 0;
-      return (rows[0].valor - rows[1].valor) / rows[1].valor;
-    };
-
-    const varPromedio = (await getVariacionDiaria('IRS') + await getVariacionDiaria('CRESY')) / 2;
-    const factorSensibilidad = 0.15; // Ladrillos son menos volátiles que las acciones
-    const ajusteDiario = varPromedio * factorSensibilidad;
-
-    console.log(` - Variación promedio ADRs (IRS/CRESY): ${(varPromedio * 100).toFixed(2)}%. Ajuste M2 aplicado: ${(ajusteDiario * 100).toFixed(4)}%`);
-
-    const realEstateAssets = ['M2_NUN', 'M2_BEL', 'M2_PAL', 'M2_REC', 'ALQ_YIELD'];
-    for (const simbolo of realEstateAssets) {
-      // Tomamos el último valor histórico ANTERIOR a hoy (garantiza idempotencia si se ejecuta 2 veces)
-      const rows = await executeWithRetry(async () => {
-        const [result] = await pool.execute(`
-          SELECT p.valor FROM precios_historicos p
-          JOIN activos a ON p.activo_id = a.id
-          WHERE a.simbolo = ? AND p.fecha < ? ORDER BY p.fecha DESC LIMIT 1
-        `, [simbolo, fechaActual]);
-        return result;
-      });
-
-      if (rows.length > 0) {
-        const ultimoValor = rows[0].valor;
-        const nuevoValor = Number((ultimoValor * (1 + ajusteDiario)).toFixed(2));
-        await guardarPrecio(simbolo, nuevoValor, fechaActual);
+  
+      // 4. Limpieza de base de datos (Eliminar mayor a 5 años)
+      console.log('Limpiando historial antiguo (manteniendo 1826 días / 5 años)...');
+      try {
+        // Usamos DELETE con JOIN para preservar los datos de Real Estate (que tienen fechas estáticas de hace 5 años)
+        await executeWithRetry(async () => {
+          const [resultado] = await pool.execute(`
+            DELETE p FROM precios_historicos p
+            INNER JOIN activos a ON p.activo_id = a.id
+            WHERE p.fecha < DATE_SUB(CURDATE(), INTERVAL 1826 DAY)
+            AND a.categoria != 'Real Estate'
+          `);
+          console.log(` - Registros antiguos eliminados: ${resultado.affectedRows}`);
+        });
+      } catch (error) {
+        console.log(` ⚠️ Error al limpiar historial: ${error.message}`);
       }
-    }
-
-    // 4. Limpieza de base de datos (Eliminar mayor a 5 años)
-    console.log('Limpiando historial antiguo (manteniendo 1826 días / 5 años)...');
-    try {
-      // Usamos DELETE con JOIN para preservar los datos de Real Estate (que tienen fechas estáticas de hace 5 años)
-      await executeWithRetry(async () => {
-        const [resultado] = await pool.execute(`
-          DELETE p FROM precios_historicos p
-          INNER JOIN activos a ON p.activo_id = a.id
-          WHERE p.fecha < DATE_SUB(CURDATE(), INTERVAL 1826 DAY)
-          AND a.categoria != 'Real Estate'
-        `);
-        console.log(` - Registros antiguos eliminados: ${resultado.affectedRows}`);
-      });
-    } catch (error) {
-      console.log(` ⚠️ Error al limpiar historial: ${error.message}`);
     }
 
     console.log('Actualización completada con éxito.');
