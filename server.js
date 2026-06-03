@@ -188,17 +188,19 @@ app.get('/api/cartera', async (req, res) => {
 
 // Endpoint para agregar una transacción a la cartera
 app.post('/api/cartera', async (req, res) => {
-  const { usuario, simbolo, cantidad, precio_compra, fecha } = req.body;
+  const { usuario, simbolo, tipo, cantidad, precio_compra, comisiones, fecha } = req.body;
   try {
     const query = `
-      INSERT INTO cartera (usuario, simbolo, cantidad, precio_compra, fecha)
-      VALUES (?, ?, ?, ?, ?)
+      INSERT INTO cartera (usuario, simbolo, tipo, cantidad, precio_compra, comisiones, fecha)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
     `;
     await pool.execute(query, [
       usuario || 'Diego',
       simbolo.toUpperCase(),
+      tipo || 'COMPRA',
       cantidad,
       precio_compra,
+      comisiones || 0,
       fecha || new Date().toISOString().split('T')[0]
     ]);
     res.json({ message: 'Transacción guardada con éxito' });
