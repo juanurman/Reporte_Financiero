@@ -2,10 +2,6 @@ import express from 'express';
 import cors from 'cors';
 import mysql from 'mysql2/promise';
 import dotenv from 'dotenv';
-import { exec } from 'child_process';
-import util from 'util';
-
-const execAsync = util.promisify(exec);
 
 dotenv.config();
 
@@ -25,41 +21,6 @@ const pool = mysql.createPool({
   connectionLimit: 10,
   queueLimit: 0
 });
-
-// Autoconfiguración de la base de datos (Migración automática)
-try {
-  await pool.execute(`
-    CREATE TABLE IF NOT EXISTS transacciones (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      usuario VARCHAR(50) NOT NULL DEFAULT 'Diego',
-      activo_id INT NOT NULL,
-      cantidad DECIMAL(10,4) NOT NULL,
-      precio_compra DECIMAL(10,4) NOT NULL,
-      fecha DATE NOT NULL,
-      FOREIGN KEY (activo_id) REFERENCES activos(id)
-    )
-  `);
-  
-  // Intentamos agregar la columna si la tabla ya existía de antes (Migración segura)
-  try {
-    await pool.execute('ALTER TABLE transacciones ADD COLUMN usuario VARCHAR(50) NOT NULL DEFAULT "Diego" AFTER id');
-  } catch (e) { /* La columna ya existe, continuamos silenciosamente */ }
-
-  // Forzamos el renombramiento del usuario por si ya había cargado algo como 'default'
-  await pool.execute(`UPDATE transacciones SET usuario = 'Diego' WHERE usuario = 'default'`);
-
-  const [txRows] = await pool.execute('SELECT COUNT(*) as c FROM transacciones');
-  if (txRows[0].c === 0) {
-    console.log('🌱 Sembrando transacciones iniciales en el portafolio dinámico...');
-    const seedQueries = [
-      `INSERT INTO transacciones (usuario, activo_id, cantidad, precio_compra, fecha) SELECT 'Diego', id, 3.2, 394.69, '2026-02-06' FROM activos WHERE simbolo = 'MU'`,
-      `INSERT INTO transacciones (usuario, activo_id, cantidad, precio_compra, fecha) SELECT 'Diego', id, 13.67, 147.08, '2025-04-04' FROM activos WHERE simbolo = 'TSM'`,
-      `INSERT INTO transacciones (usuario, activo_id, cantidad, precio_compra, fecha) SELECT 'Diego', id, 5.88, 167.15, '2025-03-05' FROM activos WHERE simbolo = 'GOOGL'`,
-      `INSERT INTO transacciones (usuario, activo_id, cantidad, precio_compra, fecha) SELECT 'Diego', id, 2.53, 388.64, '2025-03-05' FROM activos WHERE simbolo = 'MSFT'`
-    ];
-    for (const q of seedQueries) await pool.execute(q);
-  }
-} catch (dbError) { console.error('⚠️ Error autoconfigurando la tabla de transacciones:', dbError.message); }
 
 // Endpoint para obtener todos los activos con su último precio guardado
 app.get('/api/precios', async (req, res) => {
@@ -93,22 +54,23 @@ app.get('/api/precios', async (req, res) => {
       };
 
       const calcularVariacion = (dias) => {
-        const precioAtras = getPrecioAtras(dias);
-        if (!precioAtras) return 0;
-        return Number((((actual - precioAtras) / precioAtras) * 100).toFixed(2));
-      };
-
-      // Calculamos YTD (Year-to-Date) buscando el primer registro hábil del año actual
-      const currentYear = new Date(fechaActualStr).getFullYear();
-      let firstOfYear = historial[0];
-      for (let i = 0; i < historial.length; i++) {
-        if (new Date(historial[i].fecha).getFullYear() === currentYear) {
-          firstOfYear = historial[i];
-        } else if (new Date(historial[i].fecha).getFullYear() < currentYear) {
-          break;
+        if (dias <= 365) {
+          return Number((((actual - getPrecioAtras(dias)) / getPrecioAtras(dias)) * 100).toFixed(2));
+        } else {
+          // Mock histórico (3 y 5 años) para la calculadora del Delorean
+          const isARS = activo.categoria === 'Moneda';
+          const isM2 = activo.simbolo.startsWith('M2');
+          if (isARS) {
+            if (dias === 3 * 365) return 850.5;  // MEP saltó de ~150 a ~1430
+            if (dias === 5 * 365) return 3100.2; // MEP saltó de ~45 a ~1430
+          } else if (isM2) {
+            return dias === 3 * 365 ? -15.5 : -25.2; // Caída real del M2
+          } else {
+            return dias === 3 * 365 ? 45.3 : 125.8;  // Renta variable en USD (SPY, Big6)
+          }
+          return 0;
         }
-      }
-      const ytdVariation = firstOfYear ? Number((((actual - firstOfYear.valor) / firstOfYear.valor) * 100).toFixed(2)) : 0;
+      };
 
       return {
         id: activo.id, nombre: activo.nombre, simbolo: activo.simbolo, categoria: activo.categoria, emoji: activo.emoji,
@@ -116,7 +78,7 @@ app.get('/api/precios', async (req, res) => {
         variaciones: {
           '1w': calcularVariacion(7), '1m': calcularVariacion(30), 
           '3m': calcularVariacion(90), '6m': calcularVariacion(180), 
-          '9m': calcularVariacion(270), 'ytd': ytdVariation, '1y': calcularVariacion(365),
+          '9m': calcularVariacion(270), '1y': calcularVariacion(365),
           '3y': calcularVariacion(3 * 365), '5y': calcularVariacion(5 * 365)
         }
       };
@@ -129,85 +91,7 @@ app.get('/api/precios', async (req, res) => {
   }
 });
 
-// Endpoint para agregar un nuevo activo desde el panel de Administración
-app.post('/api/activos', async (req, res) => {
-  const { simbolo, nombre, categoria, emoji, adminPassword } = req.body;
-
-  // SEGURIDAD REAL DE BACKEND: Rechazamos la petición si la contraseña no coincide con la del servidor
-  const serverPassword = process.env.ADMIN_PASSWORD || 'argento123'; // Clave por defecto si te olvidas el .env
-  if (!adminPassword || adminPassword.trim() !== serverPassword.trim()) {
-    return res.status(401).json({ error: 'Acceso Denegado: Contraseña de administrador incorrecta.' });
-  }
-
-  if (!simbolo || !nombre) {
-    return res.status(400).json({ error: 'El símbolo y el nombre son obligatorios.' });
-  }
-
-  try {
-    await pool.execute(
-      'INSERT INTO activos (nombre, simbolo, categoria, emoji) VALUES (?, ?, ?, ?)',
-      [nombre, simbolo.toUpperCase(), categoria || 'Otros', emoji || '📈']
-    );
-
-    // ESPERAMOS a que el actualizador termine de descargar la info de Yahoo para ESTE símbolo específico
-    console.log(`⏳ Descargando historial de ${simbolo.toUpperCase()}...`);
-    await execAsync(`node updater.js "${simbolo.toUpperCase()}"`);
-    console.log(`✅ Historial de ${simbolo.toUpperCase()} descargado con éxito.`);
-
-    // Disparamos un push a GitHub automáticamente para que la web pública de todos se actualice
-    exec('git commit --allow-empty -m "🤖 Auto-Deploy: Nuevo activo agregado" && git push', (error) => {
-      if (error) console.error('⚠️ No se pudo disparar auto-deploy en GitHub. Hacé un push manual luego.');
-      else console.log('🚀 Auto-Deploy disparado en GitHub Actions.');
-    });
-
-    res.status(201).json({ message: `¡Éxito! ${nombre} agregado. Visible localmente al instante. En 1 min estará público para todos.` });
-  } catch (error) {
-    if (error.code === 'ER_DUP_ENTRY') return res.status(409).json({ error: `El símbolo ${simbolo.toUpperCase()} ya existe.` });
-    console.error('❌ Error al agregar activo:', error.message);
-    res.status(500).json({ error: 'Error interno del servidor al guardar en TiDB.' });
-  }
-});
-
-// Endpoint para obtener la Cartera consolidada
-app.get('/api/cartera', async (req, res) => {
-  const usuario = req.query.usuario || 'Diego';
-  try {
-    const [rows] = await pool.execute(`
-      SELECT a.simbolo, a.nombre, a.emoji, 
-             SUM(t.cantidad) as cantidad, 
-             SUM(t.cantidad * t.precio_compra) / SUM(t.cantidad) as avgPrice, 
-             MIN(t.fecha) as purchaseDate
-      FROM transacciones t
-      JOIN activos a ON t.activo_id = a.id
-      WHERE t.usuario = ?
-      GROUP BY a.simbolo, a.nombre, a.emoji
-      HAVING cantidad > 0
-    `, [usuario]);
-    res.json(rows);
-  } catch (error) { res.status(500).json({ error: 'Error al obtener la cartera' }); }
-});
-
-// Endpoint para registrar una nueva Compra
-app.post('/api/cartera', async (req, res) => {
-  const { usuario, simbolo, cantidad, precio_compra, fecha, adminPassword } = req.body;
-  const serverPassword = process.env.ADMIN_PASSWORD || 'argento123';
-  if (!adminPassword || adminPassword.trim() !== serverPassword.trim()) {
-    return res.status(401).json({ error: 'Acceso Denegado: Contraseña incorrecta.' });
-  }
-  
-  const user = usuario || 'Diego';
-  try {
-    const [activos] = await pool.execute('SELECT id FROM activos WHERE simbolo = ?', [simbolo]);
-    if (activos.length === 0) return res.status(404).json({ error: `El Ticker ${simbolo} no existe. Agregalo primero desde 'Agregar Activo'.` });
-    
-    await pool.execute('INSERT INTO transacciones (usuario, activo_id, cantidad, precio_compra, fecha) VALUES (?, ?, ?, ?, ?)', [user, activos[0].id, cantidad, precio_compra, fecha]);
-
-    exec('git commit --allow-empty -m "🤖 Auto-Deploy: Nueva transacción" && git push', () => {});
-    res.status(201).json({ message: `¡Éxito! Compra de ${simbolo} registrada en la base de datos.` });
-  } catch (error) { res.status(500).json({ error: 'Error al guardar la transacción en TiDB.' }); }
-});
-
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`🚀 Servidor API corriendo en http://localhost:${PORT}`);
 });
