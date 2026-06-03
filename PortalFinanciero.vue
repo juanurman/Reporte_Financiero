@@ -200,9 +200,10 @@
             <div class="absolute top-0 right-0 -mt-8 -mr-8 opacity-5 text-8xl pointer-events-none">🔒</div>
             <div class="text-6xl mb-6 relative z-10">🤫</div>
             <h2 class="text-2xl font-bold dark:text-white text-slate-800 mb-2 relative z-10">Área Privada</h2>
-            <p class="dark:text-slate-400 text-slate-500 mb-8 relative z-10">Ingresá la contraseña para ver la billetera.</p>
+            <p class="dark:text-slate-400 text-slate-500 mb-8 relative z-10">Ingresá tu usuario y contraseña.</p>
             <form @submit.prevent="unlockPortfolio" class="flex flex-col gap-4 relative z-10">
-              <input type="password" v-model="portfolioPassword" placeholder="Contraseña secreta" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-center font-bold tracking-widest" />
+              <input type="text" v-model="loginUser" required placeholder="Usuario (Ej: Diego)" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-center font-bold" />
+              <input type="password" v-model="portfolioPassword" required placeholder="Contraseña" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-center font-bold tracking-widest" />
               <p v-if="portfolioError" class="text-red-500 text-sm font-bold animate-pulse">{{ portfolioError }}</p>
               <button type="submit" class="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white font-black text-lg py-3 rounded-xl transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(99,102,241,0.4)]">
                 Desbloquear
@@ -213,9 +214,15 @@
 
         <!-- Mi Cartera (Dashboard de Inversión) -->
         <section v-else class="animate-fade-in relative z-10">
-          <h2 class="text-3xl font-bold dark:text-white text-slate-800 flex items-center gap-3 mb-6">
-            💼 Mi Cartera <span class="text-sm dark:bg-slate-800 bg-slate-200 px-3 py-1 rounded-full dark:text-slate-300 text-slate-600 font-semibold tracking-widest uppercase">Tech & AI</span>
-          </h2>
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+            <h2 class="text-3xl font-bold dark:text-white text-slate-800 flex items-center gap-3">
+              💼 Mi Cartera <span class="text-sm dark:bg-slate-800 bg-slate-200 px-3 py-1 rounded-full dark:text-slate-300 text-slate-600 font-semibold tracking-widest uppercase">Tech & AI</span>
+            </h2>
+            <div class="flex items-center gap-2 bg-slate-200/50 dark:bg-slate-800/50 p-1.5 rounded-xl border border-slate-300 dark:border-slate-700 shadow-sm">
+              <span class="text-sm font-bold dark:text-slate-400 text-slate-600 pl-2">👤 Perfil: <span class="text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">{{ currentUser }}</span></span>
+              <button @click="logoutPortfolio" class="bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 px-3 py-1.5 rounded-lg font-bold text-xs transition ml-2">Cerrar Sesión</button>
+            </div>
+          </div>
           
           <!-- KPI Cards -->
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
@@ -379,6 +386,10 @@
           </p>
           
           <form @submit.prevent="submitAdminForm" class="space-y-4">
+            <div class="mb-4">
+              <label class="block text-sm font-bold dark:text-slate-400 text-slate-500 mb-1">Clave de Administrador</label>
+              <input type="password" v-model="adminForm.adminPassword" required placeholder="Tu contraseña secreta" class="w-full md:w-1/2 dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 font-bold" />
+            </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label class="block text-sm font-bold dark:text-slate-400 text-slate-500 mb-1">Símbolo (Ticker)</label>
@@ -641,17 +652,25 @@ const portfolioChartRef = ref(null);
 
 // Lógica de Bloqueo de Portafolio
 const isPortfolioUnlocked = ref(false);
+const loginUser = ref('Diego');
 const portfolioPassword = ref('');
 const portfolioError = ref('');
+
 const unlockPortfolio = async () => {
-  if (portfolioPassword.value === '1234') { // <-- Cambiá 'argento' por la clave que quieras
+  // NOTA: Acá validamos contra '1234' para entrar a mirar, la seguridad fuerte está al registrar compras en backend
+  if (portfolioPassword.value === '1234') { 
+    currentUser.value = loginUser.value || 'Diego';
     isPortfolioUnlocked.value = true;
     portfolioError.value = '';
-    await nextTick();
-    renderChart();
+    await fetchPortfolio();
   } else {
     portfolioError.value = 'Contraseña incorrecta';
   }
+};
+
+const logoutPortfolio = () => {
+  isPortfolioUnlocked.value = false;
+  portfolioPassword.value = '';
 };
 
 const lastUpdatedDate = computed(() => {
@@ -669,12 +688,37 @@ const lastUpdatedDate = computed(() => {
 });
 
 // Lógica y Estado de "Mi Cartera"
-const portfolioHoldings = ref([
-  { symbol: 'MU', name: 'Micron Technology', emoji: '💾', quantity: 3.2, avgPrice: 394.69, fallbackPrice: 1064.10, purchaseDate: '2026-02-06' },
-  { symbol: 'TSM', name: 'Taiwan Semiconductor', emoji: '🏭', quantity: 13.67, avgPrice: 147.08, fallbackPrice: 446.69, purchaseDate: '2025-04-04' },
-  { symbol: 'GOOGL', name: 'Alphabet Inc.', emoji: '🔍', quantity: 5.88, avgPrice: 167.15, fallbackPrice: 361.85, purchaseDate: '2025-03-05' },
-  { symbol: 'MSFT', name: 'Microsoft Corp.', emoji: '💻', quantity: 2.53, avgPrice: 388.64, fallbackPrice: 441.31, purchaseDate: '2025-03-05' }
-]);
+const currentUser = ref('Diego');
+const portfolioHoldings = ref([]);
+
+const fetchPortfolio = async () => {
+  try {
+    let data = null;
+    try {
+      const resLocal = await fetch(`http://localhost:4000/api/cartera?usuario=${currentUser.value}`);
+      if (resLocal.ok) data = await resLocal.json();
+    } catch (e) {}
+
+    if (!data) {
+      const apiUrl = import.meta.env.PROD ? `${import.meta.env.BASE_URL}cartera.json?t=${Date.now()}` : './cartera.json';
+      const response = await fetch(apiUrl);
+      if (response.ok) data = await response.json();
+    }
+
+    if (data) {
+      portfolioHoldings.value = data.map(item => ({
+        symbol: item.simbolo,
+        name: item.nombre,
+        emoji: item.emoji,
+        quantity: Number(item.cantidad),
+        avgPrice: Number(item.avgPrice),
+        fallbackPrice: 0,
+        purchaseDate: item.purchaseDate.split('T')[0]
+      }));
+      if (currentTab.value === 'cartera' && isPortfolioUnlocked.value) setTimeout(renderChart, 150);
+    }
+  } catch (err) { console.error('Error al cargar la cartera:', err); }
+};
 
 const enrichedPortfolio = computed(() => {
   return portfolioHoldings.value.map(holding => {
@@ -911,7 +955,7 @@ const m2AveragePrice = computed(() => {
 });
 
 // --- Lógica de la sección Admin ---
-const adminForm = ref({ simbolo: '', nombre: '', categoria: 'Wall Street', emoji: '📈' });
+const adminForm = ref({ simbolo: '', nombre: '', categoria: 'Wall Street', emoji: '📈', adminPassword: '' });
 const adminError = ref('');
 const adminMessage = ref('');
 const isSubmittingAdmin = ref(false);
@@ -929,7 +973,7 @@ const submitAdminForm = async () => {
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || 'Error de conexión.');
     adminMessage.value = data.message;
-    adminForm.value = { simbolo: '', nombre: '', categoria: 'Wall Street', emoji: '📈' }; // Limpiamos el form
+    adminForm.value = { simbolo: '', nombre: '', categoria: 'Wall Street', emoji: '📈', adminPassword: adminForm.value.adminPassword }; // Limpiamos pero recordamos la clave
     
     // ¡EL IDA Y VUELTA! -> Disparamos la actualización del frontend instantáneamente
     await fetchLivePrices();
@@ -938,6 +982,33 @@ const submitAdminForm = async () => {
     adminError.value = err.message === 'Failed to fetch' ? 'No se pudo conectar. Verifica que tu servidor local (node server.js) esté corriendo.' : err.message;
   } finally {
     isSubmittingAdmin.value = false;
+  }
+};
+
+const txForm = ref({ simbolo: '', cantidad: null, precio_compra: null, fecha: new Date().toISOString().split('T')[0], adminPassword: '' });
+const txError = ref('');
+const txMessage = ref('');
+const isSubmittingTx = ref(false);
+
+const submitTxForm = async () => {
+  txError.value = '';
+  txMessage.value = '';
+  isSubmittingTx.value = true;
+  try {
+    const response = await fetch('http://localhost:4000/api/cartera', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...txForm.value, usuario: currentUser.value })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Error de conexión.');
+    txMessage.value = data.message;
+    txForm.value = { simbolo: '', cantidad: null, precio_compra: null, fecha: new Date().toISOString().split('T')[0], adminPassword: txForm.value.adminPassword };
+    await fetchPortfolio();
+  } catch (err) {
+    txError.value = err.message === 'Failed to fetch' ? 'No se pudo conectar al servidor local.' : err.message;
+  } finally {
+    isSubmittingTx.value = false;
   }
 };
 
@@ -989,7 +1060,10 @@ const fetchLivePrices = async () => {
   }
 };
 
-onMounted(fetchLivePrices);
+onMounted(() => {
+  fetchLivePrices();
+  fetchPortfolio();
+});
 </script>
 
 <style scoped>

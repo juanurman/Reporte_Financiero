@@ -80,6 +80,25 @@ const buildApi = async () => {
     fs.writeFileSync(path.join(publicDir, 'precios.json'), JSON.stringify(resultados, null, 2));
     console.log('✅ Archivo public/precios.json generado con éxito para ser servido estáticamente.');
 
+    // 3. Generamos también el JSON de la cartera
+    try {
+      const [carteraRows] = await connection.execute(`
+        SELECT a.simbolo, a.nombre, a.emoji, 
+               SUM(t.cantidad) as cantidad, 
+               SUM(t.cantidad * t.precio_compra) / SUM(t.cantidad) as avgPrice, 
+               MIN(t.fecha) as purchaseDate
+        FROM transacciones t
+        JOIN activos a ON t.activo_id = a.id
+        WHERE t.usuario = 'Diego'
+        GROUP BY a.simbolo, a.nombre, a.emoji
+        HAVING cantidad > 0
+      `);
+      fs.writeFileSync(path.join(publicDir, 'cartera.json'), JSON.stringify(carteraRows, null, 2));
+      console.log('✅ Archivo public/cartera.json generado con éxito.');
+    } catch(e) {
+      console.log('⚠️ No se pudo generar cartera.json (la tabla puede no existir aún).');
+    }
+
     await connection.end();
   } catch (error) {
     console.error('❌ Error generando precios.json:', error.message);
