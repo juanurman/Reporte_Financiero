@@ -85,19 +85,19 @@ const buildApi = async () => {
         SELECT 
           TRIM(UPPER(c.simbolo)) as simbolo, 
           MAX(COALESCE(a.nombre, UPPER(c.simbolo))) as nombre, 
-          MAX(COALESCE(a.emoji, '❓')) as emoji, 
-          MAX(a.categoria) as categoria,
+          MAX(COALESCE(a.emoji, '💰')) as emoji, 
+          MAX(COALESCE(a.categoria, 'Otros')) as categoria,
           SUM(CASE WHEN c.tipo = 'COMPRA' THEN c.cantidad ELSE -c.cantidad END) as cantidad, 
           COALESCE(
-            (SUM(CASE WHEN c.tipo = 'COMPRA' THEN c.cantidad * c.precio_compra ELSE 0 END) / NULLIF(SUM(CASE WHEN c.tipo = 'COMPRA' THEN c.cantidad ELSE 0 END), 0)) + 
-            (SUM(COALESCE(c.comisiones, 0)) / NULLIF(SUM(CASE WHEN c.tipo = 'COMPRA' THEN c.cantidad ELSE -c.cantidad END), 0)), 
+            SUM(CASE WHEN c.tipo = 'COMPRA' THEN (c.cantidad * c.precio_compra) + COALESCE(c.comisiones, 0) ELSE 0 END) / 
+            NULLIF(SUM(CASE WHEN c.tipo = 'COMPRA' THEN c.cantidad ELSE 0 END), 0), 
             0) as avgPrice, 
           MIN(c.fecha) as purchaseDate
         FROM cartera c
         LEFT JOIN activos a ON TRIM(UPPER(c.simbolo)) = a.simbolo
         WHERE c.usuario = 'Diego'
         GROUP BY TRIM(UPPER(c.simbolo))
-        HAVING cantidad > 0
+        HAVING SUM(CASE WHEN c.tipo = 'COMPRA' THEN c.cantidad ELSE -c.cantidad END) > 0
       `);
       carteraData = carteraFilas;
     } catch (err) {

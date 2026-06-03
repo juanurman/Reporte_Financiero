@@ -22,7 +22,8 @@ CREATE TABLE IF NOT EXISTS precios_historicos (
 );
 
 -- Tabla de transacciones (El historial real de compras/ventas)
-CREATE TABLE IF NOT EXISTS cartera (
+DROP TABLE IF EXISTS cartera;
+CREATE TABLE cartera (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario VARCHAR(50) NOT NULL,
     simbolo VARCHAR(50) NOT NULL,
@@ -35,9 +36,6 @@ CREATE TABLE IF NOT EXISTS cartera (
     -- Agregamos un índice único para evitar duplicados en el ejemplo
     UNIQUE KEY uk_usuario_simbolo_fecha (usuario, simbolo, fecha)
 );
-
--- Aseguramos que la columna 'tipo' exista si la tabla ya fue creada anteriormente
-ALTER TABLE cartera ADD COLUMN IF NOT EXISTS tipo ENUM('COMPRA', 'VENTA') DEFAULT 'COMPRA' AFTER simbolo;
 
 -- Limpiamos los activos locales viejos para reemplazarlos por los ADRs en Wall Street
 DELETE FROM activos WHERE simbolo LIKE '%.BA';
