@@ -46,7 +46,7 @@ app.get('/api/precios', async (req, res) => {
     const [precios] = await pool.execute('SELECT activo_id, fecha, valor FROM precios_historicos ORDER BY fecha DESC');
 
     const resultados = activos.map(activo => {
-      const historial = precios.filter(p => p.activo_id === activo.id);
+      const historial = precios.filter(p => Number(p.activo_id) === Number(activo.id));
 
       // Si el activo es nuevo y no tiene precios, no lo borramos, lo mostramos en 0
       if (historial.length === 0) {
@@ -143,16 +143,16 @@ app.get('/api/cartera', async (req, res) => {
   try {
     const [filas] = await pool.execute(`
       SELECT 
-        TRIM(c.simbolo) as simbolo, 
-        MAX(COALESCE(a.nombre, c.simbolo)) as nombre, 
-        MAX(COALESCE(a.emoji, '❓')) as emoji, 
+        TRIM(UPPER(c.simbolo)) as simbolo, 
+        MAX(COALESCE(a.nombre, UPPER(c.simbolo))) as nombre, 
+        MAX(COALESCE(a.emoji, '💰')) as emoji, 
         MAX(a.categoria) as categoria,
         SUM(CASE WHEN c.tipo = 'COMPRA' THEN c.cantidad ELSE -c.cantidad END) as cantidad, 
-        SUM(CASE WHEN c.tipo = 'COMPRA' THEN c.cantidad * c.precio_compra ELSE 0 END) / 
+        COALESCE(SUM(CASE WHEN c.tipo = 'COMPRA' THEN c.cantidad * c.precio_compra ELSE 0 END) / 
         NULLIF(SUM(CASE WHEN c.tipo = 'COMPRA' THEN c.cantidad ELSE 0 END), 0) as avgPrice, 
-        MIN(c.fecha) as purchaseDate
+        MIN(c.fecha) as purchaseDate)
       FROM cartera c
-      LEFT JOIN activos a ON TRIM(c.simbolo) = a.simbolo
+      LEFT JOIN activos a ON TRIM(UPPER(c.simbolo)) = a.simbolo
       WHERE c.usuario = ?
       GROUP BY TRIM(c.simbolo)
       HAVING cantidad > 0
@@ -189,10 +189,16 @@ app.post('/api/cartera', async (req, res) => {
 // Esto permite que Vercel maneje la app como una función serverless
 export default app;
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 5000;
 // Solo ejecutamos el listen si no estamos en Vercel
 if (process.env.NODE_ENV !== 'production') {
-  app.listen(PORT, () => {
+  const server = app.listen(PORT, () => {
     console.log(`🚀 Servidor API corriendo en http://localhost:${PORT}`);
+  }).on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+      console.error(`❌ Error: El puerto ${PORT} ya está en uso. Intentá cerrar la otra terminal o cambiar el puerto en el archivo .env`);
+    } else {
+      console.error('❌ Error al iniciar el servidor:', err);
+    }
   });
 }
