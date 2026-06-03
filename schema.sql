@@ -31,8 +31,13 @@ CREATE TABLE IF NOT EXISTS cartera (
     precio_compra DECIMAL(15, 4) NOT NULL, -- Precio unitario en USD
     fecha DATE NOT NULL,
     comisiones DECIMAL(15, 4) DEFAULT 0,
-    INDEX idx_usuario (usuario)
+    INDEX idx_usuario (usuario),
+    -- Agregamos un índice único para evitar duplicados en el ejemplo
+    UNIQUE KEY uk_usuario_simbolo_fecha (usuario, simbolo, fecha)
 );
+
+-- Aseguramos que la columna 'tipo' exista si la tabla ya fue creada anteriormente
+ALTER TABLE cartera ADD COLUMN IF NOT EXISTS tipo ENUM('COMPRA', 'VENTA') DEFAULT 'COMPRA' AFTER simbolo;
 
 -- Limpiamos los activos locales viejos para reemplazarlos por los ADRs en Wall Street
 DELETE FROM activos WHERE simbolo LIKE '%.BA';
