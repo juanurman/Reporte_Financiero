@@ -32,7 +32,15 @@ app.get('/api/precios', async (req, res) => {
 
     const resultados = activos.map(activo => {
       const historial = precios.filter(p => p.activo_id === activo.id);
-      if (historial.length === 0) return null;
+
+      // Si el activo es nuevo y no tiene precios, no lo borramos, lo mostramos en 0
+      if (historial.length === 0) {
+        return {
+          id: activo.id, nombre: activo.nombre, simbolo: activo.simbolo, categoria: activo.categoria, emoji: activo.emoji,
+          precio: 0, fecha: new Date().toISOString(),
+          variaciones: { '1w': 0, '1m': 0, '3m': 0, '6m': 0, '9m': 0, '1y': 0, '3y': 0, '5y': 0 }
+        };
+      }
 
       const actual = historial[0].valor;
       const fechaActualStr = historial[0].fecha;
