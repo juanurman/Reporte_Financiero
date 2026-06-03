@@ -26,6 +26,8 @@ const executeWithRetry = async (fn, maxRetries = 3, delay = 2000) => {
     try {
       return await fn();
     } catch (error) {
+      // Si es un 404 (Not Found), no reintentar. El activo no existe o no tiene ese rango en Yahoo.
+      if (error.response && error.response.status === 404) throw error;
       if (attempt === maxRetries) throw error;
       const waitTime = delay * Math.pow(2, attempt - 1);
       console.log(`   ⚠️ Intento ${attempt} fallido (${error.message}). Reintentando en ${waitTime}ms...`);
@@ -214,7 +216,8 @@ const actualizarPrecios = async () => {
       console.log('Descargando historial completo de dólares (ArgentinaDatos)...');
       try {
         const { data: dolaresHist } = await executeWithRetry(() => axios.get('https://api.argentinadatos.com/v1/cotizaciones/dolares', { timeout: 20000 }));
-        const adMapa = { 'oficial': 'DOLAR_OFICIAL', 'blue': 'DOLAR_BLUE', 'mep': 'DOLAR_MEP', 'ccl': 'DOLAR_CCL' };
+        // Corregimos los nombres exactos que devuelve la API gubernamental para MEP y CCL
+        const adMapa = { 'oficial': 'DOLAR_OFICIAL', 'blue': 'DOLAR_BLUE', 'bolsa': 'DOLAR_MEP', 'contadoconliqui': 'DOLAR_CCL' };
         const registrosPorSimbolo = { DOLAR_OFICIAL: [], DOLAR_BLUE: [], DOLAR_MEP: [], DOLAR_CCL: [] };
         
         dolaresHist.forEach(d => {
@@ -237,7 +240,10 @@ const actualizarPrecios = async () => {
     }
 
     console.log('Consultando Dólares (Actual - DolarAPI)...');
-    const { data: dolares } = await executeWithRetry(() => axios.get('https://dolarapi.com/v1/dolares', { timeout: 10000 }));
+    const { data: dolares } = await executeWithRetry(() => axios.get('https://dolarapi.com/v1/dolares', { 
+      headers: { 'Accept': 'application/json', 'User-Agent': 'Mozilla/5.0' },
+      timeout: 10000 
+    }));
     
     // Mapeo para adaptar los nombres de DolarAPI a los de nuestra base de datos
     const mapaDolares = {
