@@ -53,10 +53,10 @@ const actualizarPrecios = async () => {
     fechaHaceUnAnio.setFullYear(fechaHaceUnAnio.getFullYear() - 1);
     const fechaPasada = fechaHaceUnAnio.toLocaleDateString('en-CA', { timeZone: 'America/Argentina/Buenos_Aires' });
 
-    // 1. Obtener datos de Yahoo Finance (Wall Street, Merval, Bonos)
+    // 1. Obtener datos de Yahoo Finance (Big Tech, Wall Street, Merval, etc.)
     console.log('Consultando activos registrados en la base de datos...');
     const [filasActivos] = await pool.execute(
-      'SELECT simbolo FROM activos WHERE categoria IN ("Merval", "Wall Street", "Real Estate", "Índice/ETF")'
+      'SELECT simbolo FROM activos WHERE categoria IN ("Merval", "Wall Street", "Big Tech", "Real Estate", "Índice/ETF")'
     );
     const simbolosYahoo = filasActivos.map(a => a.simbolo);
 
