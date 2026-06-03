@@ -658,7 +658,7 @@ const portfolioError = ref('');
 
 const unlockPortfolio = async () => {
   // NOTA: Acá validamos contra '1234' para entrar a mirar, la seguridad fuerte está al registrar compras en backend
-  if (portfolioPassword.value === '1234') { 
+  if (portfolioPassword.value === 'Colin') { 
     currentUser.value = loginUser.value || 'Diego';
     isPortfolioUnlocked.value = true;
     portfolioError.value = '';
