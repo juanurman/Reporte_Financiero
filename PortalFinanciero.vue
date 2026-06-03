@@ -889,13 +889,12 @@ const categoryPerformance = computed(() => {
   };
 
   Object.keys(groupedAssets.value).forEach(categoryName => {
-    if (categoryName === 'Wall Street') return; // Omitimos el promedio para Wall Street
-
     let val = 0;
     if (categoryName === 'Moneda') {
       val = getVariation('DOLAR_OFICIAL');
+    } else if (categoryName === 'Wall Street') {
+      val = getVariation('SPY') || getAvgVariation('Wall Street');
     } else if (categoryName === 'Índice/ETF') {
-      val = getVariation('SPY');
       val = getAvgVariation('Índice/ETF');
     } else if (categoryName === 'Big Tech') {
       val = getAvgVariation(categoryName);

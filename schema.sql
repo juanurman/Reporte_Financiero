@@ -43,7 +43,7 @@ INSERT INTO activos (nombre, simbolo, categoria, emoji) VALUES
     ('Dólar Blue', 'DOLAR_BLUE', 'Moneda', '💵'),
     ('Dólar MEP', 'DOLAR_MEP', 'Moneda', '💵'),
     ('Dólar CCL', 'DOLAR_CCL', 'Moneda', '💵'),
-    ('SPDR S&P 500 ETF Trust', 'SPY', 'Índice/ETF', '📈'),
+    ('SPDR S&P 500 ETF Trust', 'SPY', 'Wall Street', '📈'),
     ('Apple Inc.', 'AAPL', 'Big Tech', '🍎'),
     ('Alphabet Inc.', 'GOOGL', 'Big Tech', '🔍'),
     ('Microsoft Corporation', 'MSFT', 'Big Tech', '🪟'),

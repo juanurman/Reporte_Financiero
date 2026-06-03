@@ -16,8 +16,12 @@ const buildApi = async () => {
       user: process.env.DB_USER || 'root',
       password: process.env.DB_PASSWORD || '',
       database: process.env.DB_NAME || 'finanzas',
-      ssl: process.env.DB_HOST && process.env.DB_HOST !== 'localhost' ? { rejectUnauthorized: true } : undefined
+      ssl: process.env.DB_HOST && process.env.DB_HOST !== 'localhost' ? { rejectUnauthorized: true } : undefined,
+      connectTimeout: 15000
     });
+
+    // Aseguramos que los nombres de los símbolos no tengan espacios raros que rompan el JOIN
+    await connection.execute('UPDATE activos SET simbolo = TRIM(UPPER(simbolo))');
 
     // 1. Extraemos los datos idéntico a como lo hace tu server.js local
     const [activos] = await connection.execute('SELECT * FROM activos');
