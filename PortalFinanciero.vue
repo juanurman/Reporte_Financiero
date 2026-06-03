@@ -205,7 +205,7 @@
             <h2 class="text-2xl font-bold dark:text-white text-slate-800 mb-2 relative z-10">Área Privada</h2>
             <p class="dark:text-slate-400 text-slate-500 mb-8 relative z-10">Ingresá tu usuario y contraseña.</p>
             <form @submit.prevent="unlockPortfolio" class="flex flex-col gap-4 relative z-10">
-              <input type="text" v-model="loginUser" required placeholder="" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-center font-bold" />
+              <input type="text" v-model="loginUser" required placeholder="Usuario" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-center font-bold" />
               <input type="password" v-model="portfolioPassword" required placeholder="Contraseña" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-center font-bold tracking-widest" />
               <p v-if="portfolioError" class="text-red-500 text-sm font-bold animate-pulse">{{ portfolioError }}</p>
               <button type="submit" class="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white font-black text-lg py-3 rounded-xl transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(99,102,241,0.4)]">
@@ -685,7 +685,7 @@ const portfolioChartRef = ref(null);
 
 // Lógica de Bloqueo de Portafolio
 const isPortfolioUnlocked = ref(false);
-const loginUser = ref('Usuario');
+const loginUser = ref('');
 const portfolioPassword = ref('');
 const portfolioError = ref('');
 
@@ -721,7 +721,7 @@ const lastUpdatedDate = computed(() => {
 });
 
 // Lógica y Estado de "Mi Cartera"
-const currentUser = ref('Usuario');
+const currentUser = ref('');
 const portfolioHoldings = ref([]);
 
 const fetchPortfolio = async () => {
