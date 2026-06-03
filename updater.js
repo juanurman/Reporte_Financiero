@@ -18,10 +18,10 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
-// Función para guardar precio adaptada al modelo relacional (schema.sql)
+// Función para guardar precio con manejo de errores interno para no bloquear el proceso
 const guardarPrecio = async (simbolo, valor, fecha) => {
   // 1. Buscar el ID del activo en la BD
-  const [activos] = await pool.execute('SELECT id FROM activos WHERE simbolo = ?', [simbolo]);
+  const [activos] = await pool.query('SELECT id FROM activos WHERE simbolo = ?', [simbolo]);
   
   if (activos.length === 0) {
     console.log(` ⚠️ Activo ignorado/no encontrado en DB: ${simbolo}`);
@@ -30,14 +30,18 @@ const guardarPrecio = async (simbolo, valor, fecha) => {
   
   const activoId = activos[0].id;
 
-  // 2. Insertar precio con su activo_id
-  const query = `
-    INSERT INTO precios_historicos (activo_id, fecha, valor)
-    VALUES (?, ?, ?)
-    ON DUPLICATE KEY UPDATE valor = VALUES(valor)
-  `;
-  await pool.execute(query, [activoId, fecha, valor]);
-  console.log(` - Guardado exitoso: ${simbolo} -> $${valor}`);
+  try {
+    // 2. Insertar precio con su activo_id
+    const query = `
+      INSERT INTO precios_historicos (activo_id, fecha, valor)
+      VALUES (?, ?, ?)
+      ON DUPLICATE KEY UPDATE valor = VALUES(valor)
+    `;
+    await pool.execute(query, [activoId, fecha, valor]);
+    console.log(` - Guardado exitoso: ${simbolo} -> $${valor}`);
+  } catch (err) {
+    console.error(` ❌ Error SQL al guardar ${simbolo}: ${err.message}`);
+  }
 };
 
 // Lógica principal de recolección de datos
@@ -54,17 +58,21 @@ const actualizarPrecios = async () => {
     const fechaPasada = fechaHaceUnAnio.toLocaleDateString('en-CA', { timeZone: 'America/Argentina/Buenos_Aires' });
 
     // 1. Obtener datos de Yahoo Finance (Big Tech, Wall Street, Merval, etc.)
-    console.log('Consultando activos registrados en la base de datos...');
+    console.log('Consultando activos financieros en la base de datos...');
     const [filasActivos] = await pool.execute(
-      'SELECT simbolo FROM activos WHERE categoria IN ("Merval", "Wall Street", "Big Tech", "Real Estate", "Índice/ETF")'
+      `SELECT simbolo FROM activos 
+       WHERE categoria IN ("Merval", "Wall Street", "Big Tech", "Índice/ETF", "Real Estate")
+       AND simbolo NOT LIKE "M2_%" 
+       AND simbolo <> "ALQ_YIELD" 
+       AND simbolo NOT IN ("DOLAR_OFICIAL", "DOLAR_BLUE", "DOLAR_MEP", "DOLAR_CCL")`
     );
     const simbolosYahoo = filasActivos.map(a => a.simbolo);
 
     const promesasYahoo = simbolosYahoo.map(async (simbolo) => {
       try {
-        // Pedimos range=5d (en lugar de 1y) para ser eficientes pero cubrir fines de semana o feriados
-        const url = `https://query1.finance.yahoo.com/v8/finance/chart/${simbolo}?interval=1d&range=5d`;
-        const { data } = await axios.get(url, { headers: { 'User-Agent': 'Mozilla/5.0' } });
+        // Pedimos range=7d para asegurar datos tras feriados largos
+        const url = `https://query1.finance.yahoo.com/v8/finance/chart/${simbolo}?interval=1d&range=7d`;
+        const { data } = await axios.get(url, { headers: { 'User-Agent': 'Mozilla/5.0' }, timeout: 10000 });
         const result = data?.chart?.result?.[0];
         
         if (result && result.timestamp && result.indicators.quote[0].close) {
@@ -124,12 +132,13 @@ const actualizarPrecios = async () => {
 
     // 4. Limpieza: Eliminar registros más viejos a 1 año
     console.log('🧹 Limpiando base de datos (eliminando registros anteriores a 1 año)...');
-    const [cleanResult] = await pool.execute('DELETE FROM precios_historicos WHERE fecha < ?', [fechaPasada]);
-    console.log(` - Se eliminaron ${cleanResult.affectedRows} registros antiguos.`);
+    const [cleanResult] = await pool.execute('DELETE FROM precios_historicos WHERE fecha < ?', [fechaPasada]).catch(() => [{affectedRows: 0}]);
+    console.log(` - Se eliminaron ${cleanResult.affectedRows || 0} registros antiguos.`);
 
     console.log('Actualización completada con éxito.');
     
     // Cerramos el pool de conexiones para que Node.js pueda finalizar y cerrarse
+    await new Promise(resolve => setTimeout(resolve, 500)); // Pequeña espera para flush de logs
     await pool.end();
     process.exit(0); // Forzamos el cierre inmediato del script (0 = Éxito)
   } catch (error) {
