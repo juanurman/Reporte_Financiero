@@ -74,11 +74,6 @@ INSERT INTO activos (nombre, simbolo, categoria, emoji) VALUES
 ON DUPLICATE KEY UPDATE nombre = VALUES(nombre), categoria = VALUES(categoria), emoji = VALUES(emoji);
 
 -- Datos iniciales de cartera para Diego (Ejemplo)
-INSERT INTO cartera (usuario, simbolo, cantidad, precio_compra, fecha) VALUES
-    ('Diego', 'GOOGL', 5.88, 167.15, '2025-03-05'),
-    ('Diego', 'MSFT', 2.53, 388.64, '2025-03-05'),
-    ('Diego', 'TSM', 15.38, 147.08, '2025-04-04'),
-    ('Diego', 'MU', 3.20, 394.69, '2026-02-06')
 INSERT INTO cartera (usuario, simbolo, tipo, cantidad, precio_compra, fecha) VALUES
     ('Diego', 'GOOGL', 'COMPRA', 5.88, 167.15, '2025-03-05'),
     ('Diego', 'MSFT', 'COMPRA', 2.53, 388.64, '2025-03-05'),

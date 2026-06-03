@@ -9,10 +9,16 @@ const app = express();
 
 // Habilitamos CORS para que nuestro frontend de Vue pueda hacer peticiones a esta API
 app.use(cors({
-  origin: '*', // En producción podrías poner tu URL de GitHub Pages para más seguridad
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  origin: [
+    'https://juanurman.github.io',
+    'http://localhost:5173',
+    'http://localhost:5000'
+  ],
+  methods: ['GET', 'POST', 'OPTIONS', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  credentials: true
 }));
+app.options('*', cors()); // Habilita pre-flight para todas las rutas
 
 app.use(express.json());
 

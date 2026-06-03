@@ -1,12 +1,12 @@
 {
   "version": 2,
-  "builds": [
+  "rewrites": [
     {
-      "src": "server.js",
-      "use": "@vercel/node"
+      "source": "/api/(.*)",
+      "destination": "/server.js"
     }
   ],
-  "routes": [
-    { "src": "/(.*)", "dest": "server.js" }
+  "headers": [
+    { "source": "/api/(.*)", "headers": [ { "key": "Access-Control-Allow-Origin", "value": "*" } ] }
   ]
 }
