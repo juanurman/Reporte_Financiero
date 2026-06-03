@@ -58,11 +58,10 @@ const actualizarPrecios = async () => {
     const fechaPasada = fechaHaceUnAnio.toLocaleDateString('en-CA', { timeZone: 'America/Argentina/Buenos_Aires' });
 
     // 1. Obtener datos de Yahoo Finance (Big Tech, Wall Street, Merval, etc.)
-    console.log('Consultando activos financieros en la base de datos...');
+    console.log('Consultando activos financieros para actualizar desde Yahoo...');
     const [filasActivos] = await pool.execute(
-      `SELECT simbolo FROM activos 
-       WHERE categoria IN ("Merval", "Wall Street", "Big Tech", "Índice/ETF", "Real Estate")
-       AND simbolo NOT LIKE "M2_%" 
+      `SELECT simbolo FROM activos
+       WHERE simbolo NOT LIKE "M2_%"
        AND simbolo <> "ALQ_YIELD" 
        AND simbolo NOT IN ("DOLAR_OFICIAL", "DOLAR_BLUE", "DOLAR_MEP", "DOLAR_CCL")`
     );

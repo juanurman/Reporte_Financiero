@@ -26,7 +26,7 @@ const buildApi = async () => {
     const resultados = activos.map(activo => {
       const historial = precios.filter(p => p.activo_id === activo.id);
 
-      // Evitar que activos nuevos desaparezcan del JSON estático
+      // Si el activo no tiene precios aún, lo enviamos con 0 para que sea visible
       if (historial.length === 0) {
         return {
           id: activo.id, nombre: activo.nombre, simbolo: activo.simbolo, categoria: activo.categoria, emoji: activo.emoji,
@@ -71,7 +71,7 @@ const buildApi = async () => {
           '9m': calcularVariacion(270), '1y': calcularVariacion(365), '3y': calcularVariacion(3 * 365), '5y': calcularVariacion(5 * 365)
         }
       };
-    }).filter(a => a !== null);
+    });
 
     // 2. Extraemos la Cartera (Portfolio) para el despliegue estático
     console.log('⏳ Generando snapshot de la cartera...');
