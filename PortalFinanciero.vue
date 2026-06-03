@@ -685,7 +685,7 @@ const portfolioChartRef = ref(null);
 
 // Lógica de Bloqueo de Portafolio
 const isPortfolioUnlocked = ref(false);
-const loginUser = ref('');
+const loginUser = ref('Usuario');
 const portfolioPassword = ref('');
 const portfolioError = ref('');
 
