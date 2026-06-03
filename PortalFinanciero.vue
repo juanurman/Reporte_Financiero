@@ -717,6 +717,7 @@ const fetchPortfolio = async () => {
         emoji: item.emoji,
         quantity: Number(item.cantidad),
         avgPrice: Number(item.avgPrice || 0),
+        totalComisiones: Number(item.totalComisiones || 0),
         fallbackPrice: 0,
         // Protegemos contra fechas que no son strings
         purchaseDate: item.purchaseDate ? 
@@ -733,7 +734,7 @@ const enrichedPortfolio = computed(() => {
     const liveData = livePrices.value.find(p => p.simbolo === holding.symbol);
     const currentPrice = liveData ? Number(liveData.precio) : holding.fallbackPrice;
     const totalValue = currentPrice * holding.quantity;
-    const totalCost = holding.avgPrice * holding.quantity;
+    const totalCost = (holding.avgPrice * holding.quantity) + holding.totalComisiones;
     const profitLoss = totalValue - totalCost;
     const profitLossPercent = (profitLoss / totalCost) * 100;
     

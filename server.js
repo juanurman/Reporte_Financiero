@@ -151,9 +151,10 @@ app.get('/api/cartera', async (req, res) => {
         MAX(COALESCE(a.categoria, 'Otros')) as categoria,
         SUM(CASE WHEN c.tipo = 'COMPRA' THEN c.cantidad ELSE -c.cantidad END) as cantidad, 
         COALESCE(
-          SUM(CASE WHEN c.tipo = 'COMPRA' THEN (c.cantidad * c.precio_compra) + COALESCE(c.comisiones, 0) ELSE 0 END) / 
+          SUM(CASE WHEN c.tipo = 'COMPRA' THEN c.cantidad * c.precio_compra ELSE 0 END) / 
           NULLIF(SUM(CASE WHEN c.tipo = 'COMPRA' THEN c.cantidad ELSE 0 END), 0), 
           0) as avgPrice, 
+        SUM(COALESCE(c.comisiones, 0)) as totalComisiones,
         MIN(c.fecha) as purchaseDate
       FROM cartera c
       LEFT JOIN activos a ON TRIM(UPPER(c.simbolo)) = a.simbolo
