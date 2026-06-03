@@ -36,6 +36,9 @@
         <button @click="currentTab = 'cartera'" :class="currentTab === 'cartera' ? 'bg-white dark:bg-slate-700 shadow-md text-indigo-600 dark:text-indigo-400' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'" class="px-6 py-2.5 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2">
           💼 Mi Cartera
         </button>
+        <button v-if="isAdmin" @click="currentTab = 'add_ticker'" :class="currentTab === 'add_ticker' ? 'bg-white dark:bg-slate-700 shadow-md text-red-600 dark:text-red-400' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'" class="px-6 py-2.5 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2">
+          ➕ Base de Datos
+        </button>
       </div>
 
       <!-- PESTAÑA: MERCADOS -->
@@ -344,10 +347,11 @@
           <div class="p-6 md:p-8 overflow-y-auto custom-scrollbar dark:bg-slate-950/50 bg-slate-100/50">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <div v-for="activo in groupedAssets[selectedCategory]" :key="activo.id" 
-                   class="dark:bg-slate-900 bg-white p-5 rounded-2xl border dark:border-slate-800 border-slate-200 shadow-sm dark:hover:border-slate-600 hover:border-slate-400 transition flex flex-col justify-between group relative">
+                   class="dark:bg-slate-900 bg-white p-5 rounded-2xl border shadow-sm transition flex flex-col justify-between group relative"
+                   :class="isAdmin ? 'animate-jiggle dark:border-red-500/50 border-red-500/50 bg-red-50/10 dark:bg-red-900/10' : 'dark:border-slate-800 border-slate-200 dark:hover:border-slate-600 hover:border-slate-400'">
                 
-                <!-- Botón de Eliminar (Solo Admin) -->
-                <button v-if="isAdmin" @click.stop="deleteAsset(activo.simbolo)" class="absolute top-3 right-3 text-red-500 hover:text-red-700 bg-red-100 dark:bg-red-900/30 rounded-full w-8 h-8 flex items-center justify-center transition opacity-0 group-hover:opacity-100 shadow-sm" title="Eliminar Activo">🗑️</button>
+                <!-- Efecto iPhone "X" para Desinstalar (Solo Admin) -->
+                <button v-if="isAdmin" @click.stop="deleteAsset(activo.simbolo)" class="absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold shadow-lg z-20 hover:bg-red-600 hover:scale-110 transition-transform">✕</button>
 
                 <div class="flex items-center gap-4 mb-4">
                   <div class="text-4xl dark:bg-slate-950 bg-slate-50 p-3 rounded-xl border dark:border-white/5 border-slate-200 group-hover:scale-110 transition-transform">{{ activo.emoji }}</div>
@@ -379,31 +383,12 @@
       </div>
       </Transition>
 
-      <!-- PESTAÑA: ADMIN -->
-      <div v-if="currentTab === 'admin'" class="space-y-10 animate-fade-in relative z-10 py-8">
-        <!-- Pantalla de Login Admin -->
-        <section v-if="!isAdmin" class="dark:bg-slate-900 bg-white p-8 rounded-[2rem] shadow-2xl border dark:border-slate-800 border-slate-200 max-w-md mx-auto text-center">
-          <div class="text-6xl mb-6">🔐</div>
-          <h2 class="text-3xl font-bold dark:text-white text-slate-800 mb-2">Panel de Control</h2>
-          <p class="dark:text-slate-400 text-slate-500 mb-8">Ingresá tus credenciales de administrador.</p>
-          <form @submit.prevent="loginAdmin" class="flex flex-col gap-4">
-            <input type="text" v-model="adminLoginUser" required placeholder="Usuario" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-center font-bold" />
-            <input type="password" v-model="adminLoginPass" required placeholder="Contraseña" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-center font-bold tracking-widest" />
-            <p v-if="adminLoginError" class="text-red-500 text-sm font-bold animate-pulse">{{ adminLoginError }}</p>
-            <button type="submit" class="w-full bg-gradient-to-r from-slate-700 to-slate-900 hover:from-slate-600 hover:to-slate-800 text-white font-black text-lg py-3 rounded-xl transition-all transform hover:scale-105 shadow-lg">
-              Ingresar
-            </button>
-          </form>
-        </section>
-
-        <!-- Formulario de Agregar Activo -->
-        <section v-else class="dark:bg-slate-900 bg-white p-8 rounded-[2rem] shadow-2xl border dark:border-slate-800 border-slate-200 max-w-2xl mx-auto">
-          <div class="flex justify-between items-center mb-2">
+      <!-- PESTAÑA: BASE DE DATOS (Solo Admin) -->
+      <div v-if="currentTab === 'add_ticker' && isAdmin" class="space-y-10 animate-fade-in relative z-10 py-8">
+        <section class="dark:bg-slate-900 bg-white p-8 rounded-[2rem] shadow-2xl border dark:border-slate-800 border-slate-200 max-w-2xl mx-auto">
             <h2 class="text-3xl font-bold dark:text-white text-slate-800 flex items-center gap-3">
               ⚙️ Agregar Activo
             </h2>
-            <button @click="logoutAdmin" class="bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 px-3 py-1.5 rounded-lg font-bold text-xs transition">Cerrar Sesión</button>
-          </div>
           <p class="dark:text-slate-400 text-slate-500 mb-8">
             Añadí un nuevo Ticker a la base de datos de TiDB.
           </p>
@@ -490,10 +475,33 @@
 
       <!-- Footer sutil para acceder al Panel Admin -->
       <footer class="mt-20 pt-8 pb-4 text-center opacity-30 hover:opacity-100 transition-opacity duration-300 relative z-10">
-        <button @click="currentTab = 'admin'" class="text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 mx-auto dark:text-slate-400 text-slate-500">
-          ⚙️ Panel de Administración
+        <button v-if="!isAdmin" @click="showAdminLoginModal = true" class="text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 mx-auto dark:text-slate-400 text-slate-500 hover:text-indigo-500 transition-colors">
+          ⚙️ Acceso Administrador
+        </button>
+        <button v-else @click="logoutAdmin" class="text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 mx-auto text-red-500 hover:text-red-600 transition-colors">
+          🔴 Cerrar Sesión Admin
         </button>
       </footer>
+
+      <!-- Modal Global de Login Administrador -->
+      <Transition name="modal-fade">
+        <div v-if="showAdminLoginModal && !isAdmin" class="fixed inset-0 z-50 flex items-center justify-center p-4 dark:bg-black/80 bg-slate-900/60 backdrop-blur-md" @click.self="showAdminLoginModal = false">
+          <div class="dark:bg-slate-900 bg-white p-8 rounded-[2rem] shadow-2xl border dark:border-slate-800 border-slate-200 max-w-md w-full mx-auto text-center relative">
+            <button @click="showAdminLoginModal = false" class="absolute top-4 right-4 dark:text-white/80 text-slate-500 dark:hover:text-white hover:text-slate-900 bg-slate-100 dark:bg-slate-800 rounded-full w-8 h-8 flex items-center justify-center transition font-bold">✕</button>
+            <div class="text-6xl mb-6">🔐</div>
+            <h2 class="text-3xl font-bold dark:text-white text-slate-800 mb-2">Modo Dios</h2>
+            <p class="dark:text-slate-400 text-slate-500 mb-8">Gestión de la base de datos de TiDB.</p>
+            <form @submit.prevent="loginAdmin" class="flex flex-col gap-4">
+              <input type="text" v-model="adminLoginUser" required placeholder="Usuario" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-center font-bold" />
+              <input type="password" v-model="adminLoginPass" required placeholder="Contraseña" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-center font-bold tracking-widest" />
+              <p v-if="adminLoginError" class="text-red-500 text-sm font-bold animate-pulse">{{ adminLoginError }}</p>
+              <button type="submit" class="w-full bg-gradient-to-r from-slate-700 to-slate-900 hover:from-slate-600 hover:to-slate-800 text-white font-black text-lg py-3 rounded-xl transition-all transform hover:scale-105 shadow-lg">
+                Ingresar
+              </button>
+            </form>
+          </div>
+        </div>
+      </Transition>
 
     </div>
     </div>
@@ -512,6 +520,7 @@ const lastCurrency = ref('USD');
 const selectedPeriod = ref('1y');
 const results = ref([]);
 const funnyPhrase = ref('');
+const showAdminLoginModal = ref(false);
 const equivalencyText = ref('');
 const periodLabels = { '1w': 'semanal', '1m': 'mensual', '3m': 'trimestral', '6m': 'semestral', 'ytd': 'Desde enero', '1y': 'Fiebre electoral', '3y': 'Post-pandemia', '5y': 'Pre-pandemia' };
 const marketPeriod = ref('1y');
@@ -995,6 +1004,8 @@ const loginAdmin = () => {
   if (adminLoginUser.value === 'admin' && adminLoginPass.value === 'admin') {
     isAdmin.value = true;
     adminLoginError.value = '';
+    showAdminLoginModal.value = false;
+    currentTab.value = 'mercados'; // Fuerza la redirección al Home
   } else {
     adminLoginError.value = 'Credenciales incorrectas.';
   }
@@ -1006,6 +1017,9 @@ const logoutAdmin = () => {
   adminLoginPass.value = '';
   adminError.value = '';
   adminMessage.value = '';
+  if (currentTab.value === 'add_ticker') {
+    currentTab.value = 'mercados'; // Lo sacamos de la pestaña prohibida
+  }
 };
 
 const submitAdminForm = async () => {
@@ -1166,5 +1180,15 @@ onMounted(() => {
 }
 .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: rgba(71, 85, 105, 0.8);
+}
+
+/* Animación "Jiggle" estilo iPhone para desinstalar */
+@keyframes jiggle {
+  0% { transform: rotate(-1deg); }
+  50% { transform: rotate(1.5deg); }
+  100% { transform: rotate(-1deg); }
+}
+.animate-jiggle {
+  animation: jiggle 0.3s infinite;
 }
 </style>
