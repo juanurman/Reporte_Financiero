@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import mysql from 'mysql2/promise';
 import dotenv from 'dotenv';
+import { exec } from 'child_process';
 
 dotenv.config();
 
@@ -103,7 +104,14 @@ app.post('/api/activos', async (req, res) => {
       'INSERT INTO activos (nombre, simbolo, categoria, emoji) VALUES (?, ?, ?, ?)',
       [nombre, simbolo.toUpperCase(), categoria || 'Otros', emoji || '📈']
     );
-    res.status(201).json({ message: `¡Éxito! ${nombre} (${simbolo.toUpperCase()}) se agregó a la base de datos.` });
+
+    // Disparamos el actualizador en segundo plano sin bloquear la respuesta al usuario
+    exec('node updater.js', (error, stdout, stderr) => {
+      if (error) console.error(`❌ Error ejecutando updater automático: ${error.message}`);
+      else console.log(`✅ Actualización automática completada para ${simbolo.toUpperCase()}`);
+    });
+
+    res.status(201).json({ message: `¡Éxito! ${nombre} (${simbolo.toUpperCase()}) guardado. Descargando historial de Yahoo en segundo plano (recargá la página en 5 segundos).` });
   } catch (error) {
     if (error.code === 'ER_DUP_ENTRY') return res.status(409).json({ error: `El símbolo ${simbolo.toUpperCase()} ya existe.` });
     console.error('❌ Error al agregar activo:', error.message);
