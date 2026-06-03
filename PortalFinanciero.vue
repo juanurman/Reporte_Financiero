@@ -30,11 +30,11 @@
         <button @click="currentTab = 'mercados'" :class="currentTab === 'mercados' ? 'bg-white dark:bg-slate-700 shadow-md text-indigo-600 dark:text-indigo-400' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'" class="px-6 py-2.5 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2">
           📈 Mercados
         </button>
-        <button @click="currentTab = 'cartera'" :class="currentTab === 'cartera' ? 'bg-white dark:bg-slate-700 shadow-md text-indigo-600 dark:text-indigo-400' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'" class="px-6 py-2.5 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2">
-          💼 Mi Cartera
-        </button>
         <button @click="currentTab = 'calculadora'" :class="currentTab === 'calculadora' ? 'bg-white dark:bg-slate-700 shadow-md text-indigo-600 dark:text-indigo-400' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'" class="px-6 py-2.5 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2">
           ⏱️ Calculadora
+        </button>
+        <button @click="currentTab = 'cartera'" :class="currentTab === 'cartera' ? 'bg-white dark:bg-slate-700 shadow-md text-indigo-600 dark:text-indigo-400' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'" class="px-6 py-2.5 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2">
+          💼 Mi Cartera
         </button>
       </div>
 
@@ -58,6 +58,7 @@
               <option value="1m">1 Mes</option>
               <option value="3m">3 Meses</option>
               <option value="6m">6 Meses</option>
+              <option value="ytd">YTD (Desde enero)</option>
               <option value="1y">1 Año</option>
               <option value="3y">3 Años</option>
               <option value="5y">5 Años</option>
@@ -137,6 +138,7 @@
                 <option value="1m">Hace 1 mes</option>
                 <option value="3m">Hace 3 meses</option>
                 <option value="6m">Hace 6 meses</option>
+                <option value="ytd">YTD (Desde enero)</option>
                 <option value="1y">Hace 1 año (Fiebre pre-electoral)</option>
                 <option value="3y">Hace 3 años (Plena post-pandemia)</option>
                 <option value="5y">Hace 5 años (Pre-pandemia 2019)</option>
@@ -384,9 +386,9 @@ const selectedPeriod = ref('1y');
 const results = ref([]);
 const funnyPhrase = ref('');
 const equivalencyText = ref('');
-const periodLabels = { '1w': 'semanal', '1m': 'mensual', '3m': 'trimestral', '6m': 'semestral', '1y': 'Fiebre electoral', '3y': 'Post-pandemia', '5y': 'Pre-pandemia' };
+const periodLabels = { '1w': 'semanal', '1m': 'mensual', '3m': 'trimestral', '6m': 'semestral', 'ytd': 'Desde enero', '1y': 'Fiebre electoral', '3y': 'Post-pandemia', '5y': 'Pre-pandemia' };
 const marketPeriod = ref('1y');
-const marketPeriodLabels = { '1w': '1 Semana', '1m': '1 Mes', '3m': '3 Meses', '6m': '6 Meses', '1y': '1 Año', '3y': '3 Años', '5y': '5 Años' };
+const marketPeriodLabels = { '1w': '1 Semana', '1m': '1 Mes', '3m': '3 Meses', '6m': '6 Meses', 'ytd': 'YTD', '1y': '1 Año', '3y': '3 Años', '5y': '5 Años' };
 
 watch(selectedPeriod, (newVal) => {
   if (marketPeriod.value !== newVal) marketPeriod.value = newVal;
@@ -439,8 +441,14 @@ const calculateTravel = () => {
   const varMEP = getVariation('DOLAR_MEP');
   
   // Extraemos los años base elegidos por el usuario (o fracción)
-  const selectedNum = parseInt(selectedPeriod.value[0]);
-  const yearsNum = selectedPeriod.value.endsWith('y') ? selectedNum : (selectedPeriod.value.endsWith('m') ? selectedNum / 12 : 7 / 365);
+  let yearsNum = 0;
+  if (selectedPeriod.value === 'ytd') {
+    const now = new Date();
+    yearsNum = (now - new Date(now.getFullYear(), 0, 1)) / (1000 * 60 * 60 * 24 * 365);
+  } else {
+    const selectedNum = parseInt(selectedPeriod.value[0]);
+    yearsNum = selectedPeriod.value.endsWith('y') ? selectedNum : (selectedPeriod.value.endsWith('m') ? selectedNum / 12 : 7 / 365);
+  }
   
   // Inflación US ~3% anual. (Un activo dólar quieto pierde 3% por año frente al índice de precios yanqui)
   const inflacionUS = -3 * yearsNum;
@@ -452,7 +460,7 @@ const calculateTravel = () => {
   const dynamicAssets = [
     { id: 'merval', name: 'Merval (Promedio)', emoji: '🎢', varUSD: getAvgVariation('Merval') },
     { id: 'sp500', name: 'S&P 500 (SPY)', emoji: '📈', varUSD: getVariation('SPY') },
-    { id: 'big6', name: 'Big 6 (Tecnológicas)', emoji: '🦅', varUSD: getAvgVariation('Wall Street') },
+    { id: 'big6', name: 'Big 6 (Tecnológicas)', emoji: '🦅', varUSD: getAvgVariation('Big Tech') },
     { id: 'mep', name: 'Dólar MEP / Efectivo', emoji: '💵', varUSD: inflacionUS }, // El MEP en base USD solo sufre la inflación de USA
     { id: 'realestate', name: 'Real Estate (Acciones)', emoji: '🏢', varUSD: getAvgVariation('Real Estate') },
     { id: 'efectivo', name: 'Efectivo bajo el colchón (Pesos)', emoji: '💸', varUSD: ((1 / (1 + varMEP / 100)) - 1) * 100 } 
@@ -604,8 +612,21 @@ const renderChart = async () => {
   if (!portfolioChartRef.value) return;
   const ChartJS = await loadChartJs();
   
-  const intervals = ['5y', '3y', '1y', '9m', '6m', '3m', '1m', '1w', 'Hoy'];
-  const labels = ['Hace 5 Años', 'Hace 3 Años', 'Hace 1 Año', 'Hace 9 Meses', 'Hace 6 Meses', 'Hace 3 Meses', 'Hace 1 Mes', 'Hace 1 Sem', 'Hoy'];
+  // Ordenamos los intervalos dinámicamente para que la línea de tiempo del gráfico nunca se rompa según el mes actual
+  const now = new Date();
+  const daysYTD = Math.floor((now - new Date(now.getFullYear(), 0, 1)) / (1000 * 60 * 60 * 24));
+  const allIntervals = [
+    { id: '5y', label: 'Hace 5 Años', days: 1825 }, { id: '3y', label: 'Hace 3 Años', days: 1095 },
+    { id: '1y', label: 'Hace 1 Año', days: 365 }, { id: 'ytd', label: 'YTD', days: daysYTD },
+    { id: '9m', label: 'Hace 9 Meses', days: 270 }, { id: '6m', label: 'Hace 6 Meses', days: 180 },
+    { id: '3m', label: 'Hace 3 Meses', days: 90 }, { id: '1m', label: 'Hace 1 Mes', days: 30 },
+    { id: '1w', label: 'Hace 1 Sem', days: 7 }, { id: 'Hoy', label: 'Hoy', days: 0 }
+  ].sort((a, b) => b.days - a.days); // Orden cronológico perfecto de más viejo a más nuevo
+
+  const intervals = allIntervals.map(i => i.id);
+  const labels = allIntervals.map(i => i.label);
+  const intervalsDays = {};
+  allIntervals.forEach(i => intervalsDays[i.id] = i.days);
   
   const colors = ['#06b6d4', '#eab308', '#818cf8', '#10b981']; // MU (cyan), GOOGL (yellow), MSFT (indigo), TSM (emerald)
   
@@ -617,7 +638,6 @@ const renderChart = async () => {
       const current = Number(liveData.precio);
       const now = new Date();
       const purchase = new Date(holding.purchaseDate + 'T00:00:00'); // Forzamos medianoche local
-      const intervalsDays = { '5y': 1825, '3y': 1095, '1y': 365, '9m': 270, '6m': 180, '3m': 90, '1m': 30, '1w': 7, 'Hoy': 0 };
       
       dataPoints = intervals.map(inter => {
         if (inter === 'Hoy') return ((current - holding.avgPrice) / holding.avgPrice) * 100;
@@ -692,7 +712,8 @@ const renderChart = async () => {
 
 const categoryMeta = {
   'Merval': { emoji: '🇦🇷', gradient: 'dark:from-indigo-900/50 dark:to-purple-900/50 from-indigo-100 to-purple-100', borderHighlight: 'border-indigo-500/50', desc: 'Acciones locales y ADRs.' },
-  'Wall Street': { emoji: '🦅', gradient: 'dark:from-blue-900/50 dark:to-cyan-900/50 from-blue-100 to-cyan-100', borderHighlight: 'border-blue-500/50', desc: 'Las gigantes tecnológicas globales.' },
+  'Big Tech': { emoji: '🦅', gradient: 'dark:from-blue-900/50 dark:to-cyan-900/50 from-blue-100 to-cyan-100', borderHighlight: 'border-blue-500/50', desc: 'Las gigantes tecnológicas globales.' },
+  'Wall Street': { emoji: '🗽', gradient: 'dark:from-slate-700/50 dark:to-slate-800/50 from-slate-200 to-slate-300', borderHighlight: 'border-slate-500/50', desc: 'Otras acciones del mercado de EE.UU.' },
   'Moneda': { emoji: '💵', gradient: 'dark:from-emerald-900/50 dark:to-green-900/50 from-emerald-100 to-green-100', borderHighlight: 'border-emerald-500/50', desc: 'Cotizaciones del dólar en el país.' },
   'Índice/ETF': { emoji: '📈', gradient: 'dark:from-amber-900/50 dark:to-orange-900/50 from-amber-100 to-orange-100', borderHighlight: 'border-amber-500/50', desc: 'Rendimiento del mercado.' },
   'Bonos': { emoji: '📜', gradient: 'dark:from-red-900/50 dark:to-pink-900/50 from-red-100 to-pink-100', borderHighlight: 'border-red-500/50', desc: 'Deuda e instrumentos de renta fija.' },
@@ -727,8 +748,8 @@ const categoryPerformance = computed(() => {
       val = getVariation('DOLAR_OFICIAL');
     } else if (categoryName === 'Índice/ETF') {
       val = getVariation('SPY');
-    } else if (categoryName === 'Wall Street') {
-      val = getAvgVariation('Wall Street');
+    } else if (categoryName === 'Wall Street' || categoryName === 'Big Tech') {
+      val = getAvgVariation(categoryName);
     } else if (categoryName === 'Merval') {
       val = getAvgVariation('Merval');
     } else if (categoryName === 'Real Estate') {
@@ -812,7 +833,8 @@ const rentYield = computed(() => {
 const fetchLivePrices = async () => {
   try {
     // En producción (GitHub Pages) lee el JSON ultrarrápido; en tu PC usa tu server.js local
-    const apiUrl = import.meta.env.PROD ? `${import.meta.env.BASE_URL}precios.json` : 'http://localhost:4000/api/precios';
+    // Agregamos un "Cache Buster" (?t=...) para que el navegador de la web nunca te muestre datos viejos (cacheados)
+    const apiUrl = import.meta.env.PROD ? `${import.meta.env.BASE_URL}precios.json?t=${Date.now()}` : 'http://localhost:4000/api/precios';
     const response = await fetch(apiUrl);
     livePrices.value = await response.json();
     if (currentTab.value === 'cartera') {

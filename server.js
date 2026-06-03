@@ -59,13 +59,25 @@ app.get('/api/precios', async (req, res) => {
         return Number((((actual - precioAtras) / precioAtras) * 100).toFixed(2));
       };
 
+      // Calculamos YTD (Year-to-Date) buscando el primer registro hábil del año actual
+      const currentYear = new Date(fechaActualStr).getFullYear();
+      let firstOfYear = historial[0];
+      for (let i = 0; i < historial.length; i++) {
+        if (new Date(historial[i].fecha).getFullYear() === currentYear) {
+          firstOfYear = historial[i];
+        } else if (new Date(historial[i].fecha).getFullYear() < currentYear) {
+          break;
+        }
+      }
+      const ytdVariation = firstOfYear ? Number((((actual - firstOfYear.valor) / firstOfYear.valor) * 100).toFixed(2)) : 0;
+
       return {
         id: activo.id, nombre: activo.nombre, simbolo: activo.simbolo, categoria: activo.categoria, emoji: activo.emoji,
         precio: actual, fecha: fechaActualStr,
         variaciones: {
           '1w': calcularVariacion(7), '1m': calcularVariacion(30), 
           '3m': calcularVariacion(90), '6m': calcularVariacion(180), 
-          '9m': calcularVariacion(270), '1y': calcularVariacion(365),
+          '9m': calcularVariacion(270), 'ytd': ytdVariation, '1y': calcularVariacion(365),
           '3y': calcularVariacion(3 * 365), '5y': calcularVariacion(5 * 365)
         }
       };

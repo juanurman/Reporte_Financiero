@@ -98,12 +98,12 @@ const actualizarPrecios = async () => {
     // Semilla Base: Solo se usa para registrar activos iniciales si la DB está vacía
     const activosSeed = [
       { simbolo: 'SPY', nombre: 'S&P 500', categoria: 'Índice/ETF', emoji: '📈' },
-      { simbolo: 'AAPL', nombre: 'Apple', categoria: 'Wall Street', emoji: '🍎' },
-      { simbolo: 'GOOGL', nombre: 'Alphabet Inc.', categoria: 'Wall Street', emoji: '🔍' },
-      { simbolo: 'MSFT', nombre: 'Microsoft Corp.', categoria: 'Wall Street', emoji: '💻' },
-      { simbolo: 'NVDA', nombre: 'NVIDIA Corp.', categoria: 'Wall Street', emoji: '🎮' },
-      { simbolo: 'AMZN', nombre: 'Amazon', categoria: 'Wall Street', emoji: '📦' },
-      { simbolo: 'META', nombre: 'Meta Platforms', categoria: 'Wall Street', emoji: '🌐' },
+      { simbolo: 'AAPL', nombre: 'Apple', categoria: 'Big Tech', emoji: '🍎' },
+      { simbolo: 'GOOGL', nombre: 'Alphabet Inc.', categoria: 'Big Tech', emoji: '🔍' },
+      { simbolo: 'MSFT', nombre: 'Microsoft Corp.', categoria: 'Big Tech', emoji: '💻' },
+      { simbolo: 'NVDA', nombre: 'NVIDIA Corp.', categoria: 'Big Tech', emoji: '🎮' },
+      { simbolo: 'AMZN', nombre: 'Amazon', categoria: 'Big Tech', emoji: '📦' },
+      { simbolo: 'META', nombre: 'Meta Platforms', categoria: 'Big Tech', emoji: '🌐' },
       { simbolo: 'MU', nombre: 'Micron Technology', categoria: 'Wall Street', emoji: '💾' },
       { simbolo: 'TSM', nombre: 'Taiwan Semiconductor', categoria: 'Wall Street', emoji: '🏭' },
       { simbolo: 'YPF', nombre: 'YPF S.A.', categoria: 'Merval', emoji: '🛢️' },
@@ -119,6 +119,9 @@ const actualizarPrecios = async () => {
 
     console.log('Verificando semilla inicial de activos...');
     await executeWithRetry(async () => {
+      // Re-clasificar automáticamente las Big 6 para separarlas del resto de Wall Street en bases de datos existentes
+      await pool.execute(`UPDATE activos SET categoria = 'Big Tech' WHERE simbolo IN ('AAPL', 'GOOGL', 'MSFT', 'NVDA', 'AMZN', 'META')`);
+
       const [activosExistentes] = await pool.execute('SELECT simbolo FROM activos');
       const simbolosDB = activosExistentes.map(a => a.simbolo);
       
