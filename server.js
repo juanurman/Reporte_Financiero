@@ -11,8 +11,7 @@ const app = express();
 app.use(cors({
   origin: '*', 
   methods: ['GET', 'POST', 'OPTIONS', 'DELETE', 'PUT', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  credentials: true
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 app.options('*', cors()); // Habilita pre-flight para todas las rutas
 
@@ -26,7 +25,8 @@ const pool = mysql.createPool({
   ssl: process.env.DB_HOST && process.env.DB_HOST !== 'localhost' ? { rejectUnauthorized: true } : undefined,
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0
+  queueLimit: 0,
+  connectTimeout: 30000
 });
 
 // Ruta raíz para verificar que la API está viva
@@ -176,13 +176,13 @@ app.get('/api/cartera', async (req, res) => {
       FROM cartera c
       LEFT JOIN activos a ON TRIM(UPPER(c.simbolo)) = a.simbolo
       WHERE c.usuario = ?
-      GROUP BY c.simbolo
+      GROUP BY 1
       HAVING SUM(CASE WHEN c.tipo = 'COMPRA' THEN c.cantidad ELSE -c.cantidad END) > 0
     `, [usuario || 'Diego']);
     res.json(filas);
   } catch (error) {
-    console.error('❌ Error SQL al obtener cartera:', error);
-    res.status(500).json({ error: 'Error SQL al obtener la cartera: ' + (error.sqlMessage || error.message) });
+    console.error('❌ Error SQL al obtener cartera:', error.message);
+    res.status(500).json({ error: 'Error SQL al obtener la cartera', details: error.sqlMessage || error.message });
   }
 });
 
