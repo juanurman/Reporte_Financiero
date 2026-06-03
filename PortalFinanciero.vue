@@ -390,18 +390,63 @@
               </div>
               <div>
                 <label class="block text-sm font-bold dark:text-slate-400 text-slate-500 mb-1">Categoría</label>
-                <input v-model="adminForm.categoria" required placeholder="Ej: Wall Street" list="categorias-list" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 font-bold" />
-                <datalist id="categorias-list">
-                  <option value="Wall Street"></option>
-                  <option value="Big Tech"></option>
-                  <option value="Cripto"></option>
-                  <option value="Bonos"></option>
-                  <option value="Merval"></option>
-                </datalist>
+                <select v-model="adminForm.categoria" required class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 font-bold appearance-none cursor-pointer">
+                  <option value="Wall Street">🗽 Wall Street (Acciones de EE.UU.)</option>
+                  <option value="Big Tech">🦅 Big Tech (Gigantes Tecnológicas)</option>
+                  <option value="Cripto">₿ Cripto (Criptomonedas)</option>
+                  <option value="Bonos">📜 Bonos (Deuda y Renta Fija)</option>
+                  <option value="Merval">🇦🇷 Merval (Acciones Locales)</option>
+                  <option value="Índice/ETF">📈 Índice/ETF (Fondos de Mercado)</option>
+                  <option value="Real Estate">🏢 Real Estate (Bienes Raíces)</option>
+                </select>
               </div>
               <div>
                 <label class="block text-sm font-bold dark:text-slate-400 text-slate-500 mb-1">Emoji</label>
-                <input v-model="adminForm.emoji" required placeholder="Ej: 🚗" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-center font-bold text-2xl" />
+                <select v-model="adminForm.emoji" required class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-lg appearance-none cursor-pointer">
+                  <optgroup label="Finanzas y Cripto">
+                    <option value="📈">📈 Gráfico Subiendo</option>
+                    <option value="📉">📉 Gráfico Bajando</option>
+                    <option value="💵">💵 Dólar / Dinero</option>
+                    <option value="💸">💸 Efectivo / Dinero Volando</option>
+                    <option value="🏦">🏦 Banco / Finanzas</option>
+                    <option value="₿">₿ Bitcoin</option>
+                    <option value="🪙">🪙 Cripto / Moneda</option>
+                    <option value="💎">💎 Hold / Diamante</option>
+                    <option value="🚀">🚀 To the moon</option>
+                    <option value="📜">📜 Bono / Contrato</option>
+                  </optgroup>
+                  <optgroup label="Sectores y Empresas">
+                    <option value="🍎">🍎 Apple</option>
+                    <option value="🔍">🔍 Google</option>
+                    <option value="💻">💻 Microsoft / Software</option>
+                    <option value="📦">📦 Amazon / Envíos</option>
+                    <option value="🌐">🌐 Meta / Redes</option>
+                    <option value="🎮">🎮 Nvidia / Gaming</option>
+                    <option value="📱">📱 Telecomunicaciones</option>
+                    <option value="🚗">🚗 Tesla / Autos</option>
+                    <option value="✈️">✈️ Turismo / Aviones</option>
+                    <option value="🏭">🏭 Industria / TSM</option>
+                    <option value="💾">💾 Micron / Hardware</option>
+                    <option value="⚡">⚡ Energía</option>
+                    <option value="🛢️">🛢️ Petróleo</option>
+                    <option value="🌾">🌾 Agricultura</option>
+                    <option value="🏢">🏢 Real Estate</option>
+                    <option value="💊">💊 Salud / Farma</option>
+                    <option value="🛒">🛒 Consumo / Supermercado</option>
+                    <option value="🍔">🍔 Comida Rápida</option>
+                    <option value="🥤">🥤 Bebidas</option>
+                    <option value="🎬">🎬 Entretenimiento / Cine</option>
+                  </optgroup>
+                  <optgroup label="Países / Regiones">
+                    <option value="🇦🇷">🇦🇷 Argentina</option>
+                    <option value="🇺🇸">🇺🇸 EE.UU.</option>
+                    <option value="🦅">🦅 Águila (Wall Street)</option>
+                    <option value="🇨🇳">🇨🇳 China</option>
+                    <option value="🇪🇺">🇪🇺 Europa</option>
+                    <option value="🇧🇷">🇧🇷 Brasil</option>
+                    <option value="🌎">🌎 Global</option>
+                  </optgroup>
+                </select>
               </div>
             </div>
             <button type="submit" :disabled="isSubmittingAdmin" class="w-full mt-4 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 disabled:opacity-50 text-white font-black text-lg py-3 rounded-xl transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(99,102,241,0.4)]">
@@ -802,6 +847,7 @@ const categoryPerformance = computed(() => {
       val = getVariation('DOLAR_OFICIAL');
     } else if (categoryName === 'Índice/ETF') {
       val = getVariation('SPY');
+      val = getAvgVariation('Índice/ETF');
     } else if (categoryName === 'Big Tech') {
       val = getAvgVariation(categoryName);
     } else if (categoryName === 'Merval') {
@@ -917,11 +963,6 @@ const rentYield = computed(() => {
 
 const fetchLivePrices = async () => {
   try {
-    // En producción (GitHub Pages) lee el JSON ultrarrápido; en tu PC usa tu server.js local
-    // Agregamos un "Cache Buster" (?t=...) para que el navegador de la web nunca te muestre datos viejos (cacheados)
-    const apiUrl = import.meta.env.PROD ? `${import.meta.env.BASE_URL}precios.json?t=${Date.now()}` : 'http://localhost:4000/api/precios';
-    const response = await fetch(apiUrl);
-    livePrices.value = await response.json();
     let data = null;
     
     // TRUCO DE MAGIA: Si tenés el servidor local encendido en tu PC, intentamos leer la BD en vivo directamente
