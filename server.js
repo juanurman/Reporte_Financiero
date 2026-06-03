@@ -121,7 +121,7 @@ app.post('/api/activos', async (req, res) => {
   const { simbolo, nombre, categoria, emoji, adminPassword } = req.body;
   
   // Validación básica (puedes mejorarla)
-  if (adminPassword !== 'Colin') {
+  if (adminPassword !== 'admin') {
     return res.status(401).json({ error: 'No autorizado' });
   }
 
@@ -136,6 +136,23 @@ app.post('/api/activos', async (req, res) => {
   } catch (error) {
     console.error('❌ Error al guardar activo:', error.message);
     res.status(500).json({ error: 'Error al guardar el activo' });
+  }
+});
+
+// Endpoint para eliminar un activo (Admin)
+app.delete('/api/activos/:simbolo', async (req, res) => {
+  const { adminPassword } = req.body;
+  
+  if (adminPassword !== 'admin') {
+    return res.status(401).json({ error: 'No autorizado' });
+  }
+  try {
+    const { simbolo } = req.params;
+    await pool.execute('DELETE FROM activos WHERE simbolo = ?', [simbolo]);
+    res.json({ message: `Activo ${simbolo} eliminado con éxito` });
+  } catch (error) {
+    console.error('❌ Error al eliminar activo:', error.message);
+    res.status(500).json({ error: 'Error al eliminar el activo' });
   }
 });
 

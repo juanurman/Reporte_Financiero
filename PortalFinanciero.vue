@@ -345,6 +345,11 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <div v-for="activo in groupedAssets[selectedCategory]" :key="activo.id" 
                    class="dark:bg-slate-900 bg-white p-5 rounded-2xl border dark:border-slate-800 border-slate-200 shadow-sm dark:hover:border-slate-600 hover:border-slate-400 transition flex flex-col justify-between group">
+                   class="dark:bg-slate-900 bg-white p-5 rounded-2xl border dark:border-slate-800 border-slate-200 shadow-sm dark:hover:border-slate-600 hover:border-slate-400 transition flex flex-col justify-between group relative">
+                
+                <!-- Botón de Eliminar (Solo Admin) -->
+                <button v-if="isAdmin" @click.stop="deleteAsset(activo.simbolo)" class="absolute top-3 right-3 text-red-500 hover:text-red-700 bg-red-100 dark:bg-red-900/30 rounded-full w-8 h-8 flex items-center justify-center transition opacity-0 group-hover:opacity-100 shadow-sm" title="Eliminar Activo">🗑️</button>
+
                 <div class="flex items-center gap-4 mb-4">
                   <div class="text-4xl dark:bg-slate-950 bg-slate-50 p-3 rounded-xl border dark:border-white/5 border-slate-200 group-hover:scale-110 transition-transform">{{ activo.emoji }}</div>
                   <div class="flex-1 min-w-0">
@@ -381,6 +386,29 @@
           <h2 class="text-3xl font-bold dark:text-white text-slate-800 mb-2 flex items-center gap-3">
             ⚙️ Agregar Activo
           </h2>
+        <!-- Pantalla de Login Admin -->
+        <section v-if="!isAdmin" class="dark:bg-slate-900 bg-white p-8 rounded-[2rem] shadow-2xl border dark:border-slate-800 border-slate-200 max-w-md mx-auto text-center">
+          <div class="text-6xl mb-6">🔐</div>
+          <h2 class="text-3xl font-bold dark:text-white text-slate-800 mb-2">Panel de Control</h2>
+          <p class="dark:text-slate-400 text-slate-500 mb-8">Ingresá tus credenciales de administrador.</p>
+          <form @submit.prevent="loginAdmin" class="flex flex-col gap-4">
+            <input type="text" v-model="adminLoginUser" required placeholder="Usuario" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-center font-bold" />
+            <input type="password" v-model="adminLoginPass" required placeholder="Contraseña" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-center font-bold tracking-widest" />
+            <p v-if="adminLoginError" class="text-red-500 text-sm font-bold animate-pulse">{{ adminLoginError }}</p>
+            <button type="submit" class="w-full bg-gradient-to-r from-slate-700 to-slate-900 hover:from-slate-600 hover:to-slate-800 text-white font-black text-lg py-3 rounded-xl transition-all transform hover:scale-105 shadow-lg">
+              Ingresar
+            </button>
+          </form>
+        </section>
+
+        <!-- Formulario de Agregar Activo -->
+        <section v-else class="dark:bg-slate-900 bg-white p-8 rounded-[2rem] shadow-2xl border dark:border-slate-800 border-slate-200 max-w-2xl mx-auto">
+          <div class="flex justify-between items-center mb-2">
+            <h2 class="text-3xl font-bold dark:text-white text-slate-800 flex items-center gap-3">
+              ⚙️ Agregar Activo
+            </h2>
+            <button @click="logoutAdmin" class="bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 px-3 py-1.5 rounded-lg font-bold text-xs transition">Cerrar Sesión</button>
+          </div>
           <p class="dark:text-slate-400 text-slate-500 mb-8">
             Añadí un nuevo Ticker a la base de datos de TiDB.
           </p>
@@ -964,9 +992,31 @@ const m2AveragePrice = computed(() => {
 
 // --- Lógica de la sección Admin ---
 const adminForm = ref({ simbolo: '', nombre: '', categoria: 'Wall Street', emoji: '📈', adminPassword: '' });
+const isAdmin = ref(false);
+const adminLoginUser = ref('');
+const adminLoginPass = ref('');
+const adminLoginError = ref('');
+const adminForm = ref({ simbolo: '', nombre: '', categoria: 'Wall Street', emoji: '📈' });
 const adminError = ref('');
 const adminMessage = ref('');
 const isSubmittingAdmin = ref(false);
+
+const loginAdmin = () => {
+  if (adminLoginUser.value === 'admin' && adminLoginPass.value === 'admin') {
+    isAdmin.value = true;
+    adminLoginError.value = '';
+  } else {
+    adminLoginError.value = 'Credenciales incorrectas.';
+  }
+};
+
+const logoutAdmin = () => {
+  isAdmin.value = false;
+  adminLoginUser.value = '';
+  adminLoginPass.value = '';
+  adminError.value = '';
+  adminMessage.value = '';
+};
 
 const submitAdminForm = async () => {
   adminError.value = '';
@@ -977,11 +1027,13 @@ const submitAdminForm = async () => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(adminForm.value)
+      body: JSON.stringify({ ...adminForm.value, adminPassword: adminLoginPass.value })
     });
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || 'Error de conexión.');
     adminMessage.value = data.message;
     adminForm.value = { simbolo: '', nombre: '', categoria: 'Wall Street', emoji: '📈', adminPassword: adminForm.value.adminPassword }; // Limpiamos pero recordamos la clave
+    adminForm.value = { simbolo: '', nombre: '', categoria: 'Wall Street', emoji: '📈' }; 
     
     // ¡EL IDA Y VUELTA! -> Disparamos la actualización del frontend instantáneamente
     await fetchLivePrices();
@@ -990,6 +1042,26 @@ const submitAdminForm = async () => {
     adminError.value = err.message === 'Failed to fetch' ? 'No se pudo conectar. Verifica que tu servidor local (node server.js) esté corriendo.' : err.message;
   } finally {
     isSubmittingAdmin.value = false;
+  }
+};
+
+const deleteAsset = async (simbolo) => {
+  if (!confirm(`¿Estás seguro de eliminar ${simbolo}? Esto no se puede deshacer.`)) return;
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/activos/${simbolo}`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ adminPassword: adminLoginPass.value })
+    });
+    if (response.ok) {
+      alert(`✅ Activo ${simbolo} eliminado con éxito.`);
+      await fetchLivePrices(); // Refrescamos los precios y sacamos el activo de la lista
+    } else {
+      const data = await response.json();
+      alert(`❌ Error: ${data.error || 'No se pudo eliminar el activo.'}`);
+    }
+  } catch (err) {
+    alert('❌ Error al intentar conectar con el servidor.');
   }
 };
 
