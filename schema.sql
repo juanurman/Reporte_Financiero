@@ -21,6 +21,17 @@ CREATE TABLE IF NOT EXISTS precios_historicos (
     CONSTRAINT fk_activo FOREIGN KEY (activo_id) REFERENCES activos(id) ON DELETE CASCADE
 );
 
+-- Tabla de cartera de usuarios
+CREATE TABLE IF NOT EXISTS cartera (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario VARCHAR(50) NOT NULL,
+    simbolo VARCHAR(50) NOT NULL,
+    cantidad DECIMAL(15, 4) NOT NULL,
+    precio_compra DECIMAL(15, 4) NOT NULL,
+    fecha DATE NOT NULL,
+    INDEX idx_usuario (usuario)
+);
+
 -- Limpiamos los activos locales viejos para reemplazarlos por los ADRs en Wall Street
 DELETE FROM activos WHERE simbolo LIKE '%.BA';
 
@@ -49,3 +60,10 @@ INSERT INTO activos (nombre, simbolo, categoria, emoji) VALUES
     ('M2 Recoleta', 'M2_REC', 'Real Estate', '📍'),
     ('Rendimiento Alquiler', 'ALQ_YIELD', 'Real Estate', '🏠')
 ON DUPLICATE KEY UPDATE nombre = VALUES(nombre), categoria = VALUES(categoria), emoji = VALUES(emoji);
+
+-- Datos iniciales de cartera para Diego (Ejemplo)
+INSERT INTO cartera (usuario, simbolo, cantidad, precio_compra, fecha) VALUES
+    ('Diego', 'AAPL', 10, 150.00, '2023-10-01'),
+    ('Diego', 'MSFT', 5, 300.00, '2023-11-15'),
+    ('Diego', 'NVDA', 20, 120.00, '2024-01-10')
+ON DUPLICATE KEY UPDATE cantidad = VALUES(cantidad);

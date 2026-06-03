@@ -99,6 +99,45 @@ app.get('/api/precios', async (req, res) => {
   }
 });
 
+// Endpoint para obtener la cartera de un usuario
+app.get('/api/cartera', async (req, res) => {
+  const { usuario } = req.query;
+  try {
+    const [filas] = await pool.execute(`
+      SELECT c.simbolo, a.nombre, a.emoji, c.cantidad, c.precio_compra as avgPrice, c.fecha as purchaseDate
+      FROM cartera c
+      JOIN activos a ON c.simbolo = a.simbolo
+      WHERE c.usuario = ?
+    `, [usuario || 'Diego']);
+    res.json(filas);
+  } catch (error) {
+    console.error('❌ Error al obtener cartera:', error.message);
+    res.status(500).json({ error: 'Error al obtener la cartera' });
+  }
+});
+
+// Endpoint para agregar una transacción a la cartera
+app.post('/api/cartera', async (req, res) => {
+  const { usuario, simbolo, cantidad, precio_compra, fecha } = req.body;
+  try {
+    const query = `
+      INSERT INTO cartera (usuario, simbolo, cantidad, precio_compra, fecha)
+      VALUES (?, ?, ?, ?, ?)
+    `;
+    await pool.execute(query, [
+      usuario || 'Diego',
+      simbolo.toUpperCase(),
+      cantidad,
+      precio_compra,
+      fecha || new Date().toISOString().split('T')[0]
+    ]);
+    res.json({ message: 'Transacción guardada con éxito' });
+  } catch (error) {
+    console.error('❌ Error al guardar transacción:', error.message);
+    res.status(500).json({ error: 'Error al guardar en la base de datos' });
+  }
+});
+
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`🚀 Servidor API corriendo en http://localhost:${PORT}`);
