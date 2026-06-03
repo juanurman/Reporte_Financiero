@@ -50,6 +50,8 @@ INSERT INTO activos (nombre, simbolo, categoria, emoji) VALUES
     ('Nvidia Corporation', 'NVDA', 'Big Tech', '🟩'),
     ('Meta Platforms', 'META', 'Big Tech', '🌐'),
     ('Amazon.com Inc.', 'AMZN', 'Big Tech', '📦'),
+    ('Micron Technology', 'MU', 'Big Tech', '💾'),
+    ('Taiwan Semiconductor', 'TSM', 'Big Tech', '🏭'),
     ('YPF S.A. (ADR)', 'YPF', 'Merval', '🛢️'),
     ('Grupo Financiero Galicia (ADR)', 'GGAL', 'Merval', '🏦'),
     ('Pampa Energía (ADR)', 'PAM', 'Merval', '⚡'),
@@ -65,7 +67,8 @@ ON DUPLICATE KEY UPDATE nombre = VALUES(nombre), categoria = VALUES(categoria), 
 
 -- Datos iniciales de cartera para Diego (Ejemplo)
 INSERT INTO cartera (usuario, simbolo, cantidad, precio_compra, fecha) VALUES
-    ('Diego', 'AAPL', 10, 150.00, '2023-10-01'),
-    ('Diego', 'MSFT', 5, 300.00, '2023-11-15'),
-    ('Diego', 'NVDA', 20, 120.00, '2024-01-10')
-ON DUPLICATE KEY UPDATE cantidad = VALUES(cantidad);
+    ('Diego', 'GOOGL', 5.88, 167.15, '2025-03-05'),
+    ('Diego', 'MSFT', 2.53, 388.64, '2025-03-05'),
+    ('Diego', 'TSM', 15.38, 147.08, '2025-04-04'),
+    ('Diego', 'MU', 3.20, 394.69, '2026-02-06')
+ON DUPLICATE KEY UPDATE cantidad = VALUES(cantidad), precio_compra = VALUES(precio_compra), fecha = VALUES(fecha);
