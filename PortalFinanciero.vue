@@ -884,6 +884,10 @@ const submitAdminForm = async () => {
     if (!response.ok) throw new Error(data.error || 'Error de conexión.');
     adminMessage.value = data.message;
     adminForm.value = { simbolo: '', nombre: '', categoria: 'Wall Street', emoji: '📈' }; // Limpiamos el form
+    
+    // ¡EL IDA Y VUELTA! -> Disparamos la actualización del frontend instantáneamente
+    await fetchLivePrices();
+
   } catch (err) {
     adminError.value = err.message === 'Failed to fetch' ? 'No se pudo conectar. Verifica que tu servidor local (node server.js) esté corriendo.' : err.message;
   } finally {
