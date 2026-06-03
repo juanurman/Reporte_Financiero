@@ -22,6 +22,11 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
+// Ruta raíz para verificar que la API está viva
+app.get('/', (req, res) => {
+  res.send('🚀 API de Reporte Financiero funcionando correctamente en Vercel');
+});
+
 // Endpoint para obtener todos los activos con su último precio guardado
 app.get('/api/precios', async (req, res) => {
   try {
@@ -165,6 +170,9 @@ app.post('/api/cartera', async (req, res) => {
 export default app;
 
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-  console.log(`🚀 Servidor API corriendo en http://localhost:${PORT}`);
-});
+// Solo ejecutamos el listen si no estamos en Vercel
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`🚀 Servidor API corriendo en http://localhost:${PORT}`);
+  });
+}
