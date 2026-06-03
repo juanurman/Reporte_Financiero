@@ -10,7 +10,7 @@ const app = express();
 // Habilitamos CORS para que nuestro frontend de Vue pueda hacer peticiones a esta API
 app.use(cors({
   origin: '*', 
-  methods: ['GET', 'POST', 'OPTIONS'],
+  methods: ['GET', 'POST', 'OPTIONS', 'DELETE', 'PUT', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   credentials: true
 }));
@@ -176,13 +176,13 @@ app.get('/api/cartera', async (req, res) => {
       FROM cartera c
       LEFT JOIN activos a ON TRIM(UPPER(c.simbolo)) = a.simbolo
       WHERE c.usuario = ?
-      GROUP BY TRIM(UPPER(c.simbolo))
+      GROUP BY c.simbolo
       HAVING SUM(CASE WHEN c.tipo = 'COMPRA' THEN c.cantidad ELSE -c.cantidad END) > 0
     `, [usuario || 'Diego']);
     res.json(filas);
   } catch (error) {
-    console.error('❌ Error al obtener cartera:', error.message);
-    res.status(500).json({ error: 'Error al obtener la cartera' });
+    console.error('❌ Error SQL al obtener cartera:', error);
+    res.status(500).json({ error: 'Error SQL al obtener la cartera: ' + (error.sqlMessage || error.message) });
   }
 });
 
