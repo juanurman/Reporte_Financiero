@@ -721,7 +721,7 @@ const lastUpdatedDate = computed(() => {
 });
 
 // Lógica y Estado de "Mi Cartera"
-const currentUser = ref('');
+const currentUser = ref('Usuario');
 const portfolioHoldings = ref([]);
 
 const fetchPortfolio = async () => {
