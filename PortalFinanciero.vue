@@ -922,6 +922,24 @@ const fetchLivePrices = async () => {
     const apiUrl = import.meta.env.PROD ? `${import.meta.env.BASE_URL}precios.json?t=${Date.now()}` : 'http://localhost:4000/api/precios';
     const response = await fetch(apiUrl);
     livePrices.value = await response.json();
+    let data = null;
+    
+    // TRUCO DE MAGIA: Si tenés el servidor local encendido en tu PC, intentamos leer la BD en vivo directamente
+    try {
+      const resLocal = await fetch('http://localhost:4000/api/precios');
+      if (resLocal.ok) data = await resLocal.json();
+    } catch (e) {
+      // Falla silenciosamente si sos un usuario normal viendo la web (sin servidor local)
+    }
+
+    // Si el servidor local está apagado, leemos la foto estática de GitHub Pages
+    if (!data) {
+      const apiUrl = import.meta.env.PROD ? `${import.meta.env.BASE_URL}precios.json?t=${Date.now()}` : './precios.json';
+      const response = await fetch(apiUrl);
+      data = await response.json();
+    }
+
+    livePrices.value = data;
     if (currentTab.value === 'cartera') {
       setTimeout(renderChart, 150); 
     }

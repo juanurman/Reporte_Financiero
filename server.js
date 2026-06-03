@@ -113,7 +113,13 @@ app.post('/api/activos', async (req, res) => {
     await execAsync(`node updater.js "${simbolo.toUpperCase()}"`);
     console.log(`✅ Historial de ${simbolo.toUpperCase()} descargado con éxito.`);
 
-    res.status(201).json({ message: `¡Éxito! ${nombre} (${simbolo.toUpperCase()}) guardado y actualizado. Ya podés verlo en la página.` });
+    // Disparamos un push a GitHub automáticamente para que la web pública de todos se actualice
+    exec('git commit --allow-empty -m "🤖 Auto-Deploy: Nuevo activo agregado" && git push', (error) => {
+      if (error) console.error('⚠️ No se pudo disparar auto-deploy en GitHub. Hacé un push manual luego.');
+      else console.log('🚀 Auto-Deploy disparado en GitHub Actions.');
+    });
+
+    res.status(201).json({ message: `¡Éxito! ${nombre} agregado. Visible localmente al instante. En 1 min estará público para todos.` });
   } catch (error) {
     if (error.code === 'ER_DUP_ENTRY') return res.status(409).json({ error: `El símbolo ${simbolo.toUpperCase()} ya existe.` });
     console.error('❌ Error al agregar activo:', error.message);
