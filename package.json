@@ -9,7 +9,7 @@
     "updater": "node updater.js",
     "add": "node add-ticker.js",
     "init-db": "node init-db.js",
-    "build": "vite build",
+    "build": "node build-api.js && vite build",
     "build-api": "node build-api.js",
     "dev": "vite"
   },
