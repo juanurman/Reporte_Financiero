@@ -79,14 +79,19 @@ const buildApi = async () => {
     try {
       const [carteraFilas] = await connection.execute(`
         SELECT 
-          c.simbolo, a.nombre, a.emoji, 
-          SUM(c.cantidad) as cantidad, 
-          SUM(c.cantidad * c.precio_compra) / SUM(c.cantidad) as avgPrice, 
+          TRIM(c.simbolo) as simbolo, 
+          MAX(COALESCE(a.nombre, c.simbolo)) as nombre, 
+          MAX(COALESCE(a.emoji, '❓')) as emoji, 
+          MAX(a.categoria) as categoria,
+          SUM(CASE WHEN c.tipo = 'COMPRA' THEN c.cantidad ELSE -c.cantidad END) as cantidad, 
+          SUM(CASE WHEN c.tipo = 'COMPRA' THEN c.cantidad * c.precio_compra ELSE 0 END) / 
+          NULLIF(SUM(CASE WHEN c.tipo = 'COMPRA' THEN c.cantidad ELSE 0 END), 0) as avgPrice, 
           MIN(c.fecha) as purchaseDate
         FROM cartera c
-        JOIN activos a ON c.simbolo = a.simbolo
+        LEFT JOIN activos a ON TRIM(c.simbolo) = a.simbolo
         WHERE c.usuario = 'Diego'
-        GROUP BY c.simbolo, a.nombre, a.emoji
+        GROUP BY TRIM(c.simbolo)
+        HAVING cantidad > 0
       `);
       carteraData = carteraFilas;
     } catch (err) {
