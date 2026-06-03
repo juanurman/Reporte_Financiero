@@ -15,21 +15,13 @@ const pool = mysql.createPool({
   ssl: process.env.DB_HOST && process.env.DB_HOST !== 'localhost' ? { rejectUnauthorized: true } : undefined,
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0
+  queueLimit: 0,
+  enableKeepAlive: true,
+  connectTimeout: 10000
 });
 
-// Función para guardar precio con manejo de errores interno para no bloquear el proceso
-const guardarPrecio = async (simbolo, valor, fecha) => {
-  // 1. Buscar el ID del activo en la BD
-  const [activos] = await pool.query('SELECT id FROM activos WHERE simbolo = ?', [simbolo]);
-  
-  if (activos.length === 0) {
-    console.log(` ⚠️ Activo ignorado/no encontrado en DB: ${simbolo}`);
-    return;
-  }
-  
-  const activoId = activos[0].id;
-
+// Función para guardar precio optimizada (ya recibe el activoId)
+const guardarPrecio = async (activoId, simbolo, valor, fecha) => {
   try {
     // 2. Insertar precio con su activo_id
     const query = `
@@ -57,20 +49,20 @@ const actualizarPrecios = async () => {
     fechaHaceUnAnio.setFullYear(fechaHaceUnAnio.getFullYear() - 1);
     const fechaPasada = fechaHaceUnAnio.toLocaleDateString('en-CA', { timeZone: 'America/Argentina/Buenos_Aires' });
 
-    // 1. Obtener datos de Yahoo Finance (Big Tech, Wall Street, Merval, etc.)
-    console.log('Consultando activos financieros para actualizar desde Yahoo...');
-    const [filasActivos] = await pool.execute(
-      `SELECT simbolo FROM activos
+    // 1. Obtener mapeo de símbolos e IDs para evitar consultas redundantes
+    const [activosDB] = await pool.execute(
+      `SELECT id, simbolo FROM activos
        WHERE simbolo NOT LIKE "M2_%"
        AND simbolo <> "ALQ_YIELD" 
        AND simbolo NOT IN ("DOLAR_OFICIAL", "DOLAR_BLUE", "DOLAR_MEP", "DOLAR_CCL")`
     );
-    const simbolosYahoo = filasActivos.map(a => a.simbolo);
 
-    const promesasYahoo = simbolosYahoo.map(async (simbolo) => {
+    console.log(`Procesando ${activosDB.length} activos desde Yahoo Finance...`);
+
+    // Procesamos SECUENCIALMENTE para evitar saturar el pool de conexiones y la DB
+    for (const activo of activosDB) {
       try {
-        // Pedimos range=7d para asegurar datos tras feriados largos
-        const url = `https://query1.finance.yahoo.com/v8/finance/chart/${simbolo}?interval=1d&range=7d`;
+        const url = `https://query1.finance.yahoo.com/v8/finance/chart/${activo.simbolo}?interval=1d&range=7d`;
         const { data } = await axios.get(url, { headers: { 'User-Agent': 'Mozilla/5.0' }, timeout: 10000 });
         const result = data?.chart?.result?.[0];
         
@@ -79,17 +71,14 @@ const actualizarPrecios = async () => {
             const precioHistorico = result.indicators.quote[0].close[i];
             if (precioHistorico) {
               const fechaHistorica = new Date(result.timestamp[i] * 1000).toLocaleDateString('en-CA', { timeZone: 'America/Argentina/Buenos_Aires' });
-              await guardarPrecio(simbolo, precioHistorico, fechaHistorica);
+              await guardarPrecio(activo.id, activo.simbolo, precioHistorico, fechaHistorica);
             }
           }
         }
       } catch (err) {
-        console.log(` ⚠️ Error al obtener ${simbolo}: ${err.message}`);
+        console.log(` ⚠️ Error al obtener ${activo.simbolo}: ${err.message}`);
       }
-    });
-
-    // Ejecutamos TODAS las peticiones a Yahoo en paralelo (ultrarrápido)
-    await Promise.all(promesasYahoo);
+    }
 
     // 2. Obtener datos de los dólares (Sólo DolarAPI actual)
     console.log('Consultando Dólares (Actual)...');
@@ -103,17 +92,22 @@ const actualizarPrecios = async () => {
       'contadoconliqui': 'DOLAR_CCL'
     };
 
-    const promesasDolares = dolares.map(async (dolar) => {
+    // Mapeo de IDs para dólares
+    const [activosDolares] = await pool.execute('SELECT id, simbolo FROM activos WHERE simbolo IN ("DOLAR_OFICIAL", "DOLAR_BLUE", "DOLAR_MEP", "DOLAR_CCL")');
+    const idMap = Object.fromEntries(activosDolares.map(a => [a.simbolo, a.id]));
+
+    for (const dolar of dolares) {
       const simboloDolar = mapaDolares[dolar.casa];
-      if (simboloDolar && dolar.venta) {
-        // Guardamos el precio de hoy
-        await guardarPrecio(simboloDolar, dolar.venta, fechaActual);
+      if (simboloDolar && dolar.venta && idMap[simboloDolar]) {
+        await guardarPrecio(idMap[simboloDolar], simboloDolar, dolar.venta, fechaActual);
       }
-    });
-    await Promise.all(promesasDolares);
+    }
 
     // 3. Simular datos de Real Estate (M2 y Alquileres - Solo el día de hoy)
     console.log('Generando cotización del día para M2 y Alquileres...');
+    const [activosRE] = await pool.execute('SELECT id, simbolo FROM activos WHERE simbolo LIKE "M2_%" OR simbolo = "ALQ_YIELD"');
+    const idMapRE = Object.fromEntries(activosRE.map(a => [a.simbolo, a.id]));
+
     const realEstateMocks = [
       { simbolo: 'M2_NUN', base: 2600, tendencia: 0.05 },  // Base USD 2600, subió 5% anual
       { simbolo: 'M2_BEL', base: 2800, tendencia: 0.04 },
@@ -122,12 +116,12 @@ const actualizarPrecios = async () => {
       { simbolo: 'ALQ_YIELD', base: 4.5, tendencia: 0.15 } // Base 4.5% anual
     ];
 
-    const promesasRealEstate = realEstateMocks.map(async (re) => {
+    for (const re of realEstateMocks) {
+      if (!idMapRE[re.simbolo]) continue;
       const ruido = 1 + ((Math.random() - 0.5) * 0.015); // Añadimos fluctuaciones realistas de mercado (+/- 0.75%)
       const valor = Number((re.base * (1 + re.tendencia) * ruido).toFixed(2));
-      await guardarPrecio(re.simbolo, valor, fechaActual);
-    });
-    await Promise.all(promesasRealEstate);
+      await guardarPrecio(idMapRE[re.simbolo], re.simbolo, valor, fechaActual);
+    }
 
     // 4. Limpieza: Eliminar registros más viejos a 1 año
     console.log('🧹 Limpiando base de datos (eliminando registros anteriores a 1 año)...');
