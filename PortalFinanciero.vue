@@ -8,7 +8,7 @@
         <button @click="isDarkMode = !isDarkMode" class="absolute right-0 top-0 p-3 rounded-full dark:bg-slate-800 bg-white shadow-md border dark:border-white/5 border-slate-200 hover:scale-110 transition-transform">
           {{ isDarkMode ? '☀️' : '🌙' }}
         </button>
-        <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500">
+        <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 pb-2 leading-tight">
           Portal Financiero Argento
         </h1>
         <p class="text-lg md:text-xl dark:text-slate-400 text-slate-600 font-medium">
@@ -334,7 +334,7 @@
           </div>
 
           <!-- Lista de Activos dentro de la categoría -->
-          <div class="p-6 md:p-8 overflow-y-auto dark:bg-slate-950/50 bg-slate-100/50">
+          <div class="p-6 md:p-8 overflow-y-auto custom-scrollbar dark:bg-slate-950/50 bg-slate-100/50">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <div v-for="activo in groupedAssets[selectedCategory]" :key="activo.id" 
                    class="dark:bg-slate-900 bg-white p-5 rounded-2xl border dark:border-slate-800 border-slate-200 shadow-sm dark:hover:border-slate-600 hover:border-slate-400 transition flex flex-col justify-between group">
@@ -743,12 +743,14 @@ const categoryPerformance = computed(() => {
   };
 
   Object.keys(groupedAssets.value).forEach(categoryName => {
+    if (categoryName === 'Wall Street') return; // Omitimos el promedio para Wall Street
+
     let val = 0;
     if (categoryName === 'Moneda') {
       val = getVariation('DOLAR_OFICIAL');
     } else if (categoryName === 'Índice/ETF') {
       val = getVariation('SPY');
-    } else if (categoryName === 'Wall Street' || categoryName === 'Big Tech') {
+    } else if (categoryName === 'Big Tech') {
       val = getAvgVariation(categoryName);
     } else if (categoryName === 'Merval') {
       val = getAvgVariation('Merval');
@@ -858,5 +860,27 @@ onMounted(fetchLivePrices);
 .modal-fade-leave-to {
   opacity: 0;
   transform: scale(0.95) translateY(10px);
+}
+
+/* Custom Scrollbar elegante para las áreas con scroll (Modo Claro/Oscuro) */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.4);
+  border-radius: 10px;
+}
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(71, 85, 105, 0.5);
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(156, 163, 175, 0.7);
+}
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(71, 85, 105, 0.8);
 }
 </style>
