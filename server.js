@@ -99,6 +99,29 @@ app.get('/api/precios', async (req, res) => {
   }
 });
 
+// Endpoint para agregar un nuevo activo (Admin)
+app.post('/api/activos', async (req, res) => {
+  const { simbolo, nombre, categoria, emoji, adminPassword } = req.body;
+  
+  // Validación básica (puedes mejorarla)
+  if (adminPassword !== 'Colin') {
+    return res.status(401).json({ error: 'No autorizado' });
+  }
+
+  try {
+    const query = `
+      INSERT INTO activos (nombre, simbolo, categoria, emoji)
+      VALUES (?, ?, ?, ?)
+      ON DUPLICATE KEY UPDATE nombre = VALUES(nombre), categoria = VALUES(categoria), emoji = VALUES(emoji)
+    `;
+    await pool.execute(query, [nombre, simbolo.toUpperCase(), categoria, emoji]);
+    res.json({ message: `Activo ${simbolo} guardado/actualizado con éxito` });
+  } catch (error) {
+    console.error('❌ Error al guardar activo:', error.message);
+    res.status(500).json({ error: 'Error al guardar el activo' });
+  }
+});
+
 // Endpoint para obtener la cartera de un usuario
 app.get('/api/cartera', async (req, res) => {
   const { usuario } = req.query;
@@ -137,6 +160,9 @@ app.post('/api/cartera', async (req, res) => {
     res.status(500).json({ error: 'Error al guardar en la base de datos' });
   }
 });
+
+// Esto permite que Vercel maneje la app como una función serverless
+export default app;
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
