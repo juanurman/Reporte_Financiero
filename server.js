@@ -90,6 +90,27 @@ app.get('/api/precios', async (req, res) => {
   }
 });
 
+// Endpoint para agregar un nuevo activo desde el panel de Administración
+app.post('/api/activos', async (req, res) => {
+  const { simbolo, nombre, categoria, emoji } = req.body;
+
+  if (!simbolo || !nombre) {
+    return res.status(400).json({ error: 'El símbolo y el nombre son obligatorios.' });
+  }
+
+  try {
+    await pool.execute(
+      'INSERT INTO activos (nombre, simbolo, categoria, emoji) VALUES (?, ?, ?, ?)',
+      [nombre, simbolo.toUpperCase(), categoria || 'Otros', emoji || '📈']
+    );
+    res.status(201).json({ message: `¡Éxito! ${nombre} (${simbolo.toUpperCase()}) se agregó a la base de datos.` });
+  } catch (error) {
+    if (error.code === 'ER_DUP_ENTRY') return res.status(409).json({ error: `El símbolo ${simbolo.toUpperCase()} ya existe.` });
+    console.error('❌ Error al agregar activo:', error.message);
+    res.status(500).json({ error: 'Error interno del servidor al guardar en TiDB.' });
+  }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Servidor API corriendo en http://localhost:${PORT}`);

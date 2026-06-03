@@ -368,6 +368,58 @@
       </div>
       </Transition>
 
+      <!-- PESTAÑA: ADMIN -->
+      <div v-if="currentTab === 'admin'" class="space-y-10 animate-fade-in relative z-10 py-8">
+        <section class="dark:bg-slate-900 bg-white p-8 rounded-[2rem] shadow-2xl border dark:border-slate-800 border-slate-200 max-w-2xl mx-auto">
+          <h2 class="text-3xl font-bold dark:text-white text-slate-800 mb-2 flex items-center gap-3">
+            ⚙️ Agregar Activo
+          </h2>
+          <p class="dark:text-slate-400 text-slate-500 mb-8">
+            Añadí un nuevo Ticker a la base de datos de TiDB.
+          </p>
+          
+          <form @submit.prevent="submitAdminForm" class="space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-bold dark:text-slate-400 text-slate-500 mb-1">Símbolo (Ticker)</label>
+                <input v-model="adminForm.simbolo" required placeholder="Ej: TSLA" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 uppercase font-bold" />
+              </div>
+              <div>
+                <label class="block text-sm font-bold dark:text-slate-400 text-slate-500 mb-1">Nombre</label>
+                <input v-model="adminForm.nombre" required placeholder="Ej: Tesla Inc." class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 font-bold" />
+              </div>
+              <div>
+                <label class="block text-sm font-bold dark:text-slate-400 text-slate-500 mb-1">Categoría</label>
+                <input v-model="adminForm.categoria" required placeholder="Ej: Wall Street" list="categorias-list" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 font-bold" />
+                <datalist id="categorias-list">
+                  <option value="Wall Street"></option>
+                  <option value="Big Tech"></option>
+                  <option value="Cripto"></option>
+                  <option value="Bonos"></option>
+                  <option value="Merval"></option>
+                </datalist>
+              </div>
+              <div>
+                <label class="block text-sm font-bold dark:text-slate-400 text-slate-500 mb-1">Emoji</label>
+                <input v-model="adminForm.emoji" required placeholder="Ej: 🚗" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-center font-bold text-2xl" />
+              </div>
+            </div>
+            <button type="submit" :disabled="isSubmittingAdmin" class="w-full mt-4 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 disabled:opacity-50 text-white font-black text-lg py-3 rounded-xl transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(99,102,241,0.4)]">
+              {{ isSubmittingAdmin ? 'Guardando...' : 'Guardar en Base de Datos' }}
+            </button>
+            <p v-if="adminError" class="text-red-500 font-bold text-center mt-4 bg-red-500/10 p-2 rounded-lg">{{ adminError }}</p>
+            <p v-if="adminMessage" class="text-emerald-500 font-bold text-center mt-4 bg-emerald-500/10 p-2 rounded-lg">{{ adminMessage }}</p>
+          </form>
+        </section>
+      </div>
+
+      <!-- Footer sutil para acceder al Panel Admin -->
+      <footer class="mt-20 pt-8 pb-4 text-center opacity-30 hover:opacity-100 transition-opacity duration-300 relative z-10">
+        <button @click="currentTab = 'admin'" class="text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 mx-auto dark:text-slate-400 text-slate-500">
+          ⚙️ Panel de Administración
+        </button>
+      </footer>
+
     </div>
     </div>
   </div>
@@ -811,6 +863,33 @@ const m2AveragePrice = computed(() => {
   const avg = items.reduce((acc, a) => acc + Number(a.precio), 0) / items.length;
   return Math.round(avg);
 });
+
+// --- Lógica de la sección Admin ---
+const adminForm = ref({ simbolo: '', nombre: '', categoria: 'Wall Street', emoji: '📈' });
+const adminError = ref('');
+const adminMessage = ref('');
+const isSubmittingAdmin = ref(false);
+
+const submitAdminForm = async () => {
+  adminError.value = '';
+  adminMessage.value = '';
+  isSubmittingAdmin.value = true;
+  try {
+    const response = await fetch('http://localhost:4000/api/activos', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(adminForm.value)
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Error de conexión.');
+    adminMessage.value = data.message;
+    adminForm.value = { simbolo: '', nombre: '', categoria: 'Wall Street', emoji: '📈' }; // Limpiamos el form
+  } catch (err) {
+    adminError.value = err.message === 'Failed to fetch' ? 'No se pudo conectar. Verifica que tu servidor local (node server.js) esté corriendo.' : err.message;
+  } finally {
+    isSubmittingAdmin.value = false;
+  }
+};
 
 const rentYieldHistoric = computed(() => {
   const item = livePrices.value.find(a => a.simbolo === 'ALQ_YIELD');
