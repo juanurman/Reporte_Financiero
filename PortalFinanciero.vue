@@ -710,7 +710,7 @@ const formatUSD = (value) => {
 
 const formatAssetPrice = (activo) => {
   const val = Number(activo.precio);
-  if (activo.simbolo === 'ALQ_YIELD') return `${val.toFixed(2)}%`;
+  if (activo.simbolo === 'ALQ_YIELD' || activo.simbolo === '^TNX' || activo.simbolo === '^TYX') return `${val.toFixed(2)}%`;
   if (activo.categoria === 'Moneda' || activo.simbolo.endsWith('.BA') || activo.nombre.includes('AR$')) return `AR$ ${val.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   if (activo.simbolo.startsWith('M2_')) return `US$ ${val.toLocaleString('es-AR', { maximumFractionDigits: 0 })}`;
   return `US$ ${val.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -997,7 +997,7 @@ const getDynamicRendimiento = (activo) => {
 const getPastPriceFormatted = (activo) => {
   const varAPI = activo.variaciones[marketPeriod.value] || 0;
   const pastPrice = Number(activo.precio) / (1 + varAPI / 100);
-  if (activo.simbolo === 'ALQ_YIELD') return `${pastPrice.toFixed(2)}%`;
+  if (activo.simbolo === 'ALQ_YIELD' || activo.simbolo === '^TNX' || activo.simbolo === '^TYX') return `${pastPrice.toFixed(2)}%`;
   if (activo.categoria === 'Moneda' || activo.simbolo.endsWith('.BA') || activo.nombre.includes('AR$')) return `AR$ ${pastPrice.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   if (activo.simbolo.startsWith('M2_')) return `US$ ${pastPrice.toLocaleString('es-AR', { maximumFractionDigits: 0 })}`;
   return `US$ ${pastPrice.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;

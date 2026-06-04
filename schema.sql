@@ -39,6 +39,7 @@ CREATE TABLE cartera (
 
 -- Limpiamos los activos locales viejos para reemplazarlos por los ADRs en Wall Street
 DELETE FROM activos WHERE simbolo LIKE '%.BA';
+DELETE FROM activos WHERE simbolo = 'TLT'; -- Eliminamos el ETF de bonos anterior
 
 -- Inserts iniciales de los activos
 INSERT INTO activos (nombre, simbolo, categoria, emoji) VALUES
@@ -63,7 +64,7 @@ INSERT INTO activos (nombre, simbolo, categoria, emoji) VALUES
     ('IRSA Inmuebles (ADR)', 'IRS', 'Real Estate', '🏢'),
     ('Cresud (ADR)', 'CRESY', 'Real Estate', '🏗️'),
     ('Bitcoin USD', 'BTC-USD', 'Cripto', '₿'),
-    ('iShares 20+ Year Treasury Bond ETF', 'TLT', 'Bonos', '📜'),
+    ('US 10-Year Treasury Yield', '^TNX', 'Bonos', '📜'),
     ('Coca-Cola Company', 'KO', 'Wall Street', '🥤'),
     ('Tesla, Inc.', 'TSLA', 'Wall Street', '🚗'),
     ('The Walt Disney Company', 'DIS', 'Wall Street', '🏰'),
