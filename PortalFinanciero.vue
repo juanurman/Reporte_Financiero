@@ -269,6 +269,49 @@
              <canvas id="portfolioChart" ref="portfolioChartRef"></canvas>
           </div>
 
+          <!-- Formulario para Registrar Transacción -->
+          <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl p-6 shadow-xl mb-6">
+            <h3 class="text-lg font-bold dark:text-white text-slate-800 mb-4 flex items-center gap-2">
+              📝 Registrar Transacción
+            </h3>
+            <form @submit.prevent="submitTxForm" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 items-end">
+              <div>
+                <label class="block text-xs font-bold dark:text-slate-400 text-slate-500 mb-1 uppercase tracking-wider">Activo</label>
+                <input v-model="txForm.simbolo" required placeholder="Ej: AAPL" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-indigo-500 uppercase font-bold text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold dark:text-slate-400 text-slate-500 mb-1 uppercase tracking-wider">Tipo</label>
+                <select v-model="txForm.tipo" required class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-sm appearance-none cursor-pointer">
+                  <option value="COMPRA">COMPRA</option>
+                  <option value="VENTA">VENTA</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold dark:text-slate-400 text-slate-500 mb-1 uppercase tracking-wider">Cantidad</label>
+                <input type="number" step="any" v-model.number="txForm.cantidad" required placeholder="0.00" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold dark:text-slate-400 text-slate-500 mb-1 uppercase tracking-wider">Precio Unit. (USD)</label>
+                <input type="number" step="any" v-model.number="txForm.precio_compra" required placeholder="0.00" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold dark:text-slate-400 text-slate-500 mb-1 uppercase tracking-wider">Comisiones</label>
+                <input type="number" step="any" v-model.number="txForm.comisiones" placeholder="0.00" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold dark:text-slate-400 text-slate-500 mb-1 uppercase tracking-wider">Fecha</label>
+                <input type="date" v-model="txForm.fecha" required class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-sm cursor-pointer" />
+              </div>
+              <div class="lg:col-span-1">
+                <button type="submit" :disabled="isSubmittingTx" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 disabled:opacity-50 text-white font-black text-sm py-2.5 px-4 rounded-xl transition-all transform hover:scale-105 shadow-md flex items-center justify-center">
+                  {{ isSubmittingTx ? '⏳' : 'Guardar' }}
+                </button>
+              </div>
+            </form>
+            <div v-if="txError" class="text-red-500 bg-red-500/10 px-3 py-2 rounded-lg text-xs font-bold mt-3 text-center">{{ txError }}</div>
+            <div v-if="txMessage" class="text-emerald-500 bg-emerald-500/10 px-3 py-2 rounded-lg text-xs font-bold mt-3 text-center">{{ txMessage }}</div>
+          </div>
+
           <!-- Tabla de Tenencias -->
           <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl overflow-hidden shadow-xl overflow-x-auto mb-16">
             <table class="w-full text-left border-collapse whitespace-nowrap">
@@ -677,6 +720,8 @@ const formatAssetPrice = (activo) => {
 // Si estamos en producción, apunta a Vercel. Si no, a localhost.
 // Asegúrate de que esta URL sea la "Production Deployment" de tu dashboard de Vercel
 const API_BASE_URL = import.meta.env.PROD ? 'https://reporte-financiero-juanurman-6276s-projects.vercel.app' : 'http://localhost:5000';
+// Apuntamos directamente a Vercel para consumir la API viva (Serverless) en cualquier entorno
+const API_BASE_URL = 'https://reporte-financiero-juanurman-6276s-projects.vercel.app';
 
 // Integración con la API Express (Base de Datos)
 const livePrices = ref([]);
@@ -1067,7 +1112,7 @@ const deleteAsset = async (simbolo) => {
   }
 };
 
-const txForm = ref({ simbolo: '', cantidad: null, precio_compra: null, fecha: new Date().toISOString().split('T')[0], adminPassword: '' });
+const txForm = ref({ simbolo: '', tipo: 'COMPRA', cantidad: null, precio_compra: null, comisiones: null, fecha: new Date().toISOString().split('T')[0] });
 const txError = ref('');
 const txMessage = ref('');
 const isSubmittingTx = ref(false);
@@ -1085,7 +1130,7 @@ const submitTxForm = async () => {
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || 'Error de conexión.');
     txMessage.value = data.message;
-    txForm.value = { simbolo: '', cantidad: null, precio_compra: null, fecha: new Date().toISOString().split('T')[0], adminPassword: txForm.value.adminPassword };
+    txForm.value = { simbolo: '', tipo: 'COMPRA', cantidad: null, precio_compra: null, comisiones: null, fecha: new Date().toISOString().split('T')[0] };
     await fetchPortfolio();
   } catch (err) {
     txError.value = err.message === 'Failed to fetch' ? 'No se pudo conectar al servidor local.' : err.message;
