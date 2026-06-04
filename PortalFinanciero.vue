@@ -948,6 +948,18 @@ const groupedAssets = computed(() => {
     if (!groups[asset.categoria]) groups[asset.categoria] = [];
     groups[asset.categoria].push(asset);
   });
+  
+  // Forzamos a que las tasas de interés queden siempre primeras en la lista de Bonos
+  if (groups['Bonos']) {
+    groups['Bonos'].sort((a, b) => {
+      const isRateA = a.simbolo === '^TNX' || a.simbolo === '^TYX';
+      const isRateB = b.simbolo === '^TNX' || b.simbolo === '^TYX';
+      if (isRateA && !isRateB) return -1;
+      if (!isRateA && isRateB) return 1;
+      return 0;
+    });
+  }
+
   return groups;
 });
 
