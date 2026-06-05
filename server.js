@@ -17,6 +17,9 @@ app.options('*', cors()); // Habilita pre-flight para todas las rutas
 
 app.use(express.json());
 
+// Ignoramos peticiones al favicon para evitar errores 404 en los logs
+app.get('/favicon.ico', (req, res) => res.status(204).end());
+
 const pool = mysql.createPool({
   host: process.env.DB_HOST || 'localhost',
   user: process.env.DB_USER || 'root',
@@ -175,14 +178,19 @@ app.get('/api/cartera', async (req, res) => {
         MIN(c.fecha) as purchaseDate
       FROM cartera c
       LEFT JOIN activos a ON TRIM(UPPER(c.simbolo)) = a.simbolo
-      WHERE c.usuario = ?
-      GROUP BY 1
+      WHERE UPPER(c.usuario) = UPPER(?)
+      GROUP BY TRIM(UPPER(c.simbolo))
       HAVING SUM(CASE WHEN c.tipo = 'COMPRA' THEN c.cantidad ELSE -c.cantidad END) > 0
     `, [usuario || 'Diego']);
     res.json(filas);
   } catch (error) {
     console.error('❌ Error SQL al obtener cartera:', error.message);
-    res.status(500).json({ error: 'Error SQL al obtener la cartera', details: error.sqlMessage || error.message });
+    // Si la tabla no existe en esta base de datos, devolvemos un array vacío pacíficamente
+    if (error.code === 'ER_NO_SUCH_TABLE') {
+      res.json([]);
+    } else {
+      res.status(500).json({ error: 'Error SQL al obtener la cartera', details: error.sqlMessage || error.message });
+    }
   }
 });
 
@@ -190,6 +198,20 @@ app.get('/api/cartera', async (req, res) => {
 app.post('/api/cartera', async (req, res) => {
   const { usuario, simbolo, tipo, cantidad, precio_compra, comisiones, fecha } = req.body;
   try {
+    // 🛡️ Autocreación de la tabla en localhost si no existe
+    await pool.execute(`
+      CREATE TABLE IF NOT EXISTS cartera (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        usuario VARCHAR(50) NOT NULL,
+        simbolo VARCHAR(20) NOT NULL,
+        tipo VARCHAR(10) NOT NULL,
+        cantidad DECIMAL(15,4) NOT NULL,
+        precio_compra DECIMAL(15,4) NOT NULL,
+        comisiones DECIMAL(15,4) DEFAULT 0,
+        fecha DATE NOT NULL
+      )
+    `);
+
     const query = `
       INSERT INTO cartera (usuario, simbolo, tipo, cantidad, precio_compra, comisiones, fecha)
       VALUES (?, ?, ?, ?, ?, ?, ?)
