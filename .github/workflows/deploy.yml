@@ -2,7 +2,8 @@ name: Actualizar BD y Publicar en GitHub Pages
 
 on:
   schedule:
-    - cron: '30 20 * * 1-5' # Lunes a Viernes a las 17:30 Hora Argentina
+    - cron: '30 20 * * 1-5' # Intento 1: Lunes a Viernes a las 17:30 Hora Argentina
+    - cron: '0 23 * * 1-5'  # Intento 2 (Respaldo): Lunes a Viernes a las 20:00 Hora Argentina
   push:
     branches:
       - main
