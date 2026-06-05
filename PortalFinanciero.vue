@@ -717,8 +717,8 @@ const formatAssetPrice = (activo) => {
 };
 
 // --- CONFIGURACIÓN DE API ---
-// Apuntamos directamente a Vercel para consumir la API viva (Serverless) en cualquier entorno
-const API_BASE_URL = 'https://reporte-financiero-juanurman-6276s-projects.vercel.app';
+// Usamos localhost automáticamente cuando programas, y Vercel cuando está en la web
+const API_BASE_URL = import.meta.env.DEV ? 'http://localhost:4000' : 'https://reporte-financiero-juanurman-6276s-projects.vercel.app';
 
 // Integración con la API Express (Base de Datos)
 const livePrices = ref([]);
@@ -733,8 +733,14 @@ const portfolioError = ref('');
 
 const unlockPortfolio = async () => {
   // NOTA: Acá validamos contra '1234' para entrar a mirar, la seguridad fuerte está al registrar compras en backend
-  if (portfolioPassword.value === 'Colin') { 
-    currentUser.value = loginUser.value || 'Diego';
+  
+  // Normalizamos el usuario ingresado (quitamos espacios extra y pasamos a minúsculas para comparar)
+  const inputUser = loginUser.value.trim().toLowerCase();
+  
+  if (inputUser !== 'diego') {
+    portfolioError.value = 'Usuario incorrecto. El acceso es estricto para Diego.';
+  } else if (portfolioPassword.value === 'Colin') { // Reemplazá TuNuevaClave123 por tu contraseña real
+    currentUser.value = 'DIEGO'; // Forzamos mayúscula para que coincida con la base de datos
     isPortfolioUnlocked.value = true;
     portfolioError.value = '';
     await fetchPortfolio();
@@ -770,14 +776,35 @@ const fetchPortfolio = async () => {
   try {
     let data = null;
     try {
-      const resLocal = await fetch(`${API_BASE_URL}/api/cartera?usuario=${currentUser.value}`);
-      if (resLocal.ok) data = await resLocal.json();
-    } catch (e) {}
+      // Usamos DIEGO como default si aún no se inició sesión
+      const targetUser = currentUser.value || 'DIEGO';
+      const resLocal = await fetch(`${API_BASE_URL}/api/cartera?usuario=${targetUser}`);
+      
+      if (resLocal.ok) {
+        data = await resLocal.json();
+      } else {
+        console.warn('⚠️ La API de cartera devolvió error:', resLocal.status);
+      }
+    } catch (e) {
+      console.warn('⚠️ Error de red al consultar la API de cartera:', e.message);
+    }
 
     if (!data) {
-      const apiUrl = import.meta.env.PROD ? `${import.meta.env.BASE_URL}cartera.json?t=${Date.now()}` : './cartera.json';
-      const response = await fetch(apiUrl);
-      if (response.ok) data = await response.json();
+      if (import.meta.env.DEV) {
+        data = []; // En modo local no usamos los respaldos .json
+      } else {
+        const apiUrl = `${import.meta.env.BASE_URL || '/'}cartera.json?t=${Date.now()}`;
+        const response = await fetch(apiUrl);
+        if (response.ok) {
+          const text = await response.text();
+          try { 
+            data = JSON.parse(text); 
+          } catch (e) { 
+            console.warn('⚠️ El respaldo cartera.json devolvió HTML. Asumiendo cartera vacía.'); 
+            data = []; 
+          }
+        }
+      }
     }
 
     if (data && Array.isArray(data)) {
@@ -1181,10 +1208,25 @@ const fetchLivePrices = async () => {
     }
 
     // Si el servidor local está apagado, leemos la foto estática de GitHub Pages
+    // Si la API falla, leemos la foto estática (solo en producción)
     if (!data) {
-      const apiUrl = import.meta.env.PROD ? `${import.meta.env.BASE_URL}precios.json?t=${Date.now()}` : './precios.json';
-      const response = await fetch(apiUrl);
-      data = await response.json();
+      if (import.meta.env.DEV) {
+        data = []; // En local fallamos silenciosamente si el server está apagado
+      } else {
+        const apiUrl = `${import.meta.env.BASE_URL || '/'}precios.json?t=${Date.now()}`;
+        const response = await fetch(apiUrl);
+        if (response.ok) {
+          const text = await response.text();
+          try {
+            data = JSON.parse(text);
+          } catch (e) {
+            console.warn('⚠️ El respaldo precios.json devolvió HTML. Asumiendo vacío.');
+            data = [];
+          }
+        } else {
+          data = [];
+        }
+      }
     }
 
     livePrices.value = data;
