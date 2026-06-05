@@ -97,8 +97,8 @@ const buildApi = async () => {
           MIN(c.fecha) as purchaseDate
         FROM cartera c
         LEFT JOIN activos a ON TRIM(UPPER(c.simbolo)) = a.simbolo
-        WHERE c.usuario = 'Diego'
-        GROUP BY 1
+        WHERE UPPER(c.usuario) = 'DIEGO'
+        GROUP BY simbolo
         HAVING SUM(CASE WHEN c.tipo = 'COMPRA' THEN c.cantidad ELSE -c.cantidad END) > 0
       `);
       carteraData = carteraFilas;

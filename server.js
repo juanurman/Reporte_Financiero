@@ -162,29 +162,47 @@ app.delete('/api/activos/:simbolo', async (req, res) => {
 // Endpoint para obtener la cartera de un usuario
 app.get('/api/cartera', async (req, res) => {
   const { usuario } = req.query;
+  
+  const querySQL = `
+    SELECT 
+      TRIM(UPPER(c.simbolo)) as simbolo, 
+      MAX(COALESCE(a.nombre, UPPER(c.simbolo))) as nombre, 
+      MAX(COALESCE(a.emoji, '💰')) as emoji, 
+      MAX(COALESCE(a.categoria, 'Otros')) as categoria,
+      SUM(CASE WHEN c.tipo = 'COMPRA' THEN c.cantidad ELSE -c.cantidad END) as cantidad, 
+      COALESCE(
+        SUM(CASE WHEN c.tipo = 'COMPRA' THEN c.cantidad * c.precio_compra ELSE 0 END) / 
+        NULLIF(SUM(CASE WHEN c.tipo = 'COMPRA' THEN c.cantidad ELSE 0 END), 0), 
+        0) as avgPrice, 
+      SUM(COALESCE(c.comisiones, 0)) as totalComisiones,
+      MIN(c.fecha) as purchaseDate
+    FROM cartera c
+    LEFT JOIN activos a ON TRIM(UPPER(c.simbolo)) = a.simbolo
+    WHERE UPPER(c.usuario) = UPPER(?)
+    GROUP BY simbolo
+    HAVING SUM(CASE WHEN c.tipo = 'COMPRA' THEN c.cantidad ELSE -c.cantidad END) > 0
+  `;
+
   try {
-    const [filas] = await pool.execute(`
-      SELECT 
-        TRIM(UPPER(c.simbolo)) as simbolo, 
-        MAX(COALESCE(a.nombre, UPPER(c.simbolo))) as nombre, 
-        MAX(COALESCE(a.emoji, '💰')) as emoji, 
-        MAX(COALESCE(a.categoria, 'Otros')) as categoria,
-        SUM(CASE WHEN c.tipo = 'COMPRA' THEN c.cantidad ELSE -c.cantidad END) as cantidad, 
-        COALESCE(
-          SUM(CASE WHEN c.tipo = 'COMPRA' THEN c.cantidad * c.precio_compra ELSE 0 END) / 
-          NULLIF(SUM(CASE WHEN c.tipo = 'COMPRA' THEN c.cantidad ELSE 0 END), 0), 
-          0) as avgPrice, 
-        SUM(COALESCE(c.comisiones, 0)) as totalComisiones,
-        MIN(c.fecha) as purchaseDate
-      FROM cartera c
-      LEFT JOIN activos a ON TRIM(UPPER(c.simbolo)) = a.simbolo
-      WHERE UPPER(c.usuario) = UPPER(?)
-      GROUP BY TRIM(UPPER(c.simbolo))
-      HAVING SUM(CASE WHEN c.tipo = 'COMPRA' THEN c.cantidad ELSE -c.cantidad END) > 0
-    `, [usuario || 'Diego']);
+    const [filas] = await pool.execute(querySQL, [usuario || 'Diego']);
     res.json(filas);
   } catch (error) {
     console.error('❌ Error SQL al obtener cartera:', error.message);
+
+    // 🔧 Auto-reparación silenciosa si las columnas 'tipo' o 'comisiones' no existen en la BD de Vercel
+    if (error.code === 'ER_BAD_FIELD_ERROR') {
+      try {
+        console.log('🔧 Auto-reparando tabla cartera en producción...');
+        await pool.execute('ALTER TABLE cartera ADD COLUMN tipo VARCHAR(10) NOT NULL DEFAULT "COMPRA"').catch(()=>{});
+        await pool.execute('ALTER TABLE cartera ADD COLUMN comisiones DECIMAL(15,4) DEFAULT 0').catch(()=>{});
+        
+        const [filasRetry] = await pool.execute(querySQL, [usuario || 'Diego']);
+        return res.json(filasRetry);
+      } catch (retryError) {
+        return res.status(500).json({ error: 'Error reparando la tabla cartera', details: retryError.message });
+      }
+    }
+
     // Si la tabla no existe en esta base de datos, devolvemos un array vacío pacíficamente
     if (error.code === 'ER_NO_SUCH_TABLE') {
       res.json([]);
@@ -211,6 +229,10 @@ app.post('/api/cartera', async (req, res) => {
         fecha DATE NOT NULL
       )
     `);
+
+    // Parche por si la tabla ya existía en producción pero era la versión vieja sin estas columnas
+    await pool.execute('ALTER TABLE cartera ADD COLUMN tipo VARCHAR(10) NOT NULL DEFAULT "COMPRA"').catch(()=>{});
+    await pool.execute('ALTER TABLE cartera ADD COLUMN comisiones DECIMAL(15,4) DEFAULT 0').catch(()=>{});
 
     const query = `
       INSERT INTO cartera (usuario, simbolo, tipo, cantidad, precio_compra, comisiones, fecha)
