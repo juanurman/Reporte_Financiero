@@ -17,6 +17,9 @@ app.options('*', cors()); // Habilita pre-flight para todas las rutas
 
 app.use(express.json());
 
+// Ignoramos peticiones al favicon para evitar errores 404 en los logs
+app.get('/favicon.ico', (req, res) => res.status(204).end());
+
 const pool = mysql.createPool({
   host: process.env.DB_HOST || 'localhost',
   user: process.env.DB_USER || 'root',
@@ -178,11 +181,31 @@ app.get('/api/cartera', async (req, res) => {
       WHERE c.usuario = ?
       GROUP BY 1
       HAVING SUM(CASE WHEN c.tipo = 'COMPRA' THEN c.cantidad ELSE -c.cantidad END) > 0
-    `, [usuario || 'Babu']);
+    `, [usuario || 'Diego']);
     res.json(filas);
   } catch (error) {
     console.error('❌ Error SQL al obtener cartera:', error.message);
-    res.status(500).json({ error: 'Error SQL al obtener la cartera', details: error.sqlMessage || error.message });
+
+    // 🔧 Auto-reparación silenciosa si las columnas 'tipo' o 'comisiones' no existen en la BD de Vercel
+    if (error.code === 'ER_BAD_FIELD_ERROR') {
+      try {
+        console.log('🔧 Auto-reparando tabla cartera en producción...');
+        await pool.execute('ALTER TABLE cartera ADD COLUMN tipo VARCHAR(10) NOT NULL DEFAULT "COMPRA"').catch(()=>{});
+        await pool.execute('ALTER TABLE cartera ADD COLUMN comisiones DECIMAL(15,4) DEFAULT 0').catch(()=>{});
+        
+        const [filasRetry] = await pool.execute(querySQL, [usuario || 'Diego']);
+        return res.json(filasRetry);
+      } catch (retryError) {
+        return res.status(500).json({ error: 'Error reparando la tabla cartera', details: retryError.message });
+      }
+    }
+
+    // Si la tabla no existe en esta base de datos, devolvemos un array vacío pacíficamente
+    if (error.code === 'ER_NO_SUCH_TABLE') {
+      res.json([]);
+    } else {
+      res.status(500).json({ error: 'Error SQL al obtener la cartera', details: error.sqlMessage || error.message });
+    }
   }
 });
 
@@ -206,17 +229,37 @@ app.get('/api/cartera/transacciones', async (req, res) => {
 
 // Endpoint para agregar una transacción a la cartera
 app.post('/api/cartera', async (req, res) => {
-  const { usuario, simbolo, cantidad, precio_compra, fecha } = req.body;
+  const { usuario, simbolo, tipo, cantidad, precio_compra, comisiones, fecha } = req.body;
   try {
+    // 🛡️ Autocreación de la tabla en localhost si no existe
+    await pool.execute(`
+      CREATE TABLE IF NOT EXISTS cartera (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        usuario VARCHAR(50) NOT NULL,
+        simbolo VARCHAR(20) NOT NULL,
+        tipo VARCHAR(10) NOT NULL,
+        cantidad DECIMAL(15,4) NOT NULL,
+        precio_compra DECIMAL(15,4) NOT NULL,
+        comisiones DECIMAL(15,4) DEFAULT 0,
+        fecha DATE NOT NULL
+      )
+    `);
+
+    // Parche por si la tabla ya existía en producción pero era la versión vieja sin estas columnas
+    await pool.execute('ALTER TABLE cartera ADD COLUMN tipo VARCHAR(10) NOT NULL DEFAULT "COMPRA"').catch(()=>{});
+    await pool.execute('ALTER TABLE cartera ADD COLUMN comisiones DECIMAL(15,4) DEFAULT 0').catch(()=>{});
+
     const query = `
-      INSERT INTO cartera (usuario, simbolo, cantidad, precio_compra, fecha)
-      VALUES (?, ?, ?, ?, ?)
+      INSERT INTO cartera (usuario, simbolo, tipo, cantidad, precio_compra, comisiones, fecha)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
     `;
     await pool.execute(query, [
       usuario || 'Babu',
       simbolo.toUpperCase(),
+      tipo || 'COMPRA',
       cantidad,
       precio_compra,
+      comisiones || 0,
       fecha || new Date().toISOString().split('T')[0]
     ]);
     res.json({ message: 'Transacción guardada con éxito' });

@@ -205,7 +205,7 @@
             <h2 class="text-2xl font-bold dark:text-white text-slate-800 mb-2 relative z-10">Área Privada</h2>
             <p class="dark:text-slate-400 text-slate-500 mb-8 relative z-10">Ingresá tu usuario y contraseña.</p>
             <form @submit.prevent="unlockPortfolio" class="flex flex-col gap-4 relative z-10">
-              <input type="text" v-model="loginUser" required placeholder="Usuario (Ej: Diego)" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-center font-bold" />
+              <input type="text" v-model="loginUser" required placeholder="Usuario" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-center font-bold" />
               <input type="password" v-model="portfolioPassword" required placeholder="Contraseña" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-center font-bold tracking-widest" />
               <p v-if="portfolioError" class="text-red-500 text-sm font-bold animate-pulse">{{ portfolioError }}</p>
               <button type="submit" class="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white font-black text-lg py-3 rounded-xl transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(99,102,241,0.4)]">
@@ -269,6 +269,49 @@
           <!-- Gráfico de Evolución Temporal -->
           <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl p-6 shadow-xl mb-6 h-72 relative">
              <canvas id="portfolioChart" ref="portfolioChartRef"></canvas>
+          </div>
+
+          <!-- Formulario para Registrar Transacción -->
+          <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl p-6 shadow-xl mb-6">
+            <h3 class="text-lg font-bold dark:text-white text-slate-800 mb-4 flex items-center gap-2">
+              📝 Registrar Transacción
+            </h3>
+            <form @submit.prevent="submitTxForm" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 items-end">
+              <div>
+                <label class="block text-xs font-bold dark:text-slate-400 text-slate-500 mb-1 uppercase tracking-wider">Activo</label>
+                <input v-model="txForm.simbolo" required placeholder="Ej: AAPL" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-indigo-500 uppercase font-bold text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold dark:text-slate-400 text-slate-500 mb-1 uppercase tracking-wider">Tipo</label>
+                <select v-model="txForm.tipo" required class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-sm appearance-none cursor-pointer">
+                  <option value="COMPRA">COMPRA</option>
+                  <option value="VENTA">VENTA</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold dark:text-slate-400 text-slate-500 mb-1 uppercase tracking-wider">Cantidad</label>
+                <input type="number" step="any" v-model.number="txForm.cantidad" required placeholder="0.00" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold dark:text-slate-400 text-slate-500 mb-1 uppercase tracking-wider">Precio Unit. (USD)</label>
+                <input type="number" step="any" v-model.number="txForm.precio_compra" required placeholder="0.00" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold dark:text-slate-400 text-slate-500 mb-1 uppercase tracking-wider">Comisiones</label>
+                <input type="number" step="any" v-model.number="txForm.comisiones" placeholder="0.00" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold dark:text-slate-400 text-slate-500 mb-1 uppercase tracking-wider">Fecha</label>
+                <input type="date" v-model="txForm.fecha" required class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-sm cursor-pointer" />
+              </div>
+              <div class="lg:col-span-1">
+                <button type="submit" :disabled="isSubmittingTx" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 disabled:opacity-50 text-white font-black text-sm py-2.5 px-4 rounded-xl transition-all transform hover:scale-105 shadow-md flex items-center justify-center">
+                  {{ isSubmittingTx ? '⏳' : 'Guardar' }}
+                </button>
+              </div>
+            </form>
+            <div v-if="txError" class="text-red-500 bg-red-500/10 px-3 py-2 rounded-lg text-xs font-bold mt-3 text-center">{{ txError }}</div>
+            <div v-if="txMessage" class="text-emerald-500 bg-emerald-500/10 px-3 py-2 rounded-lg text-xs font-bold mt-3 text-center">{{ txMessage }}</div>
           </div>
 
           <!-- Tabla de Tenencias -->
@@ -758,7 +801,7 @@ const formatUSD = (value) => {
 
 const formatAssetPrice = (activo) => {
   const val = Number(activo.precio);
-  if (activo.simbolo === 'ALQ_YIELD') return `${val.toFixed(2)}%`;
+  if (activo.simbolo === 'ALQ_YIELD' || activo.simbolo === '^TNX' || activo.simbolo === '^TYX') return `${val.toFixed(2)}%`;
   if (activo.categoria === 'Moneda' || activo.simbolo.endsWith('.BA') || activo.nombre.includes('AR$')) return `AR$ ${val.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   if (activo.simbolo.startsWith('M2_')) return `US$ ${val.toLocaleString('es-AR', { maximumFractionDigits: 0 })}`;
   return `US$ ${val.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -767,7 +810,7 @@ const formatAssetPrice = (activo) => {
 // --- CONFIGURACIÓN DE API ---
 // Si estamos en producción, apunta a Vercel. Si no, a localhost.
 // Asegúrate de que esta URL sea la "Production Deployment" de tu dashboard de Vercel
-const API_BASE_URL = import.meta.env.PROD ? 'https://reporte-financiero-juanurman-6276s-projects.vercel.app' : 'http://localhost:4000';
+const API_BASE_URL = import.meta.env.PROD ? 'https://reporte-financiero-juanurman-6276s-projects.vercel.app' : 'http://localhost:5000';
 
 // Integración con la API Express (Base de Datos)
 const livePrices = ref([]);
@@ -776,13 +819,14 @@ const portfolioChartRef = ref(null);
 
 // Lógica de Bloqueo de Portafolio
 const isPortfolioUnlocked = ref(false);
-const loginUser = ref('Babu');
+const loginUser = ref('Diego');
 const portfolioPassword = ref('');
 const portfolioError = ref('');
 
 const unlockPortfolio = async () => {
-  if (portfolioPassword.value.length > 0) { 
-    currentUser.value = loginUser.value || 'Babu';
+  // NOTA: Acá validamos contra '1234' para entrar a mirar, la seguridad fuerte está al registrar compras en backend
+  if (portfolioPassword.value === 'Colin') { 
+    currentUser.value = loginUser.value || 'Diego';
     isPortfolioUnlocked.value = true;
     portfolioError.value = '';
     await fetchPortfolio();
@@ -827,7 +871,7 @@ const lastUpdatedDate = computed(() => {
 });
 
 // Lógica y Estado de "Mi Cartera"
-const currentUser = ref('Diego');
+const currentUser = ref('');
 const portfolioHoldings = ref([]);
 
 const fetchPortfolio = async () => {
@@ -835,18 +879,13 @@ const fetchPortfolio = async () => {
     let data = null;
     try {
       const resLocal = await fetch(`${API_BASE_URL}/api/cartera?usuario=${currentUser.value}`);
-      if (resLocal.ok) data = await resLocal.json(); else console.error('Fallo al buscar cartera local');
+      if (resLocal.ok) data = await resLocal.json();
     } catch (e) {}
 
     if (!data) {
-      const apiUrl = import.meta.env.PROD ? `${import.meta.env.BASE_URL}cartera.json?t=${Date.now()}` : '/cartera.json';
+      const apiUrl = import.meta.env.PROD ? `${import.meta.env.BASE_URL}cartera.json?t=${Date.now()}` : './cartera.json';
       const response = await fetch(apiUrl);
-      if (response.ok) {
-        const contentType = response.headers.get("content-type");
-        if (contentType && contentType.includes("application/json")) {
-          data = await response.json();
-        } else console.error('El fallback cartera.json no es un JSON válido');
-      }
+      if (response.ok) data = await response.json();
     }
 
     if (data && Array.isArray(data)) {
@@ -1020,6 +1059,18 @@ const groupedAssets = computed(() => {
     if (!groups[asset.categoria]) groups[asset.categoria] = [];
     groups[asset.categoria].push(asset);
   });
+  
+  // Forzamos a que las tasas de interés queden siempre primeras en la lista de Bonos
+  if (groups['Bonos']) {
+    groups['Bonos'].sort((a, b) => {
+      const isRateA = a.simbolo === '^TNX' || a.simbolo === '^TYX';
+      const isRateB = b.simbolo === '^TNX' || b.simbolo === '^TYX';
+      if (isRateA && !isRateB) return -1;
+      if (!isRateA && isRateB) return 1;
+      return 0;
+    });
+  }
+
   return groups;
 });
 
@@ -1069,7 +1120,7 @@ const getDynamicRendimiento = (activo) => {
 const getPastPriceFormatted = (activo) => {
   const varAPI = activo.variaciones[marketPeriod.value] || 0;
   const pastPrice = Number(activo.precio) / (1 + varAPI / 100);
-  if (activo.simbolo === 'ALQ_YIELD') return `${pastPrice.toFixed(2)}%`;
+  if (activo.simbolo === 'ALQ_YIELD' || activo.simbolo === '^TNX' || activo.simbolo === '^TYX') return `${pastPrice.toFixed(2)}%`;
   if (activo.categoria === 'Moneda' || activo.simbolo.endsWith('.BA') || activo.nombre.includes('AR$')) return `AR$ ${pastPrice.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   if (activo.simbolo.startsWith('M2_')) return `US$ ${pastPrice.toLocaleString('es-AR', { maximumFractionDigits: 0 })}`;
   return `US$ ${pastPrice.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -1181,7 +1232,7 @@ const deleteAsset = async (simbolo) => {
   }
 };
 
-const txForm = ref({ simbolo: '', cantidad: null, precio_compra: null, fecha: new Date().toISOString().split('T')[0], adminPassword: '' });
+const txForm = ref({ simbolo: '', tipo: 'COMPRA', cantidad: null, precio_compra: null, comisiones: null, fecha: new Date().toISOString().split('T')[0] });
 const txError = ref('');
 const txMessage = ref('');
 const isSubmittingTx = ref(false);
@@ -1244,6 +1295,7 @@ const submitTxForm = async () => {
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || 'Error de conexión.');
     txMessage.value = data.message;
+    txForm.value = { simbolo: '', cantidad: null, precio_compra: null, fecha: new Date().toISOString().split('T')[0], adminPassword: txForm.value.adminPassword };
     await fetchPortfolio();
     setTimeout(() => closeTxModal(), 1500);
   } catch (err) {
@@ -1286,15 +1338,11 @@ const fetchLivePrices = async () => {
     }
 
     // Si el servidor local está apagado, leemos la foto estática de GitHub Pages
+    // Si la API falla, leemos la foto estática (solo en producción)
     if (!data) {
-      const apiUrl = import.meta.env.PROD ? `${import.meta.env.BASE_URL}precios.json?t=${Date.now()}` : '/precios.json';
+      const apiUrl = import.meta.env.PROD ? `${import.meta.env.BASE_URL}precios.json?t=${Date.now()}` : './precios.json';
       const response = await fetch(apiUrl);
-      if (response.ok) {
-        const contentType = response.headers.get("content-type");
-        if (contentType && contentType.includes("application/json")) {
-          data = await response.json();
-        }
-      }
+      data = await response.json();
     }
 
     livePrices.value = data || [];
