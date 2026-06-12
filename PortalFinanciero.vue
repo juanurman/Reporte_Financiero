@@ -221,9 +221,11 @@
             <h2 class="text-3xl font-bold dark:text-white text-slate-800 flex items-center gap-3">
               💼 Mi Cartera <span class="text-sm dark:bg-slate-800 bg-slate-200 px-3 py-1 rounded-full dark:text-slate-300 text-slate-600 font-semibold tracking-widest uppercase">Tech & AI</span>
             </h2>
-            <div class="flex items-center gap-2 bg-slate-200/50 dark:bg-slate-800/50 p-1.5 rounded-xl border border-slate-300 dark:border-slate-700 shadow-sm">
+            <div class="flex items-center gap-2 bg-slate-200/50 dark:bg-slate-800/50 p-1.5 rounded-xl border border-slate-300 dark:border-slate-700 shadow-sm flex-wrap">
               <span class="text-sm font-bold dark:text-slate-400 text-slate-600 pl-2">👤 Perfil: <span class="text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">{{ currentUser }}</span></span>
-              <button @click="logoutPortfolio" class="bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 px-3 py-1.5 rounded-lg font-bold text-xs transition ml-2">Cerrar Sesión</button>
+              <button @click="showTxModal = true" class="bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 px-3 py-1.5 rounded-lg font-bold text-xs transition">➕ Operar</button>
+              <button @click="openTxListModal" class="bg-slate-500/10 hover:bg-slate-500/20 text-slate-600 dark:text-slate-400 px-3 py-1.5 rounded-lg font-bold text-xs transition">📜 Historial</button>
+              <button @click="logoutPortfolio" class="bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 px-3 py-1.5 rounded-lg font-bold text-xs transition">Cerrar Sesión</button>
             </div>
           </div>
           
@@ -271,7 +273,7 @@
 
           <!-- Tabla de Tenencias -->
           <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl overflow-hidden shadow-xl overflow-x-auto mb-16">
-            <table class="w-full text-left border-collapse whitespace-nowrap">
+            <table v-if="enrichedPortfolio.length > 0" class="w-full text-left border-collapse whitespace-nowrap">
               <thead>
                 <tr class="dark:bg-slate-800/80 bg-slate-100 border-b dark:border-slate-700 border-slate-200 text-xs uppercase tracking-wider dark:text-slate-400 text-slate-500 font-bold">
                   <th class="px-6 py-4">Activo</th>
@@ -304,6 +306,9 @@
                 </tr>
               </tbody>
             </table>
+            <div v-else class="p-10 text-center dark:text-slate-400 text-slate-500 font-medium">
+              Aún no tenés activos en tu cartera. ¡Empezá a operar para ver tus tenencias acá!
+            </div>
           </div>
         </section>
       </div> <!-- Fin Pestaña Portafolio -->
@@ -381,6 +386,88 @@
           </div>
         </div>
       </div>
+      </Transition>
+
+      <!-- Modal Nueva Transacción -->
+      <Transition name="modal-fade">
+        <div v-if="showTxModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 dark:bg-black/80 bg-slate-900/60 backdrop-blur-md" @click.self="closeTxModal">
+          <div class="dark:bg-slate-900 bg-white p-8 rounded-[2rem] shadow-2xl border dark:border-slate-800 border-slate-200 max-w-md w-full mx-auto text-center relative">
+            <button @click="closeTxModal" class="absolute top-4 right-4 dark:text-white/80 text-slate-500 dark:hover:text-white hover:text-slate-900 bg-slate-100 dark:bg-slate-800 rounded-full w-8 h-8 flex items-center justify-center transition font-bold">✕</button>
+            <div class="text-5xl mb-4">🛒</div>
+            <h2 class="text-2xl font-bold dark:text-white text-slate-800 mb-2">{{ editingTx ? 'Editar Operación' : 'Nueva Operación' }}</h2>
+            <p class="dark:text-slate-400 text-slate-500 mb-6">{{ editingTx ? 'Modificá los detalles de tu compra.' : 'Agregá una compra a tu cartera.' }}</p>
+            
+            <form @submit.prevent="submitTxForm" class="flex flex-col gap-4 text-left">
+              <div>
+                <label class="block text-sm font-bold dark:text-slate-400 text-slate-500 mb-1">Activo (Símbolo)</label>
+                <select v-model="txForm.simbolo" required class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 font-bold appearance-none cursor-pointer">
+                  <option disabled value="">Seleccioná un activo...</option>
+                  <option v-for="activo in livePrices" :key="activo.simbolo" :value="activo.simbolo">
+                    {{ activo.emoji }} {{ activo.simbolo }} - {{ activo.nombre }}
+                  </option>
+                </select>
+              </div>
+              
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-bold dark:text-slate-400 text-slate-500 mb-1">Cantidad</label>
+                  <input type="number" step="any" v-model.number="txForm.cantidad" required placeholder="Ej: 10" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 font-bold" />
+                </div>
+                <div>
+                  <label class="block text-sm font-bold dark:text-slate-400 text-slate-500 mb-1">Precio Unitario</label>
+                  <input type="number" step="any" v-model.number="txForm.precio_compra" required placeholder="Ej: 150.5" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 font-bold" />
+                </div>
+              </div>
+              
+              <div>
+                <label class="block text-sm font-bold dark:text-slate-400 text-slate-500 mb-1">Fecha de Operación</label>
+                <input type="date" v-model="txForm.fecha" required class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 font-bold" />
+              </div>
+
+              <p v-if="txError" class="text-red-500 text-sm font-bold animate-pulse text-center">{{ txError }}</p>
+              <p v-if="txMessage" class="text-emerald-500 text-sm font-bold text-center">{{ txMessage }}</p>
+
+              <button type="submit" :disabled="isSubmittingTx" class="w-full mt-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 disabled:opacity-50 text-white font-black text-lg py-3 rounded-xl transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(99,102,241,0.4)]">
+                {{ isSubmittingTx ? 'Guardando...' : (editingTx ? 'Actualizar Operación' : 'Registrar Operación') }}
+              </button>
+            </form>
+          </div>
+        </div>
+      </Transition>
+
+      <!-- Modal Historial de Transacciones -->
+      <Transition name="modal-fade">
+        <div v-if="showTxListModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 dark:bg-black/80 bg-slate-900/60 backdrop-blur-md" @click.self="showTxListModal = false">
+          <div class="dark:bg-slate-900 bg-white border dark:border-slate-700 border-slate-200 rounded-[2rem] w-full max-w-4xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+            <div class="p-6 md:p-8 dark:text-white text-slate-900 flex justify-between items-center border-b dark:border-white/10 border-slate-200 bg-gradient-to-r dark:from-slate-800 dark:to-slate-900 from-slate-100 to-white">
+              <div class="flex items-center gap-4">
+                <span class="text-4xl">📜</span>
+                <h2 class="text-3xl font-bold">Historial de Operaciones</h2>
+              </div>
+              <button @click="showTxListModal = false" class="dark:text-white/80 text-slate-500 dark:hover:text-white hover:text-slate-900 dark:bg-black/30 bg-black/5 dark:hover:bg-black/50 hover:bg-black/10 rounded-full w-10 h-10 flex items-center justify-center transition text-xl font-bold shadow-inner">✕</button>
+            </div>
+            <div class="p-6 md:p-8 overflow-y-auto custom-scrollbar dark:bg-slate-950/50 bg-slate-100/50">
+              <div v-if="transactions.length === 0" class="text-center py-10 dark:text-slate-400 text-slate-500">No hay operaciones registradas para {{ currentUser }}.</div>
+              <div v-else class="space-y-3">
+                <div v-for="tx in transactions" :key="tx.id" class="dark:bg-slate-800/60 bg-white p-4 rounded-xl border dark:border-slate-700 border-slate-200 flex items-center justify-between gap-4">
+                  <div class="flex items-center gap-4 flex-1">
+                    <span class="text-2xl">{{ tx.emoji || '🛒' }}</span>
+                    <div>
+                      <div class="font-bold dark:text-white text-slate-800">{{ tx.simbolo }}</div>
+                      <div class="text-xs dark:text-slate-400 text-slate-500 font-medium">
+                        {{ new Date(tx.fecha).toLocaleDateString('es-AR', { timeZone: 'UTC' }) }} &bull; {{ tx.cantidad }} x {{ formatUSD(tx.precio_compra) }}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <button @click="openEditTxModal(tx)" class="bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 px-3 py-1.5 rounded-lg font-bold text-xs transition">Editar</button>
+                    <button @click="deleteTransaction(tx.id)" class="bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 px-3 py-1.5 rounded-lg font-bold text-xs transition">Borrar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </Transition>
 
       <!-- PESTAÑA: BASE DE DATOS (Solo Admin) -->
@@ -521,7 +608,11 @@ const selectedPeriod = ref('1y');
 const results = ref([]);
 const funnyPhrase = ref('');
 const showAdminLoginModal = ref(false);
+const showTxModal = ref(false);
+const showTxListModal = ref(false); // Para el historial de operaciones
 const equivalencyText = ref('');
+const editingTx = ref(null); // Para guardar el ID y datos de la tx que se edita
+const transactions = ref([]); // Para el listado del historial
 const periodLabels = { '1w': 'semanal', '1m': 'mensual', '3m': 'trimestral', '6m': 'semestral', 'ytd': 'Desde enero', '1y': 'Fiebre electoral', '3y': 'Post-pandemia', '5y': 'Pre-pandemia' };
 const marketPeriod = ref('1y');
 const marketPeriodLabels = { '1w': '1 Semana', '1m': '1 Mes', '3m': '3 Meses', '6m': '6 Meses', 'ytd': 'YTD', '1y': '1 Año', '3y': '3 Años', '5y': '5 Años' };
@@ -676,7 +767,7 @@ const formatAssetPrice = (activo) => {
 // --- CONFIGURACIÓN DE API ---
 // Si estamos en producción, apunta a Vercel. Si no, a localhost.
 // Asegúrate de que esta URL sea la "Production Deployment" de tu dashboard de Vercel
-const API_BASE_URL = import.meta.env.PROD ? 'https://reporte-financiero-juanurman-6276s-projects.vercel.app' : 'http://localhost:5000';
+const API_BASE_URL = import.meta.env.PROD ? 'https://reporte-financiero-juanurman-6276s-projects.vercel.app' : 'http://localhost:4000';
 
 // Integración con la API Express (Base de Datos)
 const livePrices = ref([]);
@@ -685,25 +776,40 @@ const portfolioChartRef = ref(null);
 
 // Lógica de Bloqueo de Portafolio
 const isPortfolioUnlocked = ref(false);
-const loginUser = ref('Diego');
+const loginUser = ref('Babu');
 const portfolioPassword = ref('');
 const portfolioError = ref('');
 
 const unlockPortfolio = async () => {
-  // NOTA: Acá validamos contra '1234' para entrar a mirar, la seguridad fuerte está al registrar compras en backend
-  if (portfolioPassword.value === 'Colin') { 
-    currentUser.value = loginUser.value || 'Diego';
+  if (portfolioPassword.value.length > 0) { 
+    currentUser.value = loginUser.value || 'Babu';
     isPortfolioUnlocked.value = true;
     portfolioError.value = '';
     await fetchPortfolio();
   } else {
-    portfolioError.value = 'Contraseña incorrecta';
+    portfolioError.value = 'Contraseña requerida';
   }
 };
 
 const logoutPortfolio = () => {
   isPortfolioUnlocked.value = false;
   portfolioPassword.value = '';
+};
+
+const fetchTransactions = async () => {
+  if (!isPortfolioUnlocked.value) return;
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/cartera/transacciones?usuario=${currentUser.value}`);
+    if (res.ok) {
+      transactions.value = await res.json();
+    } else {
+      console.error('Error al cargar historial de transacciones');
+      transactions.value = [];
+    }
+  } catch (e) {
+    console.error('Error de conexión al cargar historial', e);
+    transactions.value = [];
+  }
 };
 
 const lastUpdatedDate = computed(() => {
@@ -729,13 +835,18 @@ const fetchPortfolio = async () => {
     let data = null;
     try {
       const resLocal = await fetch(`${API_BASE_URL}/api/cartera?usuario=${currentUser.value}`);
-      if (resLocal.ok) data = await resLocal.json();
+      if (resLocal.ok) data = await resLocal.json(); else console.error('Fallo al buscar cartera local');
     } catch (e) {}
 
     if (!data) {
-      const apiUrl = import.meta.env.PROD ? `${import.meta.env.BASE_URL}cartera.json?t=${Date.now()}` : './cartera.json';
+      const apiUrl = import.meta.env.PROD ? `${import.meta.env.BASE_URL}cartera.json?t=${Date.now()}` : '/cartera.json';
       const response = await fetch(apiUrl);
-      if (response.ok) data = await response.json();
+      if (response.ok) {
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          data = await response.json();
+        } else console.error('El fallback cartera.json no es un JSON válido');
+      }
     }
 
     if (data && Array.isArray(data)) {
@@ -752,7 +863,10 @@ const fetchPortfolio = async () => {
           (typeof item.purchaseDate === 'string' ? item.purchaseDate.split('T')[0] : new Date(item.purchaseDate).toISOString().split('T')[0]) 
           : new Date().toISOString().split('T')[0]
       }));
-      if (currentTab.value === 'cartera' && isPortfolioUnlocked.value) setTimeout(renderChart, 150);
+      if (currentTab.value === 'cartera' && isPortfolioUnlocked.value) {
+        setTimeout(renderChart, 150);
+        fetchTransactions(); // Cargamos el historial detallado
+      }
     }
   } catch (err) { console.error('Error al cargar la cartera:', err); }
 };
@@ -1072,21 +1186,66 @@ const txError = ref('');
 const txMessage = ref('');
 const isSubmittingTx = ref(false);
 
+const openTxListModal = async () => {
+  await fetchTransactions();
+  showTxListModal.value = true;
+};
+
+const openEditTxModal = (tx) => {
+  editingTx.value = tx; // Guardamos la transacción completa
+  txForm.value = {
+    simbolo: tx.simbolo,
+    cantidad: tx.cantidad,
+    precio_compra: tx.precio_compra,
+    fecha: tx.fecha.split('T')[0] // Aseguramos formato YYYY-MM-DD
+  };
+  showTxListModal.value = false; // Cerramos el listado
+  showTxModal.value = true; // Abrimos el formulario de edición/creación
+};
+
+const deleteTransaction = async (txId) => {
+  if (!confirm(`¿Estás seguro de eliminar la transacción #${txId}?`)) return;
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/cartera/${txId}`, { method: 'DELETE' });
+    if (response.ok) {
+      await fetchTransactions();
+      await fetchPortfolio();
+    } else {
+      const data = await response.json();
+      alert(`Error: ${data.error || 'No se pudo eliminar'}`);
+    }
+  } catch (e) {
+    alert('Error de conexión al eliminar.');
+  }
+};
+
+const closeTxModal = () => {
+  showTxModal.value = false;
+  editingTx.value = null;
+  txForm.value = { simbolo: '', cantidad: null, precio_compra: null, fecha: new Date().toISOString().split('T')[0] };
+  txError.value = '';
+  txMessage.value = '';
+};
+
 const submitTxForm = async () => {
   txError.value = '';
   txMessage.value = '';
   isSubmittingTx.value = true;
+  const isEditing = !!editingTx.value;
+  const url = isEditing ? `${API_BASE_URL}/api/cartera/${editingTx.value.id}` : `${API_BASE_URL}/api/cartera`;
+  const method = isEditing ? 'PUT' : 'POST';
+
   try {
-    const response = await fetch(`${API_BASE_URL}/api/cartera`, {
-      method: 'POST',
+    const response = await fetch(url, {
+      method: method,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...txForm.value, usuario: currentUser.value })
     });
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || 'Error de conexión.');
     txMessage.value = data.message;
-    txForm.value = { simbolo: '', cantidad: null, precio_compra: null, fecha: new Date().toISOString().split('T')[0], adminPassword: txForm.value.adminPassword };
     await fetchPortfolio();
+    setTimeout(() => closeTxModal(), 1500);
   } catch (err) {
     txError.value = err.message === 'Failed to fetch' ? 'No se pudo conectar al servidor local.' : err.message;
   } finally {
@@ -1128,12 +1287,17 @@ const fetchLivePrices = async () => {
 
     // Si el servidor local está apagado, leemos la foto estática de GitHub Pages
     if (!data) {
-      const apiUrl = import.meta.env.PROD ? `${import.meta.env.BASE_URL}precios.json?t=${Date.now()}` : './precios.json';
+      const apiUrl = import.meta.env.PROD ? `${import.meta.env.BASE_URL}precios.json?t=${Date.now()}` : '/precios.json';
       const response = await fetch(apiUrl);
-      data = await response.json();
+      if (response.ok) {
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          data = await response.json();
+        }
+      }
     }
 
-    livePrices.value = data;
+    livePrices.value = data || [];
     if (currentTab.value === 'cartera') {
       setTimeout(renderChart, 150); 
     }

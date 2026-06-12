@@ -59,25 +59,30 @@ const actualizarPrecios = async () => {
 
     console.log(`Procesando ${activosDB.length} activos desde Yahoo Finance...`);
 
-    // Procesamos SECUENCIALMENTE para evitar saturar el pool de conexiones y la DB
-    for (const activo of activosDB) {
-      try {
-        const url = `https://query1.finance.yahoo.com/v8/finance/chart/${activo.simbolo}?interval=1d&range=7d`;
-        const { data } = await axios.get(url, { headers: { 'User-Agent': 'Mozilla/5.0' }, timeout: 10000 });
-        const result = data?.chart?.result?.[0];
-        
-        if (result && result.timestamp && result.indicators.quote[0].close) {
-          for (let i = 0; i < result.timestamp.length; i++) {
-            const precioHistorico = result.indicators.quote[0].close[i];
-            if (precioHistorico) {
-              const fechaHistorica = new Date(result.timestamp[i] * 1000).toLocaleDateString('en-CA', { timeZone: 'America/Argentina/Buenos_Aires' });
-              await guardarPrecio(activo.id, activo.simbolo, precioHistorico, fechaHistorica);
+    // Procesamos en lotes paralelos para mejorar la velocidad
+    const BATCH_SIZE = 10; // Procesar de a 10 activos a la vez
+    for (let i = 0; i < activosDB.length; i += BATCH_SIZE) {
+      const batch = activosDB.slice(i, i + BATCH_SIZE);
+      await Promise.all(batch.map(async (activo) => {
+        try {
+          const url = `https://query1.finance.yahoo.com/v8/finance/chart/${activo.simbolo}?interval=1d&range=7d`;
+          const { data } = await axios.get(url, { headers: { 'User-Agent': 'Mozilla/5.0' }, timeout: 10000 });
+          const result = data?.chart?.result?.[0];
+          
+          if (result && result.timestamp && result.indicators.quote[0].close) {
+            for (let j = 0; j < result.timestamp.length; j++) {
+              const precioHistorico = result.indicators.quote[0].close[j];
+              if (precioHistorico) {
+                const fechaHistorica = new Date(result.timestamp[j] * 1000).toLocaleDateString('en-CA', { timeZone: 'America/Argentina/Buenos_Aires' });
+                await guardarPrecio(activo.id, activo.simbolo, precioHistorico, fechaHistorica);
+              }
             }
           }
+        } catch (err) {
+          console.log(` ⚠️ Error al obtener ${activo.simbolo}: ${err.message}`);
         }
-      } catch (err) {
-        console.log(` ⚠️ Error al obtener ${activo.simbolo}: ${err.message}`);
-      }
+      }));
+      console.log(` - Lote ${i / BATCH_SIZE + 1} procesado.`);
     }
 
     // 2. Obtener datos de los dólares (Sólo DolarAPI actual)

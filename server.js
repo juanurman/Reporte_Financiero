@@ -35,7 +35,7 @@ app.get('/', (req, res) => {
     estado: 'online',
     mensaje: '🚀 API de Reporte Financiero funcionando correctamente en Vercel',
     version: '1.0.0',
-    endpoints: ['/api/precios', '/api/cartera', '/api/activos']
+    endpoints: ['/api/precios', '/api/cartera', '/api/cartera/transacciones', '/api/activos']
   });
 });
 
@@ -178,11 +178,29 @@ app.get('/api/cartera', async (req, res) => {
       WHERE c.usuario = ?
       GROUP BY 1
       HAVING SUM(CASE WHEN c.tipo = 'COMPRA' THEN c.cantidad ELSE -c.cantidad END) > 0
-    `, [usuario || 'Diego']);
+    `, [usuario || 'Babu']);
     res.json(filas);
   } catch (error) {
     console.error('❌ Error SQL al obtener cartera:', error.message);
     res.status(500).json({ error: 'Error SQL al obtener la cartera', details: error.sqlMessage || error.message });
+  }
+});
+
+// Endpoint para obtener TODAS las transacciones de un usuario
+app.get('/api/cartera/transacciones', async (req, res) => {
+  const { usuario } = req.query;
+  try {
+    const [filas] = await pool.execute(`
+      SELECT c.*, a.nombre, a.emoji 
+      FROM cartera c
+      LEFT JOIN activos a ON TRIM(UPPER(c.simbolo)) = a.simbolo
+      WHERE c.usuario = ? 
+      ORDER BY c.fecha DESC, c.id DESC
+    `, [usuario || 'Babu']);
+    res.json(filas);
+  } catch (error) {
+    console.error('❌ Error SQL al obtener transacciones:', error.message);
+    res.status(500).json({ error: 'Error SQL al obtener las transacciones' });
   }
 });
 
@@ -195,7 +213,7 @@ app.post('/api/cartera', async (req, res) => {
       VALUES (?, ?, ?, ?, ?)
     `;
     await pool.execute(query, [
-      usuario || 'Diego',
+      usuario || 'Babu',
       simbolo.toUpperCase(),
       cantidad,
       precio_compra,
@@ -205,6 +223,44 @@ app.post('/api/cartera', async (req, res) => {
   } catch (error) {
     console.error('❌ Error al guardar transacción:', error.message);
     res.status(500).json({ error: 'Error al guardar en la base de datos' });
+  }
+});
+
+// Endpoint para modificar una transacción
+app.put('/api/cartera/:id', async (req, res) => {
+  const { id } = req.params;
+  const { simbolo, cantidad, precio_compra, fecha, usuario } = req.body; // usuario para validación futura
+  try {
+    const query = `
+      UPDATE cartera 
+      SET simbolo = ?, cantidad = ?, precio_compra = ?, fecha = ?
+      WHERE id = ?
+    `;
+    // En un futuro, acá se podría agregar: AND usuario = ?
+    await pool.execute(query, [
+      simbolo.toUpperCase(),
+      cantidad,
+      precio_compra,
+      fecha || new Date().toISOString().split('T')[0],
+      id
+    ]);
+    res.json({ message: `Transacción #${id} actualizada con éxito` });
+  } catch (error) {
+    console.error('❌ Error al actualizar transacción:', error.message);
+    res.status(500).json({ error: 'Error al actualizar en la base de datos' });
+  }
+});
+
+// Endpoint para eliminar una transacción
+app.delete('/api/cartera/:id', async (req, res) => {
+  const { id } = req.params;
+  // En un futuro, acá validaríamos que el usuario que borra sea el dueño de la tx
+  try {
+    await pool.execute('DELETE FROM cartera WHERE id = ?', [id]);
+    res.json({ message: `Transacción #${id} eliminada con éxito` });
+  } catch (error) {
+    console.error('❌ Error al eliminar transacción:', error.message);
+    res.status(500).json({ error: 'Error al eliminar la transacción' });
   }
 });
 
