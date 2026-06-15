@@ -38,7 +38,7 @@ app.get('/', (req, res) => {
     estado: 'online',
     mensaje: '🚀 API de Reporte Financiero funcionando correctamente en Vercel',
     version: '1.0.0',
-    endpoints: ['/api/precios', '/api/cartera', '/api/activos']
+    endpoints: ['/api/precios', '/api/cartera', '/api/activos', '/api/historical-price']
   });
 });
 
@@ -159,6 +159,37 @@ app.delete('/api/activos/:simbolo', async (req, res) => {
   }
 });
 
+// Endpoint para obtener el precio histórico de un activo en una fecha
+app.get('/api/historical-price', async (req, res) => {
+  const { simbolo, fecha } = req.query;
+
+  if (!simbolo || !fecha) {
+    return res.status(400).json({ error: 'Símbolo y fecha son requeridos.' });
+  }
+
+  try {
+    // Buscamos el precio en la fecha exacta o el último anterior disponible (para fines de semana/feriados)
+    const query = `
+      SELECT p.valor
+      FROM precios_historicos p
+      JOIN activos a ON p.activo_id = a.id
+      WHERE a.simbolo = ? AND p.fecha <= ?
+      ORDER BY p.fecha DESC
+      LIMIT 1
+    `;
+    const [rows] = await pool.execute(query, [simbolo.toUpperCase(), fecha]);
+
+    if (rows.length > 0) {
+      res.json({ precio: rows[0].valor });
+    } else {
+      res.status(404).json({ error: 'No se encontró precio para la fecha especificada o anterior.' });
+    }
+  } catch (error) {
+    console.error('❌ Error al obtener precio histórico:', error.message);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
 // Endpoint para obtener la cartera de un usuario
 app.get('/api/cartera', async (req, res) => {
   const { usuario } = req.query;
@@ -184,7 +215,7 @@ app.get('/api/cartera', async (req, res) => {
   `;
 
   try {
-    const [filas] = await pool.execute(querySQL, [usuario || 'Diego']);
+    const [filas] = await pool.execute(querySQL, [usuario || '']);
     res.json(filas);
   } catch (error) {
     console.error('❌ Error SQL al obtener cartera:', error.message);
@@ -196,7 +227,7 @@ app.get('/api/cartera', async (req, res) => {
         await pool.execute('ALTER TABLE cartera ADD COLUMN tipo VARCHAR(10) NOT NULL DEFAULT "COMPRA"').catch(()=>{});
         await pool.execute('ALTER TABLE cartera ADD COLUMN comisiones DECIMAL(15,4) DEFAULT 0').catch(()=>{});
         
-        const [filasRetry] = await pool.execute(querySQL, [usuario || 'Diego']);
+        const [filasRetry] = await pool.execute(querySQL, [usuario || '']);
         return res.json(filasRetry);
       } catch (retryError) {
         return res.status(500).json({ error: 'Error reparando la tabla cartera', details: retryError.message });
@@ -233,13 +264,16 @@ app.post('/api/cartera', async (req, res) => {
     // Parche por si la tabla ya existía en producción pero era la versión vieja sin estas columnas
     await pool.execute('ALTER TABLE cartera ADD COLUMN tipo VARCHAR(10) NOT NULL DEFAULT "COMPRA"').catch(()=>{});
     await pool.execute('ALTER TABLE cartera ADD COLUMN comisiones DECIMAL(15,4) DEFAULT 0').catch(()=>{});
+    
+    // Parche para remover una restricción única que impide cargar varias transacciones el mismo día
+    await pool.execute('ALTER TABLE cartera DROP INDEX uk_usuario_simbolo_fecha').catch(()=>{});
 
     const query = `
       INSERT INTO cartera (usuario, simbolo, tipo, cantidad, precio_compra, comisiones, fecha)
       VALUES (?, ?, ?, ?, ?, ?, ?)
     `;
     await pool.execute(query, [
-      usuario || 'Diego',
+      usuario,
       simbolo.toUpperCase(),
       tipo || 'COMPRA',
       cantidad,

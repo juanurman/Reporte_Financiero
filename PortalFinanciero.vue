@@ -292,7 +292,12 @@
               </div>
               <div>
                 <label class="block text-xs font-bold dark:text-slate-400 text-slate-500 mb-1 uppercase tracking-wider">Precio Unit. (USD)</label>
-                <input type="number" step="any" v-model.number="txForm.precio_compra" required placeholder="0.00" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-sm" />
+                <div class="relative">
+                  <input type="number" step="any" v-model.number="txForm.precio_compra" required placeholder="0.00" :disabled="isFetchingPrice" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-sm disabled:opacity-50 disabled:cursor-wait transition-opacity" />
+                  <div v-if="isFetchingPrice" class="absolute right-3 top-1/2 -translate-y-1/2">
+                    <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-indigo-400"></div>
+                  </div>
+                </div>
               </div>
               <div>
                 <label class="block text-xs font-bold dark:text-slate-400 text-slate-500 mb-1 uppercase tracking-wider">Comisiones</label>
@@ -734,13 +739,13 @@ const portfolioError = ref('');
 const unlockPortfolio = async () => {
   // NOTA: Acá validamos contra '1234' para entrar a mirar, la seguridad fuerte está al registrar compras en backend
   
-  // Normalizamos el usuario ingresado (quitamos espacios extra y pasamos a minúsculas para comparar)
-  const inputUser = loginUser.value.trim().toLowerCase();
+  // Normalizamos el usuario ingresado (quitamos espacios extra y pasamos a mayúsculas)
+  const inputUser = loginUser.value.trim().toUpperCase();
   
-  if (inputUser !== 'diego') {
-    portfolioError.value = 'Usuario incorrecto. El acceso es estricto para Diego.';
-  } else if (portfolioPassword.value === 'Colin') { // Reemplazá TuNuevaClave123 por tu contraseña real
-    currentUser.value = 'DIEGO'; // Forzamos mayúscula para que coincida con la base de datos
+  if (!inputUser) {
+    portfolioError.value = 'Por favor, ingresá un nombre de usuario.';
+  } else if (portfolioPassword.value === 'admin' || (inputUser === 'DIEGO' && portfolioPassword.value === 'Colin')) {
+    currentUser.value = inputUser;
     isPortfolioUnlocked.value = true;
     portfolioError.value = '';
     await fetchPortfolio();
@@ -776,8 +781,7 @@ const fetchPortfolio = async () => {
   try {
     let data = null;
     try {
-      // Usamos DIEGO como default si aún no se inició sesión
-      const targetUser = currentUser.value || 'DIEGO';
+      const targetUser = currentUser.value;
       const resLocal = await fetch(`${API_BASE_URL}/api/cartera?usuario=${targetUser}`);
       
       if (resLocal.ok) {
@@ -1152,6 +1156,7 @@ const txForm = ref({ simbolo: '', tipo: 'COMPRA', cantidad: null, precio_compra:
 const txError = ref('');
 const txMessage = ref('');
 const isSubmittingTx = ref(false);
+const isFetchingPrice = ref(false);
 
 const submitTxForm = async () => {
   txError.value = '';
@@ -1174,6 +1179,40 @@ const submitTxForm = async () => {
     isSubmittingTx.value = false;
   }
 };
+
+let priceTimeout = null;
+const fetchHistoricalPrice = async () => {
+  if (txForm.value.simbolo && txForm.value.fecha) {
+    isFetchingPrice.value = true;
+    txError.value = ''; // Limpiamos errores previos
+    
+    // Reiniciamos el temporizador si el usuario sigue escribiendo
+    if (priceTimeout) clearTimeout(priceTimeout);
+    priceTimeout = setTimeout(async () => {
+      try {
+        const url = `${API_BASE_URL}/api/historical-price?simbolo=${txForm.value.simbolo}&fecha=${txForm.value.fecha}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        if (!response.ok) {
+          txForm.value.precio_compra = null; // Dejamos que el usuario ingrese manualmente
+        } else {
+          txForm.value.precio_compra = Number(data.precio);
+        }
+      } catch (err) {
+        console.error('Error al buscar precio histórico:', err);
+        txForm.value.precio_compra = null; // Permitimos ingreso manual si la API falla
+      } finally {
+        isFetchingPrice.value = false;
+      }
+    }, 500); // Espera 500ms después de la última tecla pulsada
+  }
+};
+
+// Watcher para auto-completar el precio
+watch(() => [txForm.value.simbolo, txForm.value.fecha], () => {
+  fetchHistoricalPrice();
+}, { deep: true });
 
 const rentYieldHistoric = computed(() => {
   const item = livePrices.value.find(a => a.simbolo === 'ALQ_YIELD');
