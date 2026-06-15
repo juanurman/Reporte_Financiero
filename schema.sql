@@ -22,8 +22,7 @@ CREATE TABLE IF NOT EXISTS precios_historicos (
 );
 
 -- Tabla de transacciones (El historial real de compras/ventas)
-DROP TABLE IF EXISTS cartera;
-CREATE TABLE cartera (
+CREATE TABLE IF NOT EXISTS cartera (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario VARCHAR(50) NOT NULL,
     simbolo VARCHAR(50) NOT NULL,

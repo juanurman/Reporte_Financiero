@@ -1,0 +1,686 @@
+[
+  {
+    "id": 1,
+    "nombre": "Dólar Oficial",
+    "simbolo": "DOLAR_OFICIAL",
+    "categoria": "Moneda",
+    "emoji": "💵",
+    "precio": 1460,
+    "fecha": "2026-06-10T03:00:00.000Z",
+    "variaciones": {
+      "1w": 0,
+      "1m": 3.18,
+      "3m": 3.18,
+      "6m": -0.34,
+      "9m": -0.34,
+      "1y": 21.67,
+      "3y": 850.5,
+      "5y": 3100.2
+    }
+  },
+  {
+    "id": 2,
+    "nombre": "Dólar Blue",
+    "simbolo": "DOLAR_BLUE",
+    "categoria": "Moneda",
+    "emoji": "💵",
+    "precio": 1460,
+    "fecha": "2026-06-10T03:00:00.000Z",
+    "variaciones": {
+      "1w": 2.1,
+      "1m": 3.91,
+      "3m": 2.82,
+      "6m": 1.04,
+      "9m": 2.46,
+      "1y": 22.69,
+      "3y": 850.5,
+      "5y": 3100.2
+    }
+  },
+  {
+    "id": 3,
+    "nombre": "Dólar MEP",
+    "simbolo": "DOLAR_MEP",
+    "categoria": "Moneda",
+    "emoji": "💵",
+    "precio": 1460.6,
+    "fecha": "2026-06-10T03:00:00.000Z",
+    "variaciones": {
+      "1w": -0.1,
+      "1m": 1.95,
+      "3m": 2.56,
+      "6m": -1.32,
+      "9m": -1.04,
+      "1y": 22.55,
+      "3y": 850.5,
+      "5y": 3100.2
+    }
+  },
+  {
+    "id": 4,
+    "nombre": "Dólar CCL",
+    "simbolo": "DOLAR_CCL",
+    "categoria": "Moneda",
+    "emoji": "💵",
+    "precio": 1513.9,
+    "fecha": "2026-06-10T03:00:00.000Z",
+    "variaciones": {
+      "1w": -0.11,
+      "1m": 2.3,
+      "3m": 3.78,
+      "6m": 0.11,
+      "9m": 2.53,
+      "1y": 26.93,
+      "3y": 850.5,
+      "5y": 3100.2
+    }
+  },
+  {
+    "id": 5,
+    "nombre": "SPDR S&P 500 ETF Trust",
+    "simbolo": "SPY",
+    "categoria": "Índice/ETF",
+    "emoji": "📈",
+    "precio": 732.52,
+    "fecha": "2026-06-10T03:00:00.000Z",
+    "variaciones": {
+      "1w": -2.88,
+      "1m": -0.92,
+      "3m": 9.98,
+      "6m": 7.45,
+      "9m": 11.43,
+      "1y": 21.46,
+      "3y": 45.3,
+      "5y": 125.8
+    }
+  },
+  {
+    "id": 6,
+    "nombre": "Apple Inc.",
+    "simbolo": "AAPL",
+    "categoria": "Big Tech",
+    "emoji": "🍎",
+    "precio": 289.84,
+    "fecha": "2026-06-10T03:00:00.000Z",
+    "variaciones": {
+      "1w": -6.58,
+      "1m": -0.97,
+      "3m": 13.32,
+      "6m": 4.15,
+      "9m": 23.83,
+      "1y": 43.01,
+      "3y": 45.3,
+      "5y": 125.8
+    }
+  },
+  {
+    "id": 7,
+    "nombre": "Alphabet Inc.",
+    "simbolo": "GOOGL",
+    "categoria": "Big Tech",
+    "emoji": "🔍",
+    "precio": 363.135,
+    "fecha": "2026-06-10T03:00:00.000Z",
+    "variaciones": {
+      "1w": 1.15,
+      "1m": -6.56,
+      "3m": 19.63,
+      "6m": 17.41,
+      "9m": 50.8,
+      "1y": 103.32,
+      "3y": 45.3,
+      "5y": 125.8
+    }
+  },
+  {
+    "id": 8,
+    "nombre": "Microsoft Corporation",
+    "simbolo": "MSFT",
+    "categoria": "Big Tech",
+    "emoji": "🪟",
+    "precio": 398.515,
+    "fecha": "2026-06-10T03:00:00.000Z",
+    "variaciones": {
+      "1w": -6.75,
+      "1m": -3.43,
+      "3m": -0.83,
+      "6m": -16.72,
+      "9m": -21.84,
+      "1y": -15.38,
+      "3y": 45.3,
+      "5y": 125.8
+    }
+  },
+  {
+    "id": 9,
+    "nombre": "Nvidia Corporation",
+    "simbolo": "NVDA",
+    "categoria": "Big Tech",
+    "emoji": "🟩",
+    "precio": 205.61,
+    "fecha": "2026-06-10T03:00:00.000Z",
+    "variaciones": {
+      "1w": -4.26,
+      "1m": -6.3,
+      "3m": 12.27,
+      "6m": 17.48,
+      "9m": 15.63,
+      "1y": 42.82,
+      "3y": 45.3,
+      "5y": 125.8
+    }
+  },
+  {
+    "id": 10,
+    "nombre": "Meta Platforms",
+    "simbolo": "META",
+    "categoria": "Big Tech",
+    "emoji": "🌐",
+    "precio": 584.895,
+    "fecha": "2026-06-10T03:00:00.000Z",
+    "variaciones": {
+      "1w": -6.11,
+      "1m": -2.33,
+      "3m": -8.35,
+      "6m": -9.21,
+      "9m": -22.59,
+      "1y": -16.73,
+      "3y": 45.3,
+      "5y": 125.8
+    }
+  },
+  {
+    "id": 11,
+    "nombre": "Amazon.com Inc.",
+    "simbolo": "AMZN",
+    "categoria": "Big Tech",
+    "emoji": "📦",
+    "precio": 242.095,
+    "fecha": "2026-06-10T03:00:00.000Z",
+    "variaciones": {
+      "1w": -3.17,
+      "1m": -10,
+      "3m": 15.54,
+      "6m": 7.03,
+      "9m": 6.11,
+      "1y": 11.25,
+      "3y": 45.3,
+      "5y": 125.8
+    }
+  },
+  {
+    "id": 12,
+    "nombre": "YPF S.A. (ADR)",
+    "simbolo": "YPF",
+    "categoria": "Merval",
+    "emoji": "🛢️",
+    "precio": 54.375,
+    "fecha": "2026-06-10T03:00:00.000Z",
+    "variaciones": {
+      "1w": -0.96,
+      "1m": 21.02,
+      "3m": 42.12,
+      "6m": 55.22,
+      "9m": 100.79,
+      "1y": 49.83,
+      "3y": 45.3,
+      "5y": 125.8
+    }
+  },
+  {
+    "id": 13,
+    "nombre": "Grupo Financiero Galicia (ADR)",
+    "simbolo": "GGAL",
+    "categoria": "Merval",
+    "emoji": "🏦",
+    "precio": 49.395,
+    "fecha": "2026-06-10T03:00:00.000Z",
+    "variaciones": {
+      "1w": 2.2,
+      "1m": 13.45,
+      "3m": 14.58,
+      "6m": 2.03,
+      "9m": 64.92,
+      "1y": -13.84,
+      "3y": 45.3,
+      "5y": 125.8
+    }
+  },
+  {
+    "id": 14,
+    "nombre": "Pampa Energía (ADR)",
+    "simbolo": "PAM",
+    "categoria": "Merval",
+    "emoji": "⚡",
+    "precio": 82.525,
+    "fecha": "2026-06-10T03:00:00.000Z",
+    "variaciones": {
+      "1w": -1.93,
+      "1m": 0.76,
+      "3m": 0.26,
+      "6m": -6.66,
+      "9m": 38.74,
+      "1y": 8.56,
+      "3y": 45.3,
+      "5y": 125.8
+    }
+  },
+  {
+    "id": 15,
+    "nombre": "Banco Macro (ADR)",
+    "simbolo": "BMA",
+    "categoria": "Merval",
+    "emoji": "🏛️",
+    "precio": 86.71,
+    "fecha": "2026-06-10T03:00:00.000Z",
+    "variaciones": {
+      "1w": 0.66,
+      "1m": 16.03,
+      "3m": 23.59,
+      "6m": -0.3,
+      "9m": 97.97,
+      "1y": 10.57,
+      "3y": 45.3,
+      "5y": 125.8
+    }
+  },
+  {
+    "id": 16,
+    "nombre": "IRSA Inmuebles (ADR)",
+    "simbolo": "IRS",
+    "categoria": "Real Estate",
+    "emoji": "🏢",
+    "precio": 15.53,
+    "fecha": "2026-06-10T03:00:00.000Z",
+    "variaciones": {
+      "1w": 4.65,
+      "1m": 11.09,
+      "3m": 4.23,
+      "6m": 1.24,
+      "9m": 30.72,
+      "1y": 3.19,
+      "3y": 45.3,
+      "5y": 125.8
+    }
+  },
+  {
+    "id": 17,
+    "nombre": "Cresud (ADR)",
+    "simbolo": "CRESY",
+    "categoria": "Real Estate",
+    "emoji": "🏗️",
+    "precio": 11.2,
+    "fecha": "2026-06-10T03:00:00.000Z",
+    "variaciones": {
+      "1w": 0.36,
+      "1m": 0.36,
+      "3m": -5.17,
+      "6m": -5.33,
+      "9m": 34.74,
+      "1y": 1.68,
+      "3y": 45.3,
+      "5y": 125.8
+    }
+  },
+  {
+    "id": 18,
+    "nombre": "M2 Núñez",
+    "simbolo": "M2_NUN",
+    "categoria": "Real Estate",
+    "emoji": "📍",
+    "precio": 2722.7,
+    "fecha": "2026-06-10T03:00:00.000Z",
+    "variaciones": {
+      "1w": 0.46,
+      "1m": -0.73,
+      "3m": 0.9,
+      "6m": 2.76,
+      "9m": 3.09,
+      "1y": 4.19,
+      "3y": -15.5,
+      "5y": -25.2
+    }
+  },
+  {
+    "id": 19,
+    "nombre": "M2 Belgrano",
+    "simbolo": "M2_BEL",
+    "categoria": "Real Estate",
+    "emoji": "📍",
+    "precio": 2890.73,
+    "fecha": "2026-06-10T03:00:00.000Z",
+    "variaciones": {
+      "1w": -0.88,
+      "1m": -1,
+      "3m": 0.18,
+      "6m": 1.28,
+      "9m": 2.11,
+      "1y": 3.43,
+      "3y": -15.5,
+      "5y": -25.2
+    }
+  },
+  {
+    "id": 20,
+    "nombre": "M2 Palermo",
+    "simbolo": "M2_PAL",
+    "categoria": "Real Estate",
+    "emoji": "📍",
+    "precio": 3264.41,
+    "fecha": "2026-06-10T03:00:00.000Z",
+    "variaciones": {
+      "1w": -0.13,
+      "1m": 0.07,
+      "3m": 0.87,
+      "6m": 1.86,
+      "9m": 3.92,
+      "1y": 5.61,
+      "3y": -15.5,
+      "5y": -25.2
+    }
+  },
+  {
+    "id": 21,
+    "nombre": "M2 Recoleta",
+    "simbolo": "M2_REC",
+    "categoria": "Real Estate",
+    "emoji": "📍",
+    "precio": 2971.03,
+    "fecha": "2026-06-10T03:00:00.000Z",
+    "variaciones": {
+      "1w": -1.23,
+      "1m": 0.18,
+      "3m": 0.81,
+      "6m": 0.77,
+      "9m": 0.87,
+      "1y": 2.38,
+      "3y": -15.5,
+      "5y": -25.2
+    }
+  },
+  {
+    "id": 22,
+    "nombre": "Rendimiento Alquiler",
+    "simbolo": "ALQ_YIELD",
+    "categoria": "Real Estate",
+    "emoji": "🏠",
+    "precio": 5.16,
+    "fecha": "2026-06-10T03:00:00.000Z",
+    "variaciones": {
+      "1w": 0.19,
+      "1m": 0.78,
+      "3m": 2.58,
+      "6m": 5.74,
+      "9m": 9.09,
+      "1y": 13.41,
+      "3y": 45.3,
+      "5y": 125.8
+    }
+  },
+  {
+    "id": 30001,
+    "nombre": "Micron Technology",
+    "simbolo": "MU",
+    "categoria": "Wall Street",
+    "emoji": "💾",
+    "precio": 905.4796,
+    "fecha": "2026-06-10T03:00:00.000Z",
+    "variaciones": {
+      "1w": -16.13,
+      "1m": 13.85,
+      "3m": 123.38,
+      "6m": 275.5,
+      "9m": 475.89,
+      "1y": 693.31,
+      "3y": 45.3,
+      "5y": 125.8
+    }
+  },
+  {
+    "id": 30002,
+    "nombre": "Taiwan Semiconductor",
+    "simbolo": "TSM",
+    "categoria": "Wall Street",
+    "emoji": "🏭",
+    "precio": 414.62,
+    "fecha": "2026-06-10T03:00:00.000Z",
+    "variaciones": {
+      "1w": -5.05,
+      "1m": 2.49,
+      "3m": 23.14,
+      "6m": 41.97,
+      "9m": 59.88,
+      "1y": 95.15,
+      "3y": 45.3,
+      "5y": 125.8
+    }
+  },
+  {
+    "id": 60001,
+    "nombre": "Bitcoin USD",
+    "simbolo": "BTC-USD",
+    "categoria": "Cripto",
+    "emoji": "₿",
+    "precio": 61631.2109,
+    "fecha": "2026-06-09T03:00:00.000Z",
+    "variaciones": {
+      "1w": -3.72,
+      "1m": -24.59,
+      "3m": -12.57,
+      "6m": -31.73,
+      "9m": -46.85,
+      "1y": -43.29,
+      "3y": 45.3,
+      "5y": 125.8
+    }
+  },
+  {
+    "id": 60003,
+    "nombre": "iShares 20+ Year Treasury Bond ETF",
+    "simbolo": "TLT",
+    "categoria": "Bonos",
+    "emoji": "📜",
+    "precio": 85.1,
+    "fecha": "2026-06-10T03:00:00.000Z",
+    "variaciones": {
+      "1w": -0.25,
+      "1m": -0.54,
+      "3m": -2.15,
+      "6m": -2.56,
+      "9m": -5.39,
+      "1y": -0.91,
+      "3y": 45.3,
+      "5y": 125.8
+    }
+  },
+  {
+    "id": 90001,
+    "nombre": "Coca-Cola Company",
+    "simbolo": "KO",
+    "categoria": "Wall Street",
+    "emoji": "🥤",
+    "precio": 82.8458,
+    "fecha": "2026-06-10T03:00:00.000Z",
+    "variaciones": {
+      "1w": 5.19,
+      "1m": 5.32,
+      "3m": 6.75,
+      "6m": 17.48,
+      "9m": 23.63,
+      "1y": 14.51,
+      "3y": 45.3,
+      "5y": 125.8
+    }
+  },
+  {
+    "id": 120001,
+    "nombre": "Tesla, Inc.",
+    "simbolo": "TSLA",
+    "categoria": "Wall Street",
+    "emoji": "🚗",
+    "precio": 391.87,
+    "fecha": "2026-06-10T03:00:00.000Z",
+    "variaciones": {
+      "1w": -7.51,
+      "1m": -11.94,
+      "3m": -0.79,
+      "6m": -14.62,
+      "9m": -1.03,
+      "1y": 20.17,
+      "3y": 45.3,
+      "5y": 125.8
+    }
+  },
+  {
+    "id": 120002,
+    "nombre": "Mercado Libre",
+    "simbolo": "MELI",
+    "categoria": "Wall Street",
+    "emoji": "📦",
+    "precio": 1604.14,
+    "fecha": "2026-06-10T03:00:00.000Z",
+    "variaciones": {
+      "1w": -2.1,
+      "1m": 3.01,
+      "3m": -4.52,
+      "6m": -20.43,
+      "9m": -31.43,
+      "1y": -33.06,
+      "3y": 45.3,
+      "5y": 125.8
+    }
+  },
+  {
+    "id": 120004,
+    "nombre": "AMD",
+    "simbolo": "AMD",
+    "categoria": "Wall Street",
+    "emoji": "💾",
+    "precio": 469.05,
+    "fecha": "2026-06-10T03:00:00.000Z",
+    "variaciones": {
+      "1w": -13.54,
+      "1m": 2.24,
+      "3m": 137.21,
+      "6m": 122.53,
+      "9m": 195.8,
+      "1y": 280.6,
+      "3y": 45.3,
+      "5y": 125.8
+    }
+  },
+  {
+    "id": 150001,
+    "nombre": "Nasdaq 100",
+    "simbolo": "NDX",
+    "categoria": "Índice/ETF",
+    "emoji": "🌎",
+    "precio": 29084.5,
+    "fecha": "2026-06-09T03:00:00.000Z",
+    "variaciones": {
+      "1w": -5.14,
+      "1m": -0.51,
+      "3m": 16.5,
+      "6m": 13.23,
+      "9m": 20.72,
+      "1y": 32.55,
+      "3y": 45.3,
+      "5y": 125.8
+    }
+  },
+  {
+    "id": 180001,
+    "nombre": "ASML",
+    "simbolo": "ASML",
+    "categoria": "Wall Street",
+    "emoji": "📱",
+    "precio": 1768.53,
+    "fecha": "2026-06-10T03:00:00.000Z",
+    "variaciones": {
+      "1w": 2.44,
+      "1m": 12.95,
+      "3m": 30.85,
+      "6m": 63.62,
+      "9m": 117.3,
+      "1y": 125.3,
+      "3y": 45.3,
+      "5y": 125.8
+    }
+  },
+  {
+    "id": 270006,
+    "nombre": "Invesco QQQ Trust",
+    "simbolo": "QQQ",
+    "categoria": "Índice/ETF",
+    "emoji": "📊",
+    "precio": 701.17,
+    "fecha": "2026-06-10T03:00:00.000Z",
+    "variaciones": {
+      "1w": -5.78,
+      "1m": -3.99,
+      "3m": -3.99,
+      "6m": -3.99,
+      "9m": -3.99,
+      "1y": -3.99,
+      "3y": 45.3,
+      "5y": 125.8
+    }
+  },
+  {
+    "id": 270025,
+    "nombre": "The Walt Disney Company",
+    "simbolo": "DIS",
+    "categoria": "Wall Street",
+    "emoji": "🏰",
+    "precio": 98.3,
+    "fecha": "2026-06-10T03:00:00.000Z",
+    "variaciones": {
+      "1w": -1.1,
+      "1m": -4.82,
+      "3m": -4.82,
+      "6m": -4.82,
+      "9m": -4.82,
+      "1y": -4.82,
+      "3y": 45.3,
+      "5y": 125.8
+    }
+  },
+  {
+    "id": 270026,
+    "nombre": "Visa Inc.",
+    "simbolo": "V",
+    "categoria": "Wall Street",
+    "emoji": "💳",
+    "precio": 322.5,
+    "fecha": "2026-06-10T03:00:00.000Z",
+    "variaciones": {
+      "1w": 3.23,
+      "1m": -1.22,
+      "3m": -1.22,
+      "6m": -1.22,
+      "9m": -1.22,
+      "1y": -1.22,
+      "3y": 45.3,
+      "5y": 125.8
+    }
+  },
+  {
+    "id": 270027,
+    "nombre": "Berkshire Hathaway Inc.",
+    "simbolo": "BRK-B",
+    "categoria": "Wall Street",
+    "emoji": "🏠",
+    "precio": 486.49,
+    "fecha": "2026-06-10T03:00:00.000Z",
+    "variaciones": {
+      "1w": 2.34,
+      "1m": 0.59,
+      "3m": 0.59,
+      "6m": 0.59,
+      "9m": 0.59,
+      "1y": 0.59,
+      "3y": 45.3,
+      "5y": 125.8
+    }
+  }
+]

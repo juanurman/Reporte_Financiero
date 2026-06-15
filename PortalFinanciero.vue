@@ -433,7 +433,9 @@
 
       <!-- PESTAÑA: BASE DE DATOS (Solo Admin) -->
       <div v-if="currentTab === 'add_ticker' && isAdmin" class="space-y-10 animate-fade-in relative z-10 py-8">
-        <section class="dark:bg-slate-900 bg-white p-8 rounded-[2rem] shadow-2xl border dark:border-slate-800 border-slate-200 max-w-2xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+          <!-- Columna 1: Agregar Activo -->
+          <section class="dark:bg-slate-900 bg-white p-8 rounded-[2rem] shadow-2xl border dark:border-slate-800 border-slate-200 h-fit">
             <h2 class="text-3xl font-bold dark:text-white text-slate-800 flex items-center gap-3">
               ⚙️ Agregar Activo
             </h2>
@@ -519,6 +521,50 @@
             <p v-if="adminMessage" class="text-emerald-500 font-bold text-center mt-4 bg-emerald-500/10 p-2 rounded-lg">{{ adminMessage }}</p>
           </form>
         </section>
+
+          <!-- Columna 2: Crear Usuario -->
+          <section class="dark:bg-slate-900 bg-white p-8 rounded-[2rem] shadow-2xl border dark:border-slate-800 border-slate-200 h-fit">
+            <h2 class="text-3xl font-bold dark:text-white text-slate-800 flex items-center gap-3 mb-2">
+              👤 Crear Usuario
+            </h2>
+            <p class="dark:text-slate-400 text-slate-500 mb-8">
+              Generá un acceso privado para un nuevo inversor.
+            </p>
+            <form @submit.prevent="submitUserForm" class="space-y-4">
+              <div>
+                <label class="block text-sm font-bold dark:text-slate-400 text-slate-500 mb-1">Nombre de Usuario</label>
+                <input v-model="userForm.username" required placeholder="Ej: MATIAS" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 uppercase font-bold" />
+              </div>
+              <div>
+                <label class="block text-sm font-bold dark:text-slate-400 text-slate-500 mb-1">Contraseña</label>
+                <input type="password" v-model="userForm.password" required placeholder="Contraseña segura" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 font-bold tracking-widest" />
+              </div>
+              <button type="submit" :disabled="isSubmittingUser" class="w-full mt-4 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 disabled:opacity-50 text-white font-black text-lg py-3 rounded-xl transition-all transform hover:scale-105 shadow-lg">
+                {{ isSubmittingUser ? 'Guardando...' : 'Crear Usuario' }}
+              </button>
+              <p v-if="userError" class="text-red-500 font-bold text-center mt-4 bg-red-500/10 p-2 rounded-lg">{{ userError }}</p>
+              <p v-if="userMessage" class="text-emerald-500 font-bold text-center mt-4 bg-emerald-500/10 p-2 rounded-lg">{{ userMessage }}</p>
+            </form>
+          </section>
+          
+          <!-- Fila inferior: Lista de Usuarios -->
+          <div class="lg:col-span-2">
+            <section class="dark:bg-slate-900 bg-white p-8 rounded-[2rem] shadow-2xl border dark:border-slate-800 border-slate-200">
+              <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold dark:text-white text-slate-800 flex items-center gap-2">👥 Inversores Registrados</h3>
+                <button @click="fetchUsers" class="text-sm font-bold bg-indigo-500/10 text-indigo-500 px-3 py-1.5 rounded-lg hover:bg-indigo-500/20 transition">↻ Actualizar</button>
+              </div>
+              <div v-if="usersList.length === 0" class="text-slate-500 font-medium text-center py-4">No hay usuarios creados aún en la base de datos.</div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <div v-for="user in usersList" :key="user.id" class="flex justify-between items-center dark:bg-slate-950 bg-slate-50 p-4 rounded-xl border dark:border-slate-800 border-slate-200 shadow-sm transition hover:border-slate-400 dark:hover:border-slate-600">
+                  <span class="font-bold dark:text-white text-slate-800 text-lg">👤 {{ user.username }}</span>
+                  <button @click="deleteUser(user.username)" class="text-red-500 hover:text-red-600 font-bold bg-red-500/10 hover:bg-red-500/20 px-3 py-1.5 rounded-lg transition-colors text-xs uppercase tracking-wider">Eliminar</button>
+                </div>
+              </div>
+            </section>
+          </div>
+
+        </div>
       </div>
 
       <!-- Footer sutil para acceder al Panel Admin -->
@@ -744,13 +790,35 @@ const unlockPortfolio = async () => {
   
   if (!inputUser) {
     portfolioError.value = 'Por favor, ingresá un nombre de usuario.';
-  } else if (portfolioPassword.value === 'admin' || (inputUser === 'DIEGO' && portfolioPassword.value === 'Colin')) {
+    return;
+  }
+  
+  // Solo dejamos el acceso de emergencia estricto local para Diego
+  if (inputUser === 'DIEGO' && portfolioPassword.value === 'Colin') {
     currentUser.value = inputUser;
     isPortfolioUnlocked.value = true;
     portfolioError.value = '';
     await fetchPortfolio();
   } else {
-    portfolioError.value = 'Contraseña incorrecta';
+    // Intento contra la nueva base de datos dinámica
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: inputUser, password: portfolioPassword.value })
+      });
+      if (res.ok) {
+        currentUser.value = inputUser;
+        isPortfolioUnlocked.value = true;
+        portfolioError.value = '';
+        await fetchPortfolio();
+      } else {
+        const data = await res.json();
+        portfolioError.value = data.error || 'Contraseña incorrecta';
+      }
+    } catch (e) {
+      portfolioError.value = 'Error al conectar con la base de datos de usuarios';
+    }
   }
 };
 
@@ -1085,11 +1153,71 @@ const adminError = ref('');
 const adminMessage = ref('');
 const isSubmittingAdmin = ref(false);
 
+// --- Lógica de la sub-sección de usuarios ---
+const userForm = ref({ username: '', password: '' });
+const userError = ref('');
+const userMessage = ref('');
+const isSubmittingUser = ref(false);
+
+const submitUserForm = async () => {
+  userError.value = '';
+  userMessage.value = '';
+  isSubmittingUser.value = true;
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/usuarios`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...userForm.value, adminPassword: adminLoginPass.value })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Error de conexión.');
+    userMessage.value = data.message;
+    userForm.value = { username: '', password: '' };
+    await fetchUsers(); // Actualizamos la lista automáticamente al crear uno
+  } catch (err) {
+    userError.value = err.message === 'Failed to fetch' ? 'No se pudo conectar al servidor local.' : err.message;
+  } finally {
+    isSubmittingUser.value = false;
+  }
+};
+
+const usersList = ref([]);
+
+const fetchUsers = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/usuarios?adminPassword=${adminLoginPass.value}`);
+    if (response.ok) {
+      usersList.value = await response.json();
+    }
+  } catch (e) {
+    console.error('Error al obtener usuarios:', e);
+  }
+};
+
+const deleteUser = async (username) => {
+  if (!confirm(`¿Eliminar acceso para ${username}? Esto NO borra sus transacciones de la cartera, solo le impide iniciar sesión en el futuro.`)) return;
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/usuarios/${username}`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ adminPassword: adminLoginPass.value })
+    });
+    if (response.ok) {
+      await fetchUsers(); // Recargamos la lista
+    } else {
+      alert('Error al eliminar usuario');
+    }
+  } catch (e) {
+    alert('Error de red al intentar eliminar al usuario');
+  }
+};
+
 const loginAdmin = () => {
   if (adminLoginUser.value === 'admin' && adminLoginPass.value === 'admin') {
     isAdmin.value = true;
     adminLoginError.value = '';
     showAdminLoginModal.value = false;
+    fetchUsers(); // Buscamos los usuarios en la BD apenas entra el admin
     currentTab.value = 'mercados'; // Fuerza la redirección al Home
   } else {
     adminLoginError.value = 'Credenciales incorrectas.';

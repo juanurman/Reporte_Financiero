@@ -159,6 +159,91 @@ app.delete('/api/activos/:simbolo', async (req, res) => {
   }
 });
 
+// Endpoint para crear usuarios (Admin)
+app.post('/api/usuarios', async (req, res) => {
+  const { username, password, adminPassword } = req.body;
+  
+  if (adminPassword !== 'admin') {
+    return res.status(401).json({ error: 'No autorizado' });
+  }
+  if (!username || !password) {
+    return res.status(400).json({ error: 'Usuario y contraseña son requeridos' });
+  }
+
+  try {
+    await pool.execute(`
+      CREATE TABLE IF NOT EXISTS usuarios (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        username VARCHAR(50) UNIQUE NOT NULL,
+        password VARCHAR(255) NOT NULL
+      )
+    `);
+
+    const query = `
+      INSERT INTO usuarios (username, password)
+      VALUES (?, ?)
+      ON DUPLICATE KEY UPDATE password = VALUES(password)
+    `;
+    await pool.execute(query, [username.toUpperCase(), password]);
+    res.json({ message: `Usuario ${username.toUpperCase()} creado/actualizado con éxito` });
+  } catch (error) {
+    console.error('❌ Error al crear usuario:', error.message);
+    res.status(500).json({ error: 'Error al guardar el usuario' });
+  }
+});
+
+// Endpoint para obtener la lista de usuarios (Admin)
+app.get('/api/usuarios', async (req, res) => {
+  const { adminPassword } = req.query;
+  if (adminPassword !== 'admin') {
+    return res.status(401).json({ error: 'No autorizado' });
+  }
+  try {
+    const [rows] = await pool.execute('SELECT id, username FROM usuarios ORDER BY id DESC');
+    res.json(rows);
+  } catch (error) {
+    if (error.code === 'ER_NO_SUCH_TABLE') res.json([]); // Si no hay tabla, devolvemos array vacío
+    else res.status(500).json({ error: 'Error al obtener usuarios' });
+  }
+});
+
+// Endpoint para eliminar un usuario (Admin)
+app.delete('/api/usuarios/:username', async (req, res) => {
+  const { adminPassword } = req.body;
+  if (adminPassword !== 'admin') {
+    return res.status(401).json({ error: 'No autorizado' });
+  }
+  try {
+    await pool.execute('DELETE FROM usuarios WHERE username = ?', [req.params.username.toUpperCase()]);
+    res.json({ message: 'Usuario eliminado con éxito' });
+  } catch (error) {
+    res.status(500).json({ error: 'Error al eliminar usuario' });
+  }
+});
+
+// Endpoint para validar login de un usuario
+app.post('/api/login', async (req, res) => {
+  const { username, password } = req.body;
+  try {
+    // Primero verificamos si el usuario existe en la base de datos
+    const [users] = await pool.execute('SELECT * FROM usuarios WHERE username = ?', [username.toUpperCase()]);
+    
+    if (users.length === 0) {
+      return res.status(401).json({ error: 'El usuario no existe. Pedile al Admin que te cree una cuenta.' });
+    }
+
+    // Si existe, verificamos su contraseña (o si usa la clave maestra 'admin')
+    if (users[0].password === password || password === 'admin') {
+      res.json({ success: true });
+    } else {
+      res.status(401).json({ error: 'Contraseña incorrecta' });
+    }
+  } catch (error) {
+    if (error.code === 'ER_NO_SUCH_TABLE') res.status(401).json({ error: 'Usuario o contraseña incorrectos' });
+    else res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
 // Endpoint para obtener el precio histórico de un activo en una fecha
 app.get('/api/historical-price', async (req, res) => {
   const { simbolo, fecha } = req.query;
