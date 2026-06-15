@@ -234,6 +234,8 @@ app.post('/api/login', async (req, res) => {
 
     // Si existe, verificamos su contraseña (o si usa la clave maestra 'admin')
     if (users[0].password === password || password === 'admin') {
+    // Si existe, verificamos que su contraseña sea exactamente la correcta
+    if (users[0].password === password) {
       res.json({ success: true });
     } else {
       res.status(401).json({ error: 'Contraseña incorrecta' });
