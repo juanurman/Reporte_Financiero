@@ -108,16 +108,12 @@ const actualizarPrecios = async () => {
       }
     }
 
-    // 3. Simular datos de Real Estate (M2 y Alquileres - Solo el día de hoy)
-    console.log('Generando cotización del día para M2 y Alquileres...');
-    const [activosRE] = await pool.execute('SELECT id, simbolo FROM activos WHERE simbolo LIKE "M2_%" OR simbolo = "ALQ_YIELD"');
+    // 3. Simular datos de Real Estate (Solo Alquileres - Solo el día de hoy)
+    console.log('Generando cotización del día para Alquileres...');
+    const [activosRE] = await pool.execute('SELECT id, simbolo FROM activos WHERE simbolo = "ALQ_YIELD"');
     const idMapRE = Object.fromEntries(activosRE.map(a => [a.simbolo, a.id]));
 
     const realEstateMocks = [
-      { simbolo: 'M2_NUN', base: 2600, tendencia: 0.05 },  // Base USD 2600, subió 5% anual
-      { simbolo: 'M2_BEL', base: 2800, tendencia: 0.04 },
-      { simbolo: 'M2_PAL', base: 3100, tendencia: 0.06 },
-      { simbolo: 'M2_REC', base: 2900, tendencia: 0.03 },
       { simbolo: 'ALQ_YIELD', base: 4.5, tendencia: 0.15 } // Base 4.5% anual
     ];
 
@@ -128,9 +124,13 @@ const actualizarPrecios = async () => {
       await guardarPrecio(idMapRE[re.simbolo], re.simbolo, valor, fechaActual);
     }
 
-    // 4. Limpieza: Eliminar registros más viejos a 1 año
-    console.log('🧹 Limpiando base de datos (eliminando registros anteriores a 1 año)...');
-    const [cleanResult] = await pool.execute('DELETE FROM precios_historicos WHERE fecha < ?', [fechaPasada]).catch(() => [{affectedRows: 0}]);
+    // 4. Limpieza: Eliminar registros más viejos a 1 año (Omitiendo M2_ para no borrar su historial)
+    console.log('🧹 Limpiando base de datos (eliminando registros anteriores a 1 año excluyendo Real Estate)...');
+    const [cleanResult] = await pool.execute(`
+      DELETE ph FROM precios_historicos ph
+      JOIN activos a ON ph.activo_id = a.id
+      WHERE ph.fecha < ? AND a.simbolo NOT LIKE "M2_%"
+    `, [fechaPasada]).catch(() => [{affectedRows: 0}]);
     console.log(` - Se eliminaron ${cleanResult.affectedRows || 0} registros antiguos.`);
 
     console.log('Actualización completada con éxito.');

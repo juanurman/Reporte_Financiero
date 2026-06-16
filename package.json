@@ -9,6 +9,7 @@
     "updater": "node updater.js",
     "add": "node add-ticker.js",
     "init-db": "node init-db.js",
+    "import-m2": "node import-m2.js",
     "build": "node build-api.js && node node_modules/vite/bin/vite.js build",
     "build-api": "node build-api.js",
     "dev": "vite"

@@ -414,7 +414,7 @@
           <!-- Panel Resumen de Real Estate -->
           <div v-if="selectedCategory === 'Real Estate'" class="dark:bg-slate-950 bg-slate-50 p-4 md:p-6 border-b dark:border-slate-800 border-slate-200 flex justify-around dark:text-white text-slate-800">
             <div class="text-center">
-              <div class="text-xs md:text-sm font-bold dark:text-slate-400 text-slate-500 uppercase">M2 Promedio (Top 4)</div>
+              <div class="text-xs md:text-sm font-bold dark:text-slate-400 text-slate-500 uppercase">M2 Promedio (CABA)</div>
               <div class="text-2xl md:text-3xl font-black dark:text-emerald-400 text-emerald-600">US$ {{ m2AveragePrice.toLocaleString('es-AR') }}</div>
               <div class="text-xs md:text-sm font-bold mt-1" :class="m2AverageVariation >= 0 ? 'dark:text-emerald-400 text-emerald-600' : 'dark:text-red-400 text-red-600'">
                 {{ marketPeriodLabels[marketPeriod] }}: US$ {{ m2HistoricAveragePrice.toLocaleString('es-AR') }} 
@@ -703,7 +703,6 @@ const calculateTravel = () => {
     return;
   }
 
-  const avgM2Symbols = ['M2_NUN', 'M2_BEL', 'M2_PAL', 'M2_REC'];
   const getVariation = (simbolo) => Number(livePrices.value.find(a => a.simbolo === simbolo)?.variaciones[selectedPeriod.value] || 0);
   const getAvgVariation = (categoria) => {
     const items = livePrices.value.filter(a => a.categoria === categoria);
@@ -1167,8 +1166,7 @@ const formatDisplayDate = (dateString) => {
 };
 
 const m2HistoricAveragePrice = computed(() => {
-  const symbols = ['M2_NUN', 'M2_BEL', 'M2_PAL', 'M2_REC'];
-  const items = livePrices.value.filter(a => symbols.includes(a.simbolo));
+  const items = livePrices.value.filter(a => a.simbolo.startsWith('M2_'));
   if (!items.length) return 0;
   
   const avg = items.reduce((acc, a) => {
@@ -1188,8 +1186,7 @@ const m2AverageVariation = computed(() => {
 });
 
 const m2AveragePrice = computed(() => {
-  const symbols = ['M2_NUN', 'M2_BEL', 'M2_PAL', 'M2_REC'];
-  const items = livePrices.value.filter(a => symbols.includes(a.simbolo));
+  const items = livePrices.value.filter(a => a.simbolo.startsWith('M2_'));
   if (!items.length) return 0;
   const avg = items.reduce((acc, a) => acc + Number(a.precio), 0) / items.length;
   return Math.round(avg);

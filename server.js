@@ -86,10 +86,17 @@ app.get('/api/precios', async (req, res) => {
       };
 
       const calcularVariacion = (dias) => {
-        if (dias <= 365) {
+        const targetDate = new Date(fechaActualStr);
+        targetDate.setDate(targetDate.getDate() - dias);
+        const targetTime = targetDate.getTime();
+        
+        // Verificamos si TENEMOS datos reales en la base para esa época (con un margen de 45 días)
+        const datosViejos = historial.filter(r => new Date(r.fecha).getTime() <= targetTime + (45 * 24 * 60 * 60 * 1000));
+
+        if (datosViejos.length > 0) {
           return Number((((actual - getPrecioAtras(dias)) / getPrecioAtras(dias)) * 100).toFixed(2));
         } else {
-          // Mock histórico (3 y 5 años) para la calculadora del Delorean
+          // Mock histórico (3 y 5 años) para la calculadora del Delorean si no hay datos de Yahoo/TiDB
           const isARS = activo.categoria === 'Moneda';
           const isM2 = activo.simbolo.startsWith('M2');
           if (isARS) {
