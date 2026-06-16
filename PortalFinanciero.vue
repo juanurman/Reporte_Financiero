@@ -270,9 +270,9 @@
           </div>
 
           <!-- Formulario para Registrar Transacción -->
-          <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl p-6 shadow-xl mb-6">
+          <div id="tx-form-section" class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl p-6 shadow-xl mb-6 transition-all duration-300" :class="editingTxId ? 'ring-2 ring-indigo-500 shadow-indigo-500/20' : ''">
             <h3 class="text-lg font-bold dark:text-white text-slate-800 mb-4 flex items-center gap-2">
-              📝 Registrar Transacción
+              {{ editingTxId ? '✏️ Editar Transacción' : '📝 Registrar Transacción' }}
             </h3>
             <form @submit.prevent="submitTxForm" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 items-end">
               <div>
@@ -307,9 +307,12 @@
                 <label class="block text-xs font-bold dark:text-slate-400 text-slate-500 mb-1 uppercase tracking-wider">Fecha</label>
                 <input type="date" v-model="txForm.fecha" required class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-sm cursor-pointer" />
               </div>
-              <div class="lg:col-span-1">
+              <div class="lg:col-span-1 flex gap-2">
+                <button v-if="editingTxId" @click="cancelEdit" type="button" class="w-full bg-slate-500 hover:bg-slate-400 text-white font-black text-sm py-2.5 px-2 rounded-xl transition-all transform hover:scale-105 shadow-md flex items-center justify-center" title="Cancelar Edición">
+                  ✕
+                </button>
                 <button type="submit" :disabled="isSubmittingTx" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 disabled:opacity-50 text-white font-black text-sm py-2.5 px-4 rounded-xl transition-all transform hover:scale-105 shadow-md flex items-center justify-center">
-                  {{ isSubmittingTx ? '⏳' : 'Guardar' }}
+                  {{ isSubmittingTx ? '⏳' : (editingTxId ? 'Actualizar' : 'Guardar') }}
                 </button>
               </div>
             </form>
@@ -318,7 +321,7 @@
           </div>
 
           <!-- Tabla de Tenencias -->
-          <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl overflow-hidden shadow-xl overflow-x-auto mb-16">
+          <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl overflow-hidden shadow-xl overflow-x-auto mb-6">
             <table class="w-full text-left border-collapse whitespace-nowrap">
               <thead>
                 <tr class="dark:bg-slate-800/80 bg-slate-100 border-b dark:border-slate-700 border-slate-200 text-xs uppercase tracking-wider dark:text-slate-400 text-slate-500 font-bold">
@@ -349,6 +352,43 @@
                        {{ asset.profitLoss >= 0 ? '▲' : '▼' }} {{ Math.abs(asset.profitLossPercent).toFixed(2) }}%
                     </div>
                   </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Historial de Transacciones -->
+          <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl overflow-hidden shadow-xl overflow-x-auto mb-16">
+            <div class="p-6 border-b dark:border-slate-700 border-slate-200 flex justify-between items-center">
+              <h3 class="text-lg font-bold dark:text-white text-slate-800 flex items-center gap-2">⏱️ Historial de Movimientos</h3>
+            </div>
+            <table class="w-full text-left border-collapse whitespace-nowrap">
+              <thead>
+                <tr class="dark:bg-slate-800/80 bg-slate-100 border-b dark:border-slate-700 border-slate-200 text-xs uppercase tracking-wider dark:text-slate-400 text-slate-500 font-bold">
+                  <th class="px-6 py-4">Fecha</th>
+                  <th class="px-6 py-4">Operación</th>
+                  <th class="px-6 py-4">Activo</th>
+                  <th class="px-6 py-4 text-right">Cantidad</th>
+                  <th class="px-6 py-4 text-right">Precio Unit.</th>
+                  <th class="px-6 py-4 text-center">Acciones</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y dark:divide-slate-700/50 divide-slate-200">
+                <tr v-for="tx in transactionHistory" :key="tx.id" class="dark:hover:bg-slate-800/40 hover:bg-slate-50 transition-colors group" :class="editingTxId === tx.id ? 'dark:bg-indigo-900/20 bg-indigo-50' : ''">
+                  <td class="px-6 py-4 font-medium dark:text-slate-300 text-slate-700">{{ formatDisplayDate(tx.fecha) }}</td>
+                  <td class="px-6 py-4">
+                    <span class="px-2 py-1 rounded text-xs font-bold" :class="tx.tipo === 'COMPRA' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'">{{ tx.tipo }}</span>
+                  </td>
+                  <td class="px-6 py-4 font-bold dark:text-white text-slate-900">{{ tx.simbolo }}</td>
+                  <td class="px-6 py-4 text-right font-medium dark:text-slate-300 text-slate-700">{{ tx.cantidad }}</td>
+                  <td class="px-6 py-4 text-right font-medium dark:text-slate-300 text-slate-700">{{ formatUSD(tx.precio_compra) }}</td>
+                  <td class="px-6 py-4 flex justify-center gap-2">
+                    <button @click="editTx(tx)" class="text-indigo-500 hover:text-indigo-600 bg-indigo-500/10 hover:bg-indigo-500/20 px-3 py-1.5 rounded transition text-xs font-bold uppercase tracking-wider">Editar</button>
+                    <button @click="deleteTx(tx.id)" class="text-red-500 hover:text-red-600 bg-red-500/10 hover:bg-red-500/20 px-3 py-1.5 rounded transition text-xs font-bold uppercase tracking-wider">Borrar</button>
+                  </td>
+                </tr>
+                <tr v-if="transactionHistory.length === 0">
+                  <td colspan="6" class="px-6 py-8 text-center dark:text-slate-500 text-slate-400 font-medium">No hay transacciones registradas.</td>
                 </tr>
               </tbody>
             </table>
@@ -558,7 +598,10 @@
               <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 <div v-for="user in usersList" :key="user.id" class="flex justify-between items-center dark:bg-slate-950 bg-slate-50 p-4 rounded-xl border dark:border-slate-800 border-slate-200 shadow-sm transition hover:border-slate-400 dark:hover:border-slate-600">
                   <span class="font-bold dark:text-white text-slate-800 text-lg">👤 {{ user.username }}</span>
-                  <button @click="deleteUser(user.username)" class="text-red-500 hover:text-red-600 font-bold bg-red-500/10 hover:bg-red-500/20 px-3 py-1.5 rounded-lg transition-colors text-xs uppercase tracking-wider">Eliminar</button>
+                  <div class="flex gap-2">
+                    <button @click="viewUserPortfolio(user.username)" class="text-indigo-500 hover:text-indigo-600 font-bold bg-indigo-500/10 hover:bg-indigo-500/20 px-3 py-1.5 rounded-lg transition-colors text-xs uppercase tracking-wider">Ver</button>
+                    <button @click="deleteUser(user.username)" class="text-red-500 hover:text-red-600 font-bold bg-red-500/10 hover:bg-red-500/20 px-3 py-1.5 rounded-lg transition-colors text-xs uppercase tracking-wider">Borrar</button>
+                  </div>
                 </div>
               </div>
             </section>
@@ -844,6 +887,7 @@ const lastUpdatedDate = computed(() => {
 // Lógica y Estado de "Mi Cartera"
 const currentUser = ref('');
 const portfolioHoldings = ref([]);
+const transactionHistory = ref([]);
 
 const fetchPortfolio = async () => {
   try {
@@ -857,6 +901,15 @@ const fetchPortfolio = async () => {
       } else {
         console.warn('⚠️ La API de cartera devolvió error:', resLocal.status);
       }
+      
+      // Consultar el historial individual
+      try {
+        const resHist = await fetch(`${API_BASE_URL}/api/historial?usuario=${targetUser}`);
+        if (resHist.ok) {
+          transactionHistory.value = await resHist.json();
+        }
+      } catch (e) {}
+
     } catch (e) {
       console.warn('⚠️ Error de red al consultar la API de cartera:', e.message);
     }
@@ -1114,6 +1167,13 @@ const getPastPriceFormatted = (activo) => {
   return `US$ ${pastPrice.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 };
 
+const formatDisplayDate = (dateString) => {
+  if (!dateString) return '';
+  // Extrae y devuelve DD/MM/YYYY a prueba de zonas horarias
+  const parts = typeof dateString === 'string' ? dateString.split('T')[0].split('-') : new Date(dateString).toISOString().split('T')[0].split('-');
+  return `${parts[2]}/${parts[1]}/${parts[0]}`;
+};
+
 const m2HistoricAveragePrice = computed(() => {
   const symbols = ['M2_NUN', 'M2_BEL', 'M2_PAL', 'M2_REC'];
   const items = livePrices.value.filter(a => symbols.includes(a.simbolo));
@@ -1192,6 +1252,13 @@ const fetchUsers = async () => {
   } catch (e) {
     console.error('Error al obtener usuarios:', e);
   }
+};
+
+const viewUserPortfolio = async (username) => {
+  currentUser.value = username;
+  isPortfolioUnlocked.value = true;
+  currentTab.value = 'cartera';
+  await fetchPortfolio();
 };
 
 const deleteUser = async (username) => {
@@ -1285,21 +1352,71 @@ const txError = ref('');
 const txMessage = ref('');
 const isSubmittingTx = ref(false);
 const isFetchingPrice = ref(false);
+const editingTxId = ref(null);
+let isSettingEditData = false;
+
+const editTx = (tx) => {
+  isSettingEditData = true;
+  txError.value = '';
+  txMessage.value = '';
+  const dateString = typeof tx.fecha === 'string' ? tx.fecha.split('T')[0] : new Date(tx.fecha).toISOString().split('T')[0];
+  
+  txForm.value = {
+    simbolo: tx.simbolo,
+    tipo: tx.tipo,
+    cantidad: Number(tx.cantidad),
+    precio_compra: Number(tx.precio_compra),
+    comisiones: Number(tx.comisiones),
+    fecha: dateString
+  };
+  editingTxId.value = tx.id;
+  
+  setTimeout(() => { isSettingEditData = false; }, 100);
+  window.scrollTo({ top: document.getElementById('tx-form-section').offsetTop - 20, behavior: 'smooth' });
+};
+
+const cancelEdit = () => {
+  txForm.value = { simbolo: '', tipo: 'COMPRA', cantidad: null, precio_compra: null, comisiones: null, fecha: new Date().toISOString().split('T')[0] };
+  editingTxId.value = null;
+  txError.value = '';
+  txMessage.value = '';
+};
+
+const deleteTx = async (id) => {
+  if (!confirm('¿Estás seguro de eliminar esta transacción? Se recalculará tu cartera.')) return;
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/cartera/${id}`, { method: 'DELETE' });
+    if (response.ok) {
+      await fetchPortfolio();
+    } else {
+      alert('Error al eliminar la transacción');
+    }
+  } catch (e) {
+    alert('Error de conexión al eliminar');
+  }
+};
 
 const submitTxForm = async () => {
   txError.value = '';
   txMessage.value = '';
   isSubmittingTx.value = true;
   try {
-    const response = await fetch(`${API_BASE_URL}/api/cartera`, {
-      method: 'POST',
+    let url = `${API_BASE_URL}/api/cartera`;
+    let method = 'POST';
+    
+    if (editingTxId.value) {
+      url = `${API_BASE_URL}/api/cartera/${editingTxId.value}`;
+      method = 'PUT';
+    }
+
+    const response = await fetch(url, {
+      method: method,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...txForm.value, usuario: currentUser.value })
     });
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || 'Error de conexión.');
-    txMessage.value = data.message;
-    txForm.value = { simbolo: '', tipo: 'COMPRA', cantidad: null, precio_compra: null, comisiones: null, fecha: new Date().toISOString().split('T')[0] };
+    cancelEdit(); // Limpiamos el formulario y mensaje de éxito
     await fetchPortfolio();
   } catch (err) {
     txError.value = err.message === 'Failed to fetch' ? 'No se pudo conectar al servidor local.' : err.message;
@@ -1339,6 +1456,7 @@ const fetchHistoricalPrice = async () => {
 
 // Watcher para auto-completar el precio
 watch(() => [txForm.value.simbolo, txForm.value.fecha], () => {
+  if (isSettingEditData) return; // No auto-completar si estamos dándole a "Editar"
   fetchHistoricalPrice();
 }, { deep: true });
 

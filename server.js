@@ -38,7 +38,7 @@ app.get('/', (req, res) => {
     estado: 'online',
     mensaje: '🚀 API de Reporte Financiero funcionando correctamente en Vercel',
     version: '1.0.0',
-    endpoints: ['/api/precios', '/api/cartera', '/api/activos', '/api/historical-price']
+    endpoints: ['/api/precios', '/api/cartera', '/api/activos', '/api/historical-price', '/api/historial']
   });
 });
 
@@ -232,8 +232,6 @@ app.post('/api/login', async (req, res) => {
       return res.status(401).json({ error: 'El usuario no existe. Pedile al Admin que te cree una cuenta.' });
     }
 
-    // Si existe, verificamos su contraseña (o si usa la clave maestra 'admin')
-    if (users[0].password === password || password === 'admin') {
     // Si existe, verificamos que su contraseña sea exactamente la correcta
     if (users[0].password === password) {
       res.json({ success: true });
@@ -372,6 +370,50 @@ app.post('/api/cartera', async (req, res) => {
   } catch (error) {
     console.error('❌ Error al guardar transacción:', error.message);
     res.status(500).json({ error: 'Error al guardar en la base de datos' });
+  }
+});
+
+// Endpoint para obtener el historial de transacciones de un usuario
+app.get('/api/historial', async (req, res) => {
+  const { usuario } = req.query;
+  try {
+    const [filas] = await pool.execute('SELECT * FROM cartera WHERE UPPER(usuario) = UPPER(?) ORDER BY fecha DESC, id DESC', [usuario || '']);
+    res.json(filas);
+  } catch (error) {
+    if (error.code === 'ER_NO_SUCH_TABLE') res.json([]);
+    else res.status(500).json({ error: 'Error al obtener historial' });
+  }
+});
+
+// Endpoint para actualizar una transacción
+app.put('/api/cartera/:id', async (req, res) => {
+  const { id } = req.params;
+  const { simbolo, tipo, cantidad, precio_compra, comisiones, fecha } = req.body;
+  try {
+    const query = `
+      UPDATE cartera 
+      SET simbolo = ?, tipo = ?, cantidad = ?, precio_compra = ?, comisiones = ?, fecha = ?
+      WHERE id = ?
+    `;
+    await pool.execute(query, [
+      simbolo.toUpperCase(), tipo, cantidad, precio_compra, comisiones || 0, fecha, id
+    ]);
+    res.json({ message: 'Transacción actualizada con éxito' });
+  } catch (error) {
+    console.error('❌ Error al actualizar transacción:', error.message);
+    res.status(500).json({ error: 'Error al actualizar la transacción' });
+  }
+});
+
+// Endpoint para eliminar una transacción
+app.delete('/api/cartera/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    await pool.execute('DELETE FROM cartera WHERE id = ?', [id]);
+    res.json({ message: 'Transacción eliminada con éxito' });
+  } catch (error) {
+    console.error('❌ Error al eliminar transacción:', error.message);
+    res.status(500).json({ error: 'Error al eliminar la transacción' });
   }
 });
 
