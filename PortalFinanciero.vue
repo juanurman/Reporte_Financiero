@@ -816,6 +816,7 @@ const API_BASE_URL = import.meta.env.DEV ? 'http://localhost:4000' : 'https://re
 // Integración con la API Express (Base de Datos)
 const livePrices = ref([]);
 const selectedCategory = ref(null);
+const realEstateTab = ref('m2');
 const portfolioChartRef = ref(null);
 
 // Lógica de Bloqueo de Portafolio
@@ -1104,6 +1105,21 @@ const groupedAssets = computed(() => {
   }
 
   return groups;
+});
+
+const filteredAssetsForCategory = computed(() => {
+  if (!selectedCategory.value) return [];
+  const items = groupedAssets.value[selectedCategory.value] || [];
+  
+  if (selectedCategory.value === 'Real Estate') {
+    if (realEstateTab.value === 'm2') {
+      return items.filter(a => a.simbolo.startsWith('M2_'));
+    } else {
+      return items.filter(a => !a.simbolo.startsWith('M2_'));
+    }
+  }
+  
+  return items;
 });
 
 const categoryPerformance = computed(() => {
