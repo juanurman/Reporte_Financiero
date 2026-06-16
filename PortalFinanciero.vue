@@ -836,32 +836,24 @@ const unlockPortfolio = async () => {
     return;
   }
   
-  // Solo dejamos el acceso de emergencia estricto local para Diego
-  if (inputUser === 'DIEGO' && portfolioPassword.value === 'Colin') {
-    currentUser.value = inputUser;
-    isPortfolioUnlocked.value = true;
-    portfolioError.value = '';
-    await fetchPortfolio();
-  } else {
-    // Intento contra la nueva base de datos dinámica
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: inputUser, password: portfolioPassword.value })
-      });
-      if (res.ok) {
-        currentUser.value = inputUser;
-        isPortfolioUnlocked.value = true;
-        portfolioError.value = '';
-        await fetchPortfolio();
-      } else {
-        const data = await res.json();
-        portfolioError.value = data.error || 'Contraseña incorrecta';
-      }
-    } catch (e) {
-      portfolioError.value = 'Error al conectar con la base de datos de usuarios';
+  // Todos los usuarios consultan a la base de datos de forma segura
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: inputUser, password: portfolioPassword.value })
+    });
+    if (res.ok) {
+      currentUser.value = inputUser;
+      isPortfolioUnlocked.value = true;
+      portfolioError.value = '';
+      await fetchPortfolio();
+    } else {
+      const data = await res.json();
+      portfolioError.value = data.error || 'Contraseña incorrecta';
     }
+  } catch (e) {
+    portfolioError.value = 'Error al conectar con la base de datos de usuarios';
   }
 };
 
