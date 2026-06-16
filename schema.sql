@@ -75,11 +75,3 @@ INSERT INTO activos (nombre, simbolo, categoria, emoji) VALUES
     ('M2 Recoleta', 'M2_REC', 'Real Estate', '📍'),
     ('Rendimiento Alquiler', 'ALQ_YIELD', 'Real Estate', '🏠')
 ON DUPLICATE KEY UPDATE nombre = VALUES(nombre), categoria = VALUES(categoria), emoji = VALUES(emoji);
-
--- Datos iniciales de cartera para Diego (Ejemplo)
-INSERT INTO cartera (usuario, simbolo, tipo, cantidad, precio_compra, comisiones, fecha) VALUES
-    ('Diego', 'GOOGL', 'COMPRA', 5.88, 167.15, 0.03, '2025-03-05'),
-    ('Diego', 'MSFT', 'COMPRA', 2.53, 388.64, 1.30, '2025-03-05'),
-    ('Diego', 'TSM', 'COMPRA', 13.67, 147.08, 251.55, '2025-04-04'),
-    ('Diego', 'MU', 'COMPRA', 3.20, 394.69, 0.00, '2026-02-06')
-ON DUPLICATE KEY UPDATE cantidad = VALUES(cantidad), precio_compra = VALUES(precio_compra), comisiones = VALUES(comisiones), fecha = VALUES(fecha);
