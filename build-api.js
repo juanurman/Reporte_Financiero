@@ -81,31 +81,10 @@ const buildApi = async () => {
     // 2. Extraemos la Cartera (Portfolio) para el despliegue estático
     console.log('⏳ Generando snapshot de la cartera...');
     let carteraData = [];
-    try {
-      // Consulta SQL corregida sin paréntesis extra
-      const [carteraFilas] = await connection.execute(`
-        SELECT 
-          TRIM(UPPER(c.simbolo)) as simbolo, 
-          MAX(COALESCE(a.nombre, UPPER(c.simbolo))) as nombre, 
-          MAX(COALESCE(a.emoji, '💰')) as emoji, 
-          MAX(COALESCE(a.categoria, 'Otros')) as categoria,
-          SUM(CASE WHEN c.tipo = 'COMPRA' THEN c.cantidad ELSE -c.cantidad END) as cantidad, 
-          COALESCE(
-            SUM(CASE WHEN c.tipo = 'COMPRA' THEN c.cantidad * c.precio_compra ELSE 0 END) / 
-            NULLIF(SUM(CASE WHEN c.tipo = 'COMPRA' THEN c.cantidad ELSE 0 END), 0), 
-            0) as avgPrice, 
-          SUM(COALESCE(c.comisiones, 0)) as totalComisiones,
-          MIN(c.fecha) as purchaseDate
-        FROM cartera c
-        LEFT JOIN activos a ON TRIM(UPPER(c.simbolo)) = a.simbolo
-        WHERE UPPER(c.usuario) = 'DIEGO'
-        GROUP BY simbolo
-        HAVING SUM(CASE WHEN c.tipo = 'COMPRA' THEN c.cantidad ELSE -c.cantidad END) > 0
-      `);
-      carteraData = carteraFilas;
-    } catch (err) {
-      console.warn('⚠️ No se pudo obtener la cartera (la tabla puede no existir aún).');
-    }
+
+    // Nota: Se ha eliminado la consulta hardcodeada por privacidad.
+    // El archivo público cartera.json se generará como un arreglo vacío.
+    // El portafolio de cada usuario se cargará dinámicamente vía API.
 
     // 3. Guardamos los resultados en la carpeta /public (Vite luego lo moverá a /dist)
     const publicDir = path.join(__dirname, 'public');
