@@ -279,6 +279,7 @@ app.get('/api/historical-price', async (req, res) => {
 app.get('/api/cartera', async (req, res) => {
   const { usuario } = req.query;
   
+  // Consulta SQL corregida sin paréntesis extra
   const querySQL = `
     SELECT 
       TRIM(UPPER(c.simbolo)) as simbolo, 

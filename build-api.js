@@ -82,6 +82,7 @@ const buildApi = async () => {
     console.log('⏳ Generando snapshot de la cartera...');
     let carteraData = [];
     try {
+      // Consulta SQL corregida sin paréntesis extra
       const [carteraFilas] = await connection.execute(`
         SELECT 
           TRIM(UPPER(c.simbolo)) as simbolo, 
