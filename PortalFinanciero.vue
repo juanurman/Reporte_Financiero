@@ -401,7 +401,7 @@
       <div v-if="selectedCategory" class="fixed inset-0 z-50 flex items-center justify-center p-4 dark:bg-black/80 bg-slate-900/60 backdrop-blur-md" @click.self="selectedCategory = null">
         <div class="dark:bg-slate-900 bg-white border dark:border-slate-700 border-slate-200 rounded-[2rem] w-full max-w-4xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
           <!-- Header Modal -->
-          <div class="p-6 md:p-8 dark:text-white text-slate-900 flex justify-between items-center border-b dark:border-white/10 border-slate-200" :class="`bg-gradient-to-r ${categoryMeta[selectedCategory]?.gradient || 'dark:from-slate-800 dark:to-slate-900 from-slate-100 to-white'}`">
+          <div class="p-6 md:p-8 dark:text-white text-slate-900 flex justify-between items-center border-b dark:border-white/10 border-slate-200 shrink-0" :class="`bg-gradient-to-r ${categoryMeta[selectedCategory]?.gradient || 'dark:from-slate-800 dark:to-slate-900 from-slate-100 to-white'}`">
             <div class="flex items-center gap-4">
               <span class="text-4xl">{{ categoryMeta[selectedCategory]?.emoji }}</span>
               <h2 class="text-3xl font-bold">{{ selectedCategory }}</h2>
@@ -412,29 +412,47 @@
           </div>
           
           <!-- Panel Resumen de Real Estate -->
-          <div v-if="selectedCategory === 'Real Estate'" class="dark:bg-slate-950 bg-slate-50 p-4 md:p-6 border-b dark:border-slate-800 border-slate-200 flex justify-around dark:text-white text-slate-800">
-            <div class="text-center">
-              <div class="text-xs md:text-sm font-bold dark:text-slate-400 text-slate-500 uppercase">M2 Promedio (CABA)</div>
-              <div class="text-2xl md:text-3xl font-black dark:text-emerald-400 text-emerald-600">US$ {{ m2AveragePrice.toLocaleString('es-AR') }}</div>
-              <div class="text-xs md:text-sm font-bold mt-1" :class="m2AverageVariation >= 0 ? 'dark:text-emerald-400 text-emerald-600' : 'dark:text-red-400 text-red-600'">
-                {{ marketPeriodLabels[marketPeriod] }}: US$ {{ m2HistoricAveragePrice.toLocaleString('es-AR') }} 
-                ({{ m2AverageVariation >= 0 ? '▲' : '▼' }} {{ Math.abs(m2AverageVariation) }}%)
+          <div v-if="selectedCategory === 'Real Estate'" class="dark:bg-slate-950 bg-slate-50 p-4 md:p-6 border-b dark:border-slate-800 border-slate-200 flex flex-col gap-4 dark:text-white text-slate-800 shrink-0">
+            <!-- Tabs Internos -->
+            <div class="flex justify-center gap-2">
+              <button @click="realEstateTab = 'm2'" :class="realEstateTab === 'm2' ? 'bg-indigo-500 text-white shadow-md' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400'" class="px-4 py-2 rounded-lg font-bold text-sm transition-all">
+                🏢 Valor M2
+              </button>
+              <button @click="realEstateTab = 'alquiler'" :class="realEstateTab === 'alquiler' ? 'bg-indigo-500 text-white shadow-md' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400'" class="px-4 py-2 rounded-lg font-bold text-sm transition-all">
+                🔑 Rendimiento Alquiler
+              </button>
+            </div>
+            
+            <div v-if="realEstateTab === 'm2'" class="flex justify-around mt-2 animate-fade-in">
+              <div class="text-center">
+                <div class="text-xs md:text-sm font-bold dark:text-slate-400 text-slate-500 uppercase">M2 Promedio (CABA)</div>
+                <div class="text-2xl md:text-3xl font-black dark:text-emerald-400 text-emerald-600">US$ {{ m2AveragePrice.toLocaleString('es-AR') }}</div>
+                <div class="text-xs md:text-sm font-bold mt-1" :class="m2AverageVariation >= 0 ? 'dark:text-emerald-400 text-emerald-600' : 'dark:text-red-400 text-red-600'">
+                  {{ marketPeriodLabels[marketPeriod] }}: US$ {{ m2HistoricAveragePrice.toLocaleString('es-AR') }} 
+                  ({{ m2AverageVariation >= 0 ? '▲' : '▼' }} {{ Math.abs(m2AverageVariation) }}%)
+                </div>
               </div>
             </div>
-            <div class="text-center">
-              <div class="text-xs md:text-sm font-bold dark:text-slate-400 text-slate-500 uppercase">Alquiler Promedio</div>
-              <div class="text-2xl md:text-3xl font-black dark:text-amber-400 text-amber-600">{{ rentYield }}% <span class="text-sm dark:text-slate-500 text-slate-400 font-bold">anual</span></div>
-              <div class="text-xs md:text-sm font-bold mt-1" :class="rentYieldVariation >= 0 ? 'dark:text-emerald-400 text-emerald-600' : 'dark:text-red-400 text-red-600'">
-                {{ marketPeriodLabels[marketPeriod] }}: {{ rentYieldHistoric }}% 
-                ({{ rentYieldVariation >= 0 ? '▲' : '▼' }} {{ Math.abs(rentYieldVariation) }}%)
+            
+            <div v-if="realEstateTab === 'alquiler'" class="flex justify-around mt-2 animate-fade-in">
+              <div class="text-center">
+                <div class="text-xs md:text-sm font-bold dark:text-slate-400 text-slate-500 uppercase">Alquiler Promedio</div>
+                <div class="text-2xl md:text-3xl font-black dark:text-amber-400 text-amber-600">{{ rentYield }}% <span class="text-sm dark:text-slate-500 text-slate-400 font-bold">anual</span></div>
+                <div class="text-xs md:text-sm font-bold mt-1" :class="rentYieldVariation >= 0 ? 'dark:text-emerald-400 text-emerald-600' : 'dark:text-red-400 text-red-600'">
+                  {{ marketPeriodLabels[marketPeriod] }}: {{ rentYieldHistoric }}% 
+                  ({{ rentYieldVariation >= 0 ? '▲' : '▼' }} {{ Math.abs(rentYieldVariation) }}%)
+                </div>
               </div>
             </div>
           </div>
 
           <!-- Lista de Activos dentro de la categoría -->
-          <div class="p-6 md:p-8 overflow-y-auto custom-scrollbar dark:bg-slate-950/50 bg-slate-100/50">
+          <div class="p-6 md:p-8 overflow-y-auto custom-scrollbar dark:bg-slate-950/50 bg-slate-100/50 flex-1 min-h-0">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              <div v-for="activo in groupedAssets[selectedCategory]" :key="activo.id" 
+              <div v-if="filteredAssetsForCategory.length === 0" class="col-span-full text-center text-slate-500 dark:text-slate-400 py-8 font-medium">
+                Todavía no hay datos cargados en esta sección.
+              </div>
+              <div v-for="activo in filteredAssetsForCategory" :key="activo.id" 
                    class="dark:bg-slate-900 bg-white p-5 rounded-2xl border shadow-sm transition flex flex-col justify-between group relative"
                    :class="isAdmin ? 'animate-jiggle dark:border-red-500/50 border-red-500/50 bg-red-50/10 dark:bg-red-900/10' : 'dark:border-slate-800 border-slate-200 dark:hover:border-slate-600 hover:border-slate-400'">
                 
