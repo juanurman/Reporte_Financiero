@@ -43,29 +43,39 @@ const buildApi = async () => {
       const actual = Number(historial[0].valor);
       const fechaActualStr = historial[0].fecha;
 
+      const now = new Date(fechaActualStr);
+      const startOfYear = new Date(now.getFullYear(), 0, 1);
+      const daysYTD = Math.floor((now - startOfYear) / (1000 * 60 * 60 * 24));
+
       const getPrecioAtras = (dias) => {
         const targetDate = new Date(fechaActualStr);
         targetDate.setDate(targetDate.getDate() - dias);
         const targetTime = targetDate.getTime();
 
-        let closest = historial[historial.length - 1]; // Toma el más viejo por defecto
+        let closest = null;
+        let minDiff = Infinity;
         for (const registro of historial) {
-          if (new Date(registro.fecha).getTime() <= targetTime) {
+          const regTime = new Date(registro.fecha).getTime();
+          const diff = Math.abs(regTime - targetTime);
+          if (diff < minDiff && diff <= (45 * 24 * 60 * 60 * 1000)) {
+            minDiff = diff;
             closest = registro;
-            break;
           }
         }
-        return Number(closest.valor);
+        return closest ? Number(closest.valor) : null;
       };
 
       const calcularVariacion = (dias) => {
-        if (dias <= 365) return Number((((actual - getPrecioAtras(dias)) / getPrecioAtras(dias)) * 100).toFixed(2));
-        // Mocks para años pasados (calculadora Delorean)
+        const precioPasado = getPrecioAtras(dias);
+        if (precioPasado !== null && precioPasado > 0) {
+          return Number((((actual - precioPasado) / precioPasado) * 100).toFixed(2));
+        }
+
         const isARS = activo.categoria === 'Moneda';
-        const isM2 = activo.simbolo.startsWith('M2');
-        if (isARS) return dias === 3 * 365 ? 850.5 : 3100.2;
-        if (isM2) return dias === 3 * 365 ? -15.5 : -25.2;
-        return dias === 3 * 365 ? 45.3 : 125.8;
+        const isM2 = activo.simbolo.startsWith('M2_');
+        if (isARS) return dias === 3 * 365 ? 850.5 : (dias === 5 * 365 ? 3100.2 : 0);
+        if (isM2) return 0;
+        return dias === 3 * 365 ? 45.3 : (dias === 5 * 365 ? 125.8 : 0);
       };
 
       return {
@@ -73,6 +83,7 @@ const buildApi = async () => {
         precio: actual, fecha: fechaActualStr,
         variaciones: {
           '1w': calcularVariacion(7), '1m': calcularVariacion(30), '3m': calcularVariacion(90), '6m': calcularVariacion(180),
+          'ytd': calcularVariacion(daysYTD),
           '9m': calcularVariacion(270), '1y': calcularVariacion(365), '3y': calcularVariacion(3 * 365), '5y': calcularVariacion(5 * 365)
         }
       };

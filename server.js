@@ -66,49 +66,59 @@ app.get('/api/precios', async (req, res) => {
         };
       }
 
-      const actual = historial[0].valor;
+      const actual = Number(historial[0].valor);
       const fechaActualStr = historial[0].fecha;
 
-      // Función maestra: Busca el precio más cercano a X días en el pasado
+      // Calculamos los días exactos para el YTD (Desde el 1 de enero)
+      const now = new Date(fechaActualStr);
+      const startOfYear = new Date(now.getFullYear(), 0, 1);
+      const daysYTD = Math.floor((now - startOfYear) / (1000 * 60 * 60 * 24));
+
+      // Función maestra: Busca el precio más cercano a X días en el pasado usando margen de proximidad
       const getPrecioAtras = (dias) => {
         const targetDate = new Date(fechaActualStr);
         targetDate.setDate(targetDate.getDate() - dias);
         const targetTime = targetDate.getTime();
 
-        let closest = historial[historial.length - 1]; // Toma el más viejo por defecto
+        let closest = null;
+        let minDiff = Infinity;
+
+        // Buscamos el registro real más cercano (máximo 45 días de desfasaje para aceptar baches)
         for (const registro of historial) {
-          if (new Date(registro.fecha).getTime() <= targetTime) {
+          const regTime = new Date(registro.fecha).getTime();
+          const diff = Math.abs(regTime - targetTime);
+          
+          if (diff < minDiff && diff <= (45 * 24 * 60 * 60 * 1000)) {
+            minDiff = diff;
             closest = registro;
-            break;
           }
         }
-        return closest.valor;
+        return closest ? Number(closest.valor) : null;
       };
 
       const calcularVariacion = (dias) => {
-        const targetDate = new Date(fechaActualStr);
-        targetDate.setDate(targetDate.getDate() - dias);
-        const targetTime = targetDate.getTime();
+        const precioPasado = getPrecioAtras(dias);
         
-        // Verificamos si TENEMOS datos reales en la base para esa época (con un margen de 45 días)
-        const datosViejos = historial.filter(r => new Date(r.fecha).getTime() <= targetTime + (45 * 24 * 60 * 60 * 1000));
-
-        if (datosViejos.length > 0) {
-          return Number((((actual - getPrecioAtras(dias)) / getPrecioAtras(dias)) * 100).toFixed(2));
-        } else {
-          // Mock histórico (3 y 5 años) para la calculadora del Delorean si no hay datos de Yahoo/TiDB
-          const isARS = activo.categoria === 'Moneda';
-          const isM2 = activo.simbolo.startsWith('M2');
-          if (isARS) {
-            if (dias === 3 * 365) return 850.5;  // MEP saltó de ~150 a ~1430
-            if (dias === 5 * 365) return 3100.2; // MEP saltó de ~45 a ~1430
-          } else if (isM2) {
-            return dias === 3 * 365 ? -15.5 : -25.2; // Caída real del M2
-          } else {
-            return dias === 3 * 365 ? 45.3 : 125.8;  // Renta variable en USD (SPY, Big6)
-          }
-          return 0;
+        // Si tenemos un dato real en la base de datos, lo usamos con precisión
+        if (precioPasado !== null && precioPasado > 0) {
+          return Number((((actual - precioPasado) / precioPasado) * 100).toFixed(2));
         }
+
+        // Si NO hay datos reales, aplicamos un Mock de emergencia
+        const isARS = activo.categoria === 'Moneda';
+        const isM2 = activo.simbolo.startsWith('M2_');
+        
+        if (isARS) {
+          if (dias === 3 * 365) return 850.5;
+          if (dias === 5 * 365) return 3100.2;
+        } else if (isM2) {
+          // Ya no necesitamos mockear Real Estate porque tenemos el mes a mes real.
+          return 0; 
+        } else {
+          if (dias === 3 * 365) return 45.3;
+          if (dias === 5 * 365) return 125.8;
+        }
+        return 0;
       };
 
       return {
@@ -117,6 +127,7 @@ app.get('/api/precios', async (req, res) => {
         variaciones: {
           '1w': calcularVariacion(7), '1m': calcularVariacion(30), 
           '3m': calcularVariacion(90), '6m': calcularVariacion(180), 
+          'ytd': calcularVariacion(daysYTD),
           '9m': calcularVariacion(270), '1y': calcularVariacion(365),
           '3y': calcularVariacion(3 * 365), '5y': calcularVariacion(5 * 365)
         }

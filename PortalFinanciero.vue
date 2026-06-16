@@ -829,7 +829,7 @@ const formatAssetPrice = (activo) => {
 
 // --- CONFIGURACIÓN DE API ---
 // Usamos localhost automáticamente cuando programas, y Vercel cuando está en la web
-const API_BASE_URL = import.meta.env.DEV ? 'http://localhost:4000' : 'https://reporte-financiero-juanurman-6276s-projects.vercel.app';
+const API_BASE_URL = import.meta.env.DEV ? 'http://localhost:5000' : 'https://reporte-financiero-juanurman-6276s-projects.vercel.app';
 
 // Integración con la API Express (Base de Datos)
 const livePrices = ref([]);

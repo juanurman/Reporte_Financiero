@@ -49,6 +49,7 @@ const runImport = async () => {
     const idMap = Object.fromEntries(activos.map(a => [a.simbolo, a.id]));
 
     let insertados = 0;
+    const valoresBulk = [];
 
     for (let i = 1; i < lines.length; i++) {
       const line = lines[i].trim();
@@ -67,9 +68,17 @@ const runImport = async () => {
       const fecha = `20${parts[1]}-${mes}-01`; // Usamos el día 1 de cada mes
       const precio = parseFloat(indexPrecioStr) * 1000; // "3.026" -> 3026 USD
 
-      await pool.execute('INSERT INTO precios_historicos (activo_id, fecha, valor) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE valor = VALUES(valor)', [idMap[simbolo], fecha, precio]);
+      valoresBulk.push([idMap[simbolo], fecha, precio]);
       insertados++;
     }
+
+    console.log(`Enviando ${insertados} precios a la nube de una sola vez (Bulk Insert)...`);
+    const chunkSize = 1000;
+    for (let i = 0; i < valoresBulk.length; i += chunkSize) {
+      const chunk = valoresBulk.slice(i, i + chunkSize);
+      await pool.query('INSERT INTO precios_historicos (activo_id, fecha, valor) VALUES ? ON DUPLICATE KEY UPDATE valor = VALUES(valor)', [chunk]);
+    }
+
     console.log(`✅ Importación finalizada. Se insertaron ${insertados} precios históricos de M2 en TiDB.`);
   } catch (e) { console.error('❌ Error:', e); } finally { await pool.end(); }
 };
