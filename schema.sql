@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS cartera (
     precio_compra DECIMAL(15, 4) NOT NULL, -- Precio unitario en USD
     fecha DATE NOT NULL,
     comisiones DECIMAL(15, 4) DEFAULT 0,
-    INDEX idx_usuario (usuario),
+    INDEX idx_usuario (usuario)
 );
 
 -- Limpiamos los activos locales viejos para reemplazarlos por los ADRs en Wall Street

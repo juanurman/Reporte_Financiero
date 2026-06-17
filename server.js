@@ -327,21 +327,7 @@ app.get('/api/cartera', async (req, res) => {
     res.json(filas);
   } catch (error) {
     console.error('❌ Error SQL al obtener cartera:', error.message);
-
-    // 🔧 Auto-reparación silenciosa si las columnas 'tipo' o 'comisiones' no existen en la BD de Vercel
-    if (error.code === 'ER_BAD_FIELD_ERROR') {
-      try {
-        console.log('🔧 Auto-reparando tabla cartera en producción...');
-        await pool.execute('ALTER TABLE cartera ADD COLUMN tipo VARCHAR(10) NOT NULL DEFAULT "COMPRA"').catch(()=>{});
-        await pool.execute('ALTER TABLE cartera ADD COLUMN comisiones DECIMAL(15,4) DEFAULT 0').catch(()=>{});
-        
-        const [filasRetry] = await pool.execute(querySQL, [usuario || '']);
-        return res.json(filasRetry);
-      } catch (retryError) {
-        return res.status(500).json({ error: 'Error reparando la tabla cartera', details: retryError.message });
-      }
-    }
-
+    
     // Si la tabla no existe en esta base de datos, devolvemos un array vacío pacíficamente
     if (error.code === 'ER_NO_SUCH_TABLE') {
       res.json([]);
@@ -369,10 +355,6 @@ app.post('/api/cartera', async (req, res) => {
         INDEX idx_usuario (usuario)
       )
     `);
-
-    // Parche por si la tabla ya existía en producción pero era la versión vieja sin estas columnas
-    await pool.execute('ALTER TABLE cartera ADD COLUMN tipo VARCHAR(10) NOT NULL DEFAULT "COMPRA"').catch(()=>{});
-    await pool.execute('ALTER TABLE cartera ADD COLUMN comisiones DECIMAL(15,4) DEFAULT 0').catch(()=>{});
 
     const query = `
       INSERT INTO cartera (usuario, simbolo, tipo, cantidad, precio_compra, comisiones, fecha)
