@@ -360,21 +360,19 @@ app.post('/api/cartera', async (req, res) => {
       CREATE TABLE IF NOT EXISTS cartera (
         id INT AUTO_INCREMENT PRIMARY KEY,
         usuario VARCHAR(50) NOT NULL,
-        simbolo VARCHAR(20) NOT NULL,
-        tipo VARCHAR(10) NOT NULL,
+        simbolo VARCHAR(50) NOT NULL,
+        tipo ENUM('COMPRA', 'VENTA') NOT NULL DEFAULT 'COMPRA',
         cantidad DECIMAL(15,4) NOT NULL,
         precio_compra DECIMAL(15,4) NOT NULL,
         comisiones DECIMAL(15,4) DEFAULT 0,
-        fecha DATE NOT NULL
+        fecha DATE NOT NULL,
+        INDEX idx_usuario (usuario)
       )
     `);
 
     // Parche por si la tabla ya existía en producción pero era la versión vieja sin estas columnas
     await pool.execute('ALTER TABLE cartera ADD COLUMN tipo VARCHAR(10) NOT NULL DEFAULT "COMPRA"').catch(()=>{});
     await pool.execute('ALTER TABLE cartera ADD COLUMN comisiones DECIMAL(15,4) DEFAULT 0').catch(()=>{});
-    
-    // Parche para remover una restricción única que impide cargar varias transacciones el mismo día
-    await pool.execute('ALTER TABLE cartera DROP INDEX uk_usuario_simbolo_fecha').catch(()=>{});
 
     const query = `
       INSERT INTO cartera (usuario, simbolo, tipo, cantidad, precio_compra, comisiones, fecha)

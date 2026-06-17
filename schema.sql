@@ -32,8 +32,6 @@ CREATE TABLE IF NOT EXISTS cartera (
     fecha DATE NOT NULL,
     comisiones DECIMAL(15, 4) DEFAULT 0,
     INDEX idx_usuario (usuario),
-    -- Agregamos un índice único para evitar duplicados en el ejemplo
-    UNIQUE KEY uk_usuario_simbolo_fecha (usuario, simbolo, fecha)
 );
 
 -- Limpiamos los activos locales viejos para reemplazarlos por los ADRs en Wall Street
