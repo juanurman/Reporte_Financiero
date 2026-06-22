@@ -31,6 +31,8 @@ def scraping_historico_alquileres():
         datos_historicos = []
         barrios_procesados = set()
         meses_procesados = set()
+        consecutive_scrolls_no_new_month = 0
+        consecutive_errors = 0
         
         print("Iniciando extracción dinámica de alquileres...")
         
@@ -64,6 +66,8 @@ def scraping_historico_alquileres():
                         break
                 
                 if mes_encontrado:
+                    consecutive_scrolls_no_new_month = 0
+                    consecutive_errors = 0
                     if page.locator(".item-single").first.is_visible():
                         page.keyboard.press("Escape")
                         
@@ -108,8 +112,12 @@ def scraping_historico_alquileres():
                     scroller = page.locator(".md-virtual-repeat-scroller").first
                     is_bottom = scroller.evaluate("(el) => el.scrollTop + el.clientHeight >= el.scrollHeight - 5")
                     
-                    if is_bottom:
-                        print(f"✅ Extracción de alquileres completa. Meses: {len(meses_procesados)}")
+                    consecutive_scrolls_no_new_month += 1
+                    if is_bottom or consecutive_scrolls_no_new_month >= 8:
+                        if is_bottom:
+                            print(f"✅ Se alcanzó el final del menú por scroll (bottom). Total meses: {len(meses_procesados)}")
+                        else:
+                            print(f"⚠️ Se alcanzó el límite de intentos de scroll sin meses nuevos. Asumiendo final de lista. Total meses: {len(meses_procesados)}")
                         break
                         
                     scroller.evaluate("el => el.scrollBy(0, 400)")
@@ -117,6 +125,10 @@ def scraping_historico_alquileres():
                     
             except Exception as e:
                 print(f"Error en el ciclo principal: {e}")
+                consecutive_errors += 1
+                if consecutive_errors >= 5:
+                    print("⚠️ Demasiados errores consecutivos. Finalizando para guardar los datos recolectados hasta ahora.")
+                    break
                 page.keyboard.press("Escape")
                 time.sleep(2)
                 continue
