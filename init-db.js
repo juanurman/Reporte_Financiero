@@ -30,8 +30,29 @@ const initDB = async () => {
     
     console.log(`⏳ Ejecutando schema.sql en la base de datos: ${dbName}...`);
     await connection.query(schema);
+    console.log('✅ Estructura de base de datos inicializada (schema.sql).');
+
+    // Aseguramos que la conexión esté usando la base de datos recién creada/verificada
+    await connection.query(`USE \`${dbName}\``);
+
+    // Consultamos la cantidad de activos actuales para decidir si sembramos
+    const [rows] = await connection.query('SELECT COUNT(*) as count FROM activos');
+    const count = rows[0]?.count || 0;
+
+    if (count === 0) {
+      console.log('⏳ La tabla "activos" está vacía. Cargando datos iniciales de seed.sql...');
+      const seedPath = path.join(__dirname, 'seed.sql');
+      if (fs.existsSync(seedPath)) {
+        const seedSql = fs.readFileSync(seedPath, 'utf8');
+        await connection.query(seedSql);
+        console.log('✅ Datos iniciales (seed.sql) cargados con éxito.');
+      } else {
+        console.warn('⚠️ No se encontró el archivo seed.sql, omitiendo siembra.');
+      }
+    } else {
+      console.log(`ℹ️ La tabla "activos" ya contiene ${count} registros. Omitiendo seed.sql para preservar tus cambios y borrados.`);
+    }
     
-    console.log('✅ Base de datos inicializada correctamente.');
     await connection.end();
   } catch (error) {
     console.error('❌ Error inicializando la base de datos:', error.message);
