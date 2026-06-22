@@ -36,6 +36,53 @@ def scraping_historico_alquileres():
         
         print("Iniciando extracción dinámica de alquileres...")
         
+        # --- Extracción del mes por defecto (may. 26) para evitar deseleccionarlo ---
+        try:
+            print("Obteniendo el mes seleccionado por defecto...")
+            # Abrimos el menú temporalmente para leer el primer mes
+            selector_meses.click(force=True)
+            page.wait_for_selector(".item-single", state="visible", timeout=10000)
+            default_mes = page.locator(".item-single").first.inner_text().strip()
+            print(f"Mes por defecto detectado: {default_mes}")
+            page.keyboard.press("Escape")
+            time.sleep(1.5)
+            
+            # Extraemos los datos de la tabla inicial (que ya corresponden a este mes)
+            table_body = page.locator('.tableBody').first
+            if table_body.is_visible():
+                print(f"Scrapeando tabla inicial para {default_mes}...")
+                table_body.evaluate("el => el.scrollTo(0, 0)")
+                time.sleep(1)
+                
+                for _ in range(8):
+                    filas_tabla = page.locator(".centerColsContainer .row").all()
+                    for fila in filas_tabla:
+                        celdas = fila.locator(".cell").all_inner_texts()
+                        if len(celdas) >= 5:
+                            celdas = [c.strip() for c in celdas]
+                            barrio = celdas[1]
+                            clave_unica = f"{default_mes}_{barrio}"
+                            if clave_unica not in barrios_procesados:
+                                barrios_procesados.add(clave_unica)
+                                datos_historicos.append({
+                                    "Periodo": default_mes,
+                                    "Ranking": celdas[0].replace('.', '').strip(),
+                                    "Barrio": barrio,
+                                    "Estrenar": celdas[2],
+                                    "Index": celdas[3],
+                                    "Usado": celdas[4] if len(celdas) > 4 else ""
+                                })
+                    table_body.evaluate("el => el.scrollBy(0, 500)")
+                    time.sleep(0.3)
+                
+                # Agregamos el mes por defecto a procesados para que el bucle principal lo salte
+                meses_procesados.add(default_mes)
+                print(f"✅ Mes por defecto {default_mes} procesado con éxito sin deseleccionarlo.")
+        except Exception as e:
+            print(f"⚠️ Advertencia al obtener mes por defecto: {e}. Se intentará en el flujo normal.")
+            page.keyboard.press("Escape")
+            time.sleep(2)
+        
         try:
             while True:
                 try:
