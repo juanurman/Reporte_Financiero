@@ -48,9 +48,21 @@ const runImport = async () => {
     const csvData = fs.readFileSync(csvPath, 'utf-8');
     const lines = csvData.split('\n');
 
-    // 1. Extraer barrios únicos del Excel y crearlos si no existen
-    const barriosUnicos = new Set(lines.slice(1).map(l => l.split(',')[2]).filter(Boolean).filter(b => b !== 'Barrio'));
-    for (const barrio of barriosUnicos) {
+    // 1. Analizar el CSV para encontrar barrios que tengan al menos un precio de Index válido
+    const barriosConDatos = new Set();
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line) continue;
+      const cols = line.split(',');
+      const barrio = cols[2];
+      const indexPrecioStr = cols[5];
+      if (barrio && indexPrecioStr && indexPrecioStr !== '-' && indexPrecioStr.trim() !== '') {
+        barriosConDatos.add(barrio);
+      }
+    }
+
+    // Insertar sólo los barrios que tienen datos reales
+    for (const barrio of barriosConDatos) {
       const ticker = getTicker(barrio);
       await pool.execute('INSERT IGNORE INTO activos (simbolo, nombre, categoria, emoji) VALUES (?, ?, "Real Estate", "🏢")', [ticker, `M2 ${barrio}`]);
     }

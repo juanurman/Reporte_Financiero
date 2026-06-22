@@ -85,16 +85,16 @@
     "simbolo": "SPY",
     "categoria": "Índice/ETF",
     "emoji": "📈",
-    "precio": 748.62,
+    "precio": 746.9,
     "fecha": "2026-06-22T03:00:00.000Z",
     "variaciones": {
-      "1w": -0.82,
-      "1m": 0.4,
-      "3m": 14.61,
-      "6m": 8.44,
-      "ytd": 9.58,
-      "9m": 13.76,
-      "1y": 24.74,
+      "1w": -1.05,
+      "1m": 0.17,
+      "3m": 14.35,
+      "6m": 8.19,
+      "ytd": 9.33,
+      "9m": 13.5,
+      "1y": 24.45,
       "3y": 45.3,
       "5y": 125.8
     }
@@ -105,16 +105,16 @@
     "simbolo": "AAPL",
     "categoria": "Big Tech",
     "emoji": "🍎",
-    "precio": 301.17,
+    "precio": 301.4,
     "fecha": "2026-06-22T03:00:00.000Z",
     "variaciones": {
-      "1w": 1.6,
-      "1m": -2.48,
-      "3m": 19.68,
-      "6m": 9.99,
-      "ytd": 11.13,
-      "9m": 17.25,
-      "1y": 49.46,
+      "1w": 1.68,
+      "1m": -2.4,
+      "3m": 19.77,
+      "6m": 10.08,
+      "ytd": 11.21,
+      "9m": 17.34,
+      "1y": 49.58,
       "3y": 45.3,
       "5y": 125.8
     }
@@ -125,16 +125,16 @@
     "simbolo": "GOOGL",
     "categoria": "Big Tech",
     "emoji": "🔍",
-    "precio": 350.84,
+    "precio": 348.9478,
     "fecha": "2026-06-22T03:00:00.000Z",
     "variaciones": {
-      "1w": -5.01,
-      "1m": -8.39,
-      "3m": 20.8,
-      "6m": 11.7,
-      "ytd": 11.32,
-      "9m": 42.74,
-      "1y": 112.39,
+      "1w": -5.52,
+      "1m": -8.88,
+      "3m": 20.14,
+      "6m": 11.1,
+      "ytd": 10.72,
+      "9m": 41.97,
+      "1y": 111.24,
       "3y": 45.3,
       "5y": 125.8
     }
@@ -145,16 +145,16 @@
     "simbolo": "MSFT",
     "categoria": "Big Tech",
     "emoji": "🪟",
-    "precio": 376.155,
+    "precio": 373.85,
     "fecha": "2026-06-22T03:00:00.000Z",
     "variaciones": {
-      "1w": -5.9,
-      "1m": -10.13,
-      "3m": 0.92,
-      "6m": -22.92,
-      "ytd": -20.46,
-      "9m": -25.81,
-      "1y": -22.6,
+      "1w": -6.48,
+      "1m": -10.68,
+      "3m": 0.3,
+      "6m": -23.39,
+      "ytd": -20.95,
+      "9m": -26.27,
+      "1y": -23.08,
       "3y": 45.3,
       "5y": 125.8
     }
@@ -165,16 +165,16 @@
     "simbolo": "NVDA",
     "categoria": "Big Tech",
     "emoji": "🟩",
-    "precio": 212.64,
+    "precio": 211.275,
     "fecha": "2026-06-22T03:00:00.000Z",
     "variaciones": {
-      "1w": 0.09,
-      "1m": -1.25,
-      "3m": 21.37,
-      "6m": 12.74,
-      "ytd": 12.6,
-      "9m": 19.67,
-      "1y": 47.49,
+      "1w": -0.55,
+      "1m": -1.88,
+      "3m": 20.59,
+      "6m": 12.02,
+      "ytd": 11.87,
+      "9m": 18.9,
+      "1y": 46.55,
       "3y": 45.3,
       "5y": 125.8
     }
@@ -185,16 +185,16 @@
     "simbolo": "META",
     "categoria": "Big Tech",
     "emoji": "🌐",
-    "precio": 569.91,
+    "precio": 567.59,
     "fecha": "2026-06-22T03:00:00.000Z",
     "variaciones": {
-      "1w": -3.97,
-      "1m": -6.61,
-      "3m": -3.88,
-      "6m": -14.63,
-      "ytd": -12.38,
-      "9m": -23.9,
-      "1y": -18.41,
+      "1w": -4.36,
+      "1m": -6.99,
+      "3m": -4.27,
+      "6m": -14.97,
+      "ytd": -12.73,
+      "9m": -24.21,
+      "1y": -18.75,
       "3y": 45.3,
       "5y": 125.8
     }
@@ -205,16 +205,16 @@
     "simbolo": "AMZN",
     "categoria": "Big Tech",
     "emoji": "📦",
-    "precio": 236.955,
+    "precio": 235.7,
     "fecha": "2026-06-22T03:00:00.000Z",
     "variaciones": {
-      "1w": -3.68,
-      "1m": -11.03,
-      "3m": 14.34,
-      "6m": 1.97,
-      "ytd": 4.62,
-      "9m": 8.62,
-      "1y": 13.66,
+      "1w": -4.19,
+      "1m": -11.5,
+      "3m": 13.73,
+      "6m": 1.43,
+      "ytd": 4.06,
+      "9m": 8.04,
+      "1y": 13.06,
       "3y": 45.3,
       "5y": 125.8
     }
@@ -225,16 +225,16 @@
     "simbolo": "YPF",
     "categoria": "Merval",
     "emoji": "🛢️",
-    "precio": 49.21,
+    "precio": 49.185,
     "fecha": "2026-06-22T03:00:00.000Z",
     "variaciones": {
-      "1w": -6.43,
-      "1m": 2.54,
-      "3m": 15.62,
-      "6m": 36.62,
-      "ytd": 35.6,
-      "9m": 83.83,
-      "1y": 45.63,
+      "1w": -6.47,
+      "1m": 2.49,
+      "3m": 15.57,
+      "6m": 36.55,
+      "ytd": 35.53,
+      "9m": 83.73,
+      "1y": 45.56,
       "3y": 45.3,
       "5y": 125.8
     }
@@ -245,16 +245,16 @@
     "simbolo": "GGAL",
     "categoria": "Merval",
     "emoji": "🏦",
-    "precio": 54.94,
+    "precio": 54.92,
     "fecha": "2026-06-22T03:00:00.000Z",
     "variaciones": {
-      "1w": -1.82,
-      "1m": 26.15,
-      "3m": 21.98,
-      "6m": 1.22,
-      "ytd": 2.98,
-      "9m": 79.95,
-      "1y": 9.07,
+      "1w": -1.86,
+      "1m": 26.11,
+      "3m": 21.94,
+      "6m": 1.18,
+      "ytd": 2.94,
+      "9m": 79.89,
+      "1y": 9.03,
       "3y": 45.3,
       "5y": 125.8
     }
@@ -265,16 +265,16 @@
     "simbolo": "PAM",
     "categoria": "Merval",
     "emoji": "⚡",
-    "precio": 85.4,
+    "precio": 85.12,
     "fecha": "2026-06-22T03:00:00.000Z",
     "variaciones": {
-      "1w": -1.84,
-      "1m": 5.85,
-      "3m": 0.6,
-      "6m": -4.39,
-      "ytd": -2.97,
-      "9m": 33.56,
-      "1y": 20.93,
+      "1w": -2.16,
+      "1m": 5.5,
+      "3m": 0.27,
+      "6m": -4.7,
+      "ytd": -3.28,
+      "9m": 33.12,
+      "1y": 20.53,
       "3y": 45.3,
       "5y": 125.8
     }
@@ -285,16 +285,16 @@
     "simbolo": "BMA",
     "categoria": "Merval",
     "emoji": "🏛️",
-    "precio": 100.67,
+    "precio": 100.5,
     "fecha": "2026-06-22T03:00:00.000Z",
     "variaciones": {
-      "1w": 0.72,
-      "1m": 32.55,
-      "3m": 42.81,
-      "6m": 10.61,
-      "ytd": 13.41,
-      "9m": 112.79,
-      "1y": 45.77,
+      "1w": 0.55,
+      "1m": 32.32,
+      "3m": 42.57,
+      "6m": 10.43,
+      "ytd": 13.21,
+      "9m": 112.43,
+      "1y": 45.53,
       "3y": 45.3,
       "5y": 125.8
     }
@@ -385,12 +385,12 @@
     "simbolo": "ALQ_YIELD",
     "categoria": "Real Estate",
     "emoji": "🏠",
-    "precio": 5.18,
+    "precio": 5.16,
     "fecha": "2026-06-22T03:00:00.000Z",
     "variaciones": {
-      "1w": 0.39,
-      "1m": 0,
-      "3m": 0.39,
+      "1w": 0,
+      "1m": -0.39,
+      "3m": 0,
       "6m": 0,
       "ytd": 0,
       "9m": 0,
@@ -405,16 +405,16 @@
     "simbolo": "MU",
     "categoria": "Wall Street",
     "emoji": "💾",
-    "precio": 1190.975,
+    "precio": 1188.63,
     "fecha": "2026-06-22T03:00:00.000Z",
     "variaciones": {
-      "1w": 9.47,
-      "1m": 58.59,
-      "3m": 201.11,
-      "6m": 315.44,
-      "ytd": 277.58,
-      "9m": 659.41,
-      "1y": 875.57,
+      "1w": 9.25,
+      "1m": 58.27,
+      "3m": 200.52,
+      "6m": 314.62,
+      "ytd": 276.84,
+      "9m": 657.91,
+      "1y": 873.65,
       "3y": 45.3,
       "5y": 125.8
     }
@@ -425,16 +425,16 @@
     "simbolo": "TSM",
     "categoria": "Wall Street",
     "emoji": "🏭",
-    "precio": 470.9312,
+    "precio": 467.43,
     "fecha": "2026-06-22T03:00:00.000Z",
     "variaciones": {
-      "1w": 6.69,
-      "1m": 16.42,
-      "3m": 37.2,
-      "6m": 57.61,
-      "ytd": 47.35,
-      "9m": 70.22,
-      "1y": 123.91,
+      "1w": 5.9,
+      "1m": 15.55,
+      "3m": 36.18,
+      "6m": 56.44,
+      "ytd": 46.25,
+      "9m": 68.95,
+      "1y": 122.25,
       "3y": 45.3,
       "5y": 125.8
     }
@@ -445,16 +445,16 @@
     "simbolo": "KO",
     "categoria": "Wall Street",
     "emoji": "🥤",
-    "precio": 79.5283,
+    "precio": 79.5801,
     "fecha": "2026-06-22T03:00:00.000Z",
     "variaciones": {
-      "1w": -1.71,
-      "1m": -2.4,
-      "3m": 6.51,
-      "6m": 13.43,
-      "ytd": 15.06,
-      "9m": 20.53,
-      "1y": 14.04,
+      "1w": -1.64,
+      "1m": -2.33,
+      "3m": 6.58,
+      "6m": 13.51,
+      "ytd": 15.13,
+      "9m": 20.61,
+      "1y": 14.11,
       "3y": 45.3,
       "5y": 125.8
     }
@@ -465,16 +465,16 @@
     "simbolo": "BTC-USD",
     "categoria": "Cripto",
     "emoji": "₿",
-    "precio": 65145.5898,
+    "precio": 64955.4414,
     "fecha": "2026-06-21T03:00:00.000Z",
     "variaciones": {
-      "1w": -1.73,
-      "1m": -15.03,
-      "3m": -7.62,
-      "6m": -25.64,
-      "ytd": -27.57,
-      "9m": -40.26,
-      "1y": -38.3,
+      "1w": -2.01,
+      "1m": -15.28,
+      "3m": -7.89,
+      "6m": -25.86,
+      "ytd": -27.78,
+      "9m": -40.43,
+      "1y": -38.48,
       "3y": 45.3,
       "5y": 125.8
     }
@@ -485,11 +485,11 @@
     "simbolo": "QQQ",
     "categoria": "Índice/ETF",
     "emoji": "📊",
-    "precio": 743.13,
+    "precio": 740.76,
     "fecha": "2026-06-22T03:00:00.000Z",
     "variaciones": {
-      "1w": -0.12,
-      "1m": 1.76,
+      "1w": -0.44,
+      "1m": 1.44,
       "3m": 0,
       "6m": 0,
       "ytd": 0,
@@ -505,11 +505,11 @@
     "simbolo": "TSLA",
     "categoria": "Wall Street",
     "emoji": "🚗",
-    "precio": 411.91,
+    "precio": 410.51,
     "fecha": "2026-06-22T03:00:00.000Z",
     "variaciones": {
-      "1w": 0.18,
-      "1m": -5,
+      "1w": -0.16,
+      "1m": -5.32,
       "3m": 0,
       "6m": 0,
       "ytd": 0,
@@ -525,11 +525,11 @@
     "simbolo": "DIS",
     "categoria": "Wall Street",
     "emoji": "🏰",
-    "precio": 103.545,
+    "precio": 102.96,
     "fecha": "2026-06-22T03:00:00.000Z",
     "variaciones": {
-      "1w": 1.82,
-      "1m": 0.26,
+      "1w": 1.25,
+      "1m": -0.31,
       "3m": 0,
       "6m": 0,
       "ytd": 0,
@@ -545,11 +545,11 @@
     "simbolo": "V",
     "categoria": "Wall Street",
     "emoji": "💳",
-    "precio": 331.745,
+    "precio": 331.05,
     "fecha": "2026-06-22T03:00:00.000Z",
     "variaciones": {
-      "1w": 2.45,
-      "1m": 1.61,
+      "1w": 2.23,
+      "1m": 1.4,
       "3m": 0,
       "6m": 0,
       "ytd": 0,
@@ -565,11 +565,11 @@
     "simbolo": "BRK-B",
     "categoria": "Wall Street",
     "emoji": "🏠",
-    "precio": 491.775,
+    "precio": 491.64,
     "fecha": "2026-06-22T03:00:00.000Z",
     "variaciones": {
-      "1w": -0.76,
-      "1m": 1.69,
+      "1w": -0.78,
+      "1m": 1.66,
       "3m": 0,
       "6m": 0,
       "ytd": 0,
@@ -585,11 +585,11 @@
     "simbolo": "^TNX",
     "categoria": "Bonos",
     "emoji": "📜",
-    "precio": 4.505,
+    "precio": 4.495,
     "fecha": "2026-06-22T03:00:00.000Z",
     "variaciones": {
-      "1w": 0.81,
-      "1m": 0.27,
+      "1w": 0.58,
+      "1m": 0.04,
       "3m": 0,
       "6m": 0,
       "ytd": 0,
@@ -605,11 +605,11 @@
     "simbolo": "IRS",
     "categoria": "Real Estate",
     "emoji": "🏢",
-    "precio": 16.22,
+    "precio": 16.1,
     "fecha": "2026-06-22T03:00:00.000Z",
     "variaciones": {
-      "1w": -6.13,
-      "1m": 5.26,
+      "1w": -6.83,
+      "1m": 4.48,
       "3m": 0,
       "6m": 0,
       "ytd": 0,
@@ -625,11 +625,11 @@
     "simbolo": "CRESY",
     "categoria": "Real Estate",
     "emoji": "🏗️",
-    "precio": 11.5,
+    "precio": 11.47,
     "fecha": "2026-06-22T03:00:00.000Z",
     "variaciones": {
-      "1w": -8.59,
-      "1m": 3.23,
+      "1w": -8.82,
+      "1m": 2.96,
       "3m": 0,
       "6m": 0,
       "ytd": 0,
@@ -640,7 +640,7 @@
     }
   },
   {
-    "id": 2610001,
+    "id": 2640001,
     "nombre": "M2 Puerto Madero",
     "simbolo": "M2_PUERTOMADERO",
     "categoria": "Real Estate",
@@ -660,7 +660,7 @@
     }
   },
   {
-    "id": 2610006,
+    "id": 2640006,
     "nombre": "M2 Colegiales",
     "simbolo": "M2_COLEGIALES",
     "categoria": "Real Estate",
@@ -680,7 +680,7 @@
     }
   },
   {
-    "id": 2610007,
+    "id": 2640007,
     "nombre": "M2 Retiro",
     "simbolo": "M2_RETIRO",
     "categoria": "Real Estate",
@@ -700,7 +700,7 @@
     }
   },
   {
-    "id": 2610008,
+    "id": 2640008,
     "nombre": "M2 Coghlan",
     "simbolo": "M2_COGHLAN",
     "categoria": "Real Estate",
@@ -720,7 +720,7 @@
     }
   },
   {
-    "id": 2610009,
+    "id": 2640009,
     "nombre": "M2 Villa Urquiza",
     "simbolo": "M2_VILLAURQUIZA",
     "categoria": "Real Estate",
@@ -740,7 +740,7 @@
     }
   },
   {
-    "id": 2610010,
+    "id": 2640010,
     "nombre": "M2 Chacarita",
     "simbolo": "M2_CHACARITA",
     "categoria": "Real Estate",
@@ -760,7 +760,7 @@
     }
   },
   {
-    "id": 2610011,
+    "id": 2640011,
     "nombre": "M2 Saavedra",
     "simbolo": "M2_SAAVEDRA",
     "categoria": "Real Estate",
@@ -780,7 +780,7 @@
     }
   },
   {
-    "id": 2610012,
+    "id": 2640012,
     "nombre": "M2 Villa Devoto",
     "simbolo": "M2_VILLADEVOTO",
     "categoria": "Real Estate",
@@ -800,7 +800,7 @@
     }
   },
   {
-    "id": 2610014,
+    "id": 2640014,
     "nombre": "M2 Villa Ortuzar",
     "simbolo": "M2_VILLAORTUZAR",
     "categoria": "Real Estate",
@@ -820,7 +820,7 @@
     }
   },
   {
-    "id": 2610015,
+    "id": 2640015,
     "nombre": "M2 Caballito",
     "simbolo": "M2_CABALLITO",
     "categoria": "Real Estate",
@@ -840,7 +840,7 @@
     }
   },
   {
-    "id": 2610016,
+    "id": 2640016,
     "nombre": "M2 Villa Crespo",
     "simbolo": "M2_VILLACRESPO",
     "categoria": "Real Estate",
@@ -860,7 +860,7 @@
     }
   },
   {
-    "id": 2610017,
+    "id": 2640017,
     "nombre": "M2 Parque Chas",
     "simbolo": "M2_PARQUECHAS",
     "categoria": "Real Estate",
@@ -880,7 +880,7 @@
     }
   },
   {
-    "id": 2610018,
+    "id": 2640018,
     "nombre": "M2 San Telmo",
     "simbolo": "M2_SANTELMO",
     "categoria": "Real Estate",
@@ -900,7 +900,7 @@
     }
   },
   {
-    "id": 2610019,
+    "id": 2640019,
     "nombre": "M2 Almagro",
     "simbolo": "M2_ALMAGRO",
     "categoria": "Real Estate",
@@ -920,7 +920,7 @@
     }
   },
   {
-    "id": 2610020,
+    "id": 2640020,
     "nombre": "M2 Villa del Parque",
     "simbolo": "M2_VILLADELPARQUE",
     "categoria": "Real Estate",
@@ -940,7 +940,7 @@
     }
   },
   {
-    "id": 2610021,
+    "id": 2640021,
     "nombre": "M2 Villa Pueyrredon",
     "simbolo": "M2_VILLAPUEYRREDON",
     "categoria": "Real Estate",
@@ -960,7 +960,7 @@
     }
   },
   {
-    "id": 2610022,
+    "id": 2640022,
     "nombre": "M2 Parque Chacabuco",
     "simbolo": "M2_PARQUECHACABUCO",
     "categoria": "Real Estate",
@@ -980,7 +980,7 @@
     }
   },
   {
-    "id": 2610023,
+    "id": 2640023,
     "nombre": "M2 Monserrat",
     "simbolo": "M2_MONSERRAT",
     "categoria": "Real Estate",
@@ -1000,7 +1000,7 @@
     }
   },
   {
-    "id": 2610024,
+    "id": 2640024,
     "nombre": "M2 Villa Luro",
     "simbolo": "M2_VILLALURO",
     "categoria": "Real Estate",
@@ -1020,7 +1020,7 @@
     }
   },
   {
-    "id": 2610025,
+    "id": 2640025,
     "nombre": "M2 Agronomía",
     "simbolo": "M2_AGRONOMIA",
     "categoria": "Real Estate",
@@ -1040,7 +1040,7 @@
     }
   },
   {
-    "id": 2610026,
+    "id": 2640026,
     "nombre": "M2 Paternal",
     "simbolo": "M2_PATERNAL",
     "categoria": "Real Estate",
@@ -1060,7 +1060,7 @@
     }
   },
   {
-    "id": 2610027,
+    "id": 2640027,
     "nombre": "M2 San Nicolás",
     "simbolo": "M2_SANNICOLAS",
     "categoria": "Real Estate",
@@ -1080,7 +1080,7 @@
     }
   },
   {
-    "id": 2610028,
+    "id": 2640028,
     "nombre": "M2 Barracas",
     "simbolo": "M2_BARRACAS",
     "categoria": "Real Estate",
@@ -1100,7 +1100,7 @@
     }
   },
   {
-    "id": 2610030,
+    "id": 2640030,
     "nombre": "M2 Liniers",
     "simbolo": "M2_LINIERS",
     "categoria": "Real Estate",
@@ -1120,7 +1120,7 @@
     }
   },
   {
-    "id": 2610031,
+    "id": 2640031,
     "nombre": "M2 Boedo",
     "simbolo": "M2_BOEDO",
     "categoria": "Real Estate",
@@ -1140,7 +1140,7 @@
     }
   },
   {
-    "id": 2610032,
+    "id": 2640032,
     "nombre": "M2 Monte Castro",
     "simbolo": "M2_MONTECASTRO",
     "categoria": "Real Estate",
@@ -1160,7 +1160,7 @@
     }
   },
   {
-    "id": 2610033,
+    "id": 2640033,
     "nombre": "M2 Santa Rita",
     "simbolo": "M2_SANTARITA",
     "categoria": "Real Estate",
@@ -1180,7 +1180,7 @@
     }
   },
   {
-    "id": 2610034,
+    "id": 2640034,
     "nombre": "M2 Flores",
     "simbolo": "M2_FLORES",
     "categoria": "Real Estate",
@@ -1200,7 +1200,7 @@
     }
   },
   {
-    "id": 2610035,
+    "id": 2640035,
     "nombre": "M2 Villa Real",
     "simbolo": "M2_VILLAREAL",
     "categoria": "Real Estate",
@@ -1220,7 +1220,7 @@
     }
   },
   {
-    "id": 2610036,
+    "id": 2640036,
     "nombre": "M2 Mataderos",
     "simbolo": "M2_MATADEROS",
     "categoria": "Real Estate",
@@ -1240,7 +1240,7 @@
     }
   },
   {
-    "id": 2610037,
+    "id": 2640037,
     "nombre": "M2 San Cristobal",
     "simbolo": "M2_SANCRISTOBAL",
     "categoria": "Real Estate",
@@ -1260,7 +1260,7 @@
     }
   },
   {
-    "id": 2610038,
+    "id": 2640038,
     "nombre": "M2 Villa Santa Rita",
     "simbolo": "M2_VILLASANTARITA",
     "categoria": "Real Estate",
@@ -1280,7 +1280,7 @@
     }
   },
   {
-    "id": 2610040,
+    "id": 2640040,
     "nombre": "M2 La Paternal",
     "simbolo": "M2_LAPATERNAL",
     "categoria": "Real Estate",
@@ -1300,7 +1300,7 @@
     }
   },
   {
-    "id": 2610041,
+    "id": 2640041,
     "nombre": "M2 Parque Patricios",
     "simbolo": "M2_PARQUEPATRICIOS",
     "categoria": "Real Estate",
@@ -1320,7 +1320,7 @@
     }
   },
   {
-    "id": 2610042,
+    "id": 2640042,
     "nombre": "M2 Balvanera",
     "simbolo": "M2_BALVANERA",
     "categoria": "Real Estate",
@@ -1333,177 +1333,6 @@
       "3m": 0,
       "6m": 0,
       "ytd": 1,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2610043,
-    "nombre": "M2 Parque Avellaneda",
-    "simbolo": "M2_PARQUEAVELLANEDA",
-    "categoria": "Real Estate",
-    "emoji": "🏢",
-    "precio": 0,
-    "fecha": "2026-06-22",
-    "variaciones": {
-      "1w": 0,
-      "1m": 0,
-      "3m": 0,
-      "6m": 0,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2610044,
-    "nombre": "M2 Versalles",
-    "simbolo": "M2_VERSALLES",
-    "categoria": "Real Estate",
-    "emoji": "🏢",
-    "precio": 0,
-    "fecha": "2026-06-22",
-    "variaciones": {
-      "1w": 0,
-      "1m": 0,
-      "3m": 0,
-      "6m": 0,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2610045,
-    "nombre": "M2 Nueva Pompeya",
-    "simbolo": "M2_NUEVAPOMPEYA",
-    "categoria": "Real Estate",
-    "emoji": "🏢",
-    "precio": 0,
-    "fecha": "2026-06-22",
-    "variaciones": {
-      "1w": 0,
-      "1m": 0,
-      "3m": 0,
-      "6m": 0,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2610046,
-    "nombre": "M2 La Boca",
-    "simbolo": "M2_LABOCA",
-    "categoria": "Real Estate",
-    "emoji": "🏢",
-    "precio": 0,
-    "fecha": "2026-06-22",
-    "variaciones": {
-      "1w": 0,
-      "1m": 0,
-      "3m": 0,
-      "6m": 0,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2610047,
-    "nombre": "M2 Constitución",
-    "simbolo": "M2_CONSTITUCION",
-    "categoria": "Real Estate",
-    "emoji": "🏢",
-    "precio": 0,
-    "fecha": "2026-06-22",
-    "variaciones": {
-      "1w": 0,
-      "1m": 0,
-      "3m": 0,
-      "6m": 0,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2610048,
-    "nombre": "M2 Floresta",
-    "simbolo": "M2_FLORESTA",
-    "categoria": "Real Estate",
-    "emoji": "🏢",
-    "precio": 0,
-    "fecha": "2026-06-22",
-    "variaciones": {
-      "1w": 0,
-      "1m": 0,
-      "3m": 0,
-      "6m": 0,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2610049,
-    "nombre": "M2 Velez Sarfield",
-    "simbolo": "M2_VELEZSARFIELD",
-    "categoria": "Real Estate",
-    "emoji": "🏢",
-    "precio": 0,
-    "fecha": "2026-06-22",
-    "variaciones": {
-      "1w": 0,
-      "1m": 0,
-      "3m": 0,
-      "6m": 0,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2610050,
-    "nombre": "M2 Villa Lugano",
-    "simbolo": "M2_VILLALUGANO",
-    "categoria": "Real Estate",
-    "emoji": "🏢",
-    "precio": 0,
-    "fecha": "2026-06-22",
-    "variaciones": {
-      "1w": 0,
-      "1m": 0,
-      "3m": 0,
-      "6m": 0,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2610051,
-    "nombre": "M2 Villa Soldati",
-    "simbolo": "M2_VILLASOLDATI",
-    "categoria": "Real Estate",
-    "emoji": "🏢",
-    "precio": 0,
-    "fecha": "2026-06-22",
-    "variaciones": {
-      "1w": 0,
-      "1m": 0,
-      "3m": 0,
-      "6m": 0,
       "9m": 0,
       "1y": 0,
       "3y": 0,
