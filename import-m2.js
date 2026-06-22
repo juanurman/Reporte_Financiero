@@ -28,12 +28,22 @@ const getTicker = (barrio) => {
   if (fixes[barrio]) return fixes[barrio];
   
   const clean = barrio.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().replace(/[^A-Z]/g, '');
-  return `M2_${clean.substring(0, 5)}`;
+  // Aumentamos a 20 caracteres para evitar colisiones entre "Villas" y "Parques"
+  return `M2_${clean.substring(0, 20)}`;
 };
 
 const runImport = async () => {
   try {
     console.log('Iniciando importación masiva de TODOS los barrios...');
+
+    // 0. Limpieza de activos M2 antiguos colisionados (excepto los 4 originales)
+    console.log('Limpiando activos M2 antiguos y colisionados de la base de datos...');
+    await pool.execute(`
+      DELETE FROM activos 
+      WHERE simbolo LIKE "M2_%" 
+      AND simbolo NOT IN ("M2_NUN", "M2_BEL", "M2_PAL", "M2_REC")
+    `);
+
     const csvPath = path.join(__dirname, 'zonaprop_index_historico_total.csv');
     const csvData = fs.readFileSync(csvPath, 'utf-8');
     const lines = csvData.split('\n');
@@ -50,6 +60,7 @@ const runImport = async () => {
 
     let insertados = 0;
     const valoresBulk = [];
+    const seen = new Set(); // Para prevenir colisiones/duplicados en el mismo mes
 
     for (let i = 1; i < lines.length; i++) {
       const line = lines[i].trim();
@@ -67,6 +78,13 @@ const runImport = async () => {
       const mes = monthMap[parts[0].toLowerCase()];
       const fecha = `20${parts[1]}-${mes}-01`; // Usamos el día 1 de cada mes
       const precio = parseFloat(indexPrecioStr) * 1000; // "3.026" -> 3026 USD
+
+      const key = `${simbolo}_${fecha}`;
+      if (seen.has(key)) {
+        // Ignoramos duplicados (las filas al inicio de cada mes en el CSV tienen prioridad por su ranking)
+        continue;
+      }
+      seen.add(key);
 
       valoresBulk.push([idMap[simbolo], fecha, precio]);
       insertados++;
