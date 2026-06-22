@@ -67,7 +67,7 @@ const runImport = async () => {
     // 2. Insertar los activos de alquiler
     for (const barrio of barriosConDatos) {
       const ticker = getTicker(barrio);
-      await pool.execute('INSERT IGNORE INTO activos (simbolo, nombre, categoria, emoji) VALUES (?, ?, "Alquileres", "🔑")', [ticker, `Alquiler ${barrio}`]);
+      await pool.execute('INSERT IGNORE INTO activos (simbolo, nombre, categoria, emoji) VALUES (?, ?, "Real Estate", "🔑")', [ticker, `Alquiler ${barrio}`]);
     }
 
     const [activos] = await pool.execute('SELECT id, simbolo FROM activos WHERE simbolo LIKE "ALQ_%" AND simbolo <> "ALQ_YIELD"');

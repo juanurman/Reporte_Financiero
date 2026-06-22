@@ -822,6 +822,7 @@ const formatUSD = (value) => {
 const formatAssetPrice = (activo) => {
   const val = Number(activo.precio);
   if (activo.simbolo === 'ALQ_YIELD' || activo.simbolo === '^TNX' || activo.simbolo === '^TYX') return `${val.toFixed(2)}%`;
+  if (activo.simbolo.startsWith('ALQ_') && activo.simbolo !== 'ALQ_YIELD') return `AR$ ${val.toLocaleString('es-AR', { maximumFractionDigits: 0 })}`;
   if (activo.categoria === 'Moneda' || activo.simbolo.endsWith('.BA') || activo.nombre.includes('AR$')) return `AR$ ${val.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   if (activo.simbolo.startsWith('M2_')) return `US$ ${val.toLocaleString('es-AR', { maximumFractionDigits: 0 })}`;
   return `US$ ${val.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -1133,7 +1134,27 @@ const filteredAssetsForCategory = computed(() => {
     if (realEstateTab.value === 'm2') {
       return items.filter(a => a.simbolo.startsWith('M2_'));
     } else {
-      return items.filter(a => !a.simbolo.startsWith('M2_'));
+      // Retornamos todos los activos de alquiler y los ADRs (IRS, CRESY), ordenando los barrios en el mismo orden que el M2
+      const alqAssets = items.filter(a => !a.simbolo.startsWith('M2_'));
+      const m2OrderedTickers = items.filter(a => a.simbolo.startsWith('M2_')).map(a => a.simbolo.replace('M2_', ''));
+      
+      return alqAssets.sort((a, b) => {
+        const isNeighA = a.simbolo.startsWith('ALQ_') && a.simbolo !== 'ALQ_YIELD';
+        const isNeighB = b.simbolo.startsWith('ALQ_') && b.simbolo !== 'ALQ_YIELD';
+        
+        if (isNeighA && isNeighB) {
+          const indexA = m2OrderedTickers.indexOf(a.simbolo.replace('ALQ_', ''));
+          const indexB = m2OrderedTickers.indexOf(b.simbolo.replace('ALQ_', ''));
+          const posA = indexA === -1 ? 999999 : indexA;
+          const posB = indexB === -1 ? 999999 : indexB;
+          return posA - posB;
+        }
+        
+        // Colocamos los activos que no son de barrios (rendimiento general y acciones) al principio
+        if (!isNeighA && isNeighB) return -1;
+        if (isNeighA && !isNeighB) return 1;
+        return 0;
+      });
     }
   }
   
@@ -1187,6 +1208,7 @@ const getPastPriceFormatted = (activo) => {
   const varAPI = activo.variaciones[marketPeriod.value] || 0;
   const pastPrice = Number(activo.precio) / (1 + varAPI / 100);
   if (activo.simbolo === 'ALQ_YIELD' || activo.simbolo === '^TNX' || activo.simbolo === '^TYX') return `${pastPrice.toFixed(2)}%`;
+  if (activo.simbolo.startsWith('ALQ_') && activo.simbolo !== 'ALQ_YIELD') return `AR$ ${pastPrice.toLocaleString('es-AR', { maximumFractionDigits: 0 })}`;
   if (activo.categoria === 'Moneda' || activo.simbolo.endsWith('.BA') || activo.nombre.includes('AR$')) return `AR$ ${pastPrice.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   if (activo.simbolo.startsWith('M2_')) return `US$ ${pastPrice.toLocaleString('es-AR', { maximumFractionDigits: 0 })}`;
   return `US$ ${pastPrice.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
