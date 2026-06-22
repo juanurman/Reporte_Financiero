@@ -9,10 +9,10 @@
           {{ isDarkMode ? '☀️' : '🌙' }}
         </button>
         <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 pb-2 leading-tight">
-          Portal Financiero Argento
+          Portal Financiero Argentino
         </h1>
         <p class="text-lg md:text-xl dark:text-slate-400 text-slate-600 font-medium">
-          Rendimientos, timba y la cruda realidad de tus ahorros.
+          Rendimientos históricos, análisis de riesgo y costo de oportunidad.
         </p>
         <div class="inline-flex items-center justify-center gap-2 bg-slate-200/50 dark:bg-slate-800/50 px-4 py-1.5 rounded-full border border-slate-300 dark:border-slate-700 shadow-sm mt-2">
           <span class="relative flex h-2.5 w-2.5">
@@ -30,8 +30,11 @@
         <button @click="currentTab = 'mercados'" :class="currentTab === 'mercados' ? 'bg-white dark:bg-slate-700 shadow-md text-indigo-600 dark:text-indigo-400' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'" class="px-6 py-2.5 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2">
           📈 Mercados
         </button>
+        <button @click="currentTab = 'comparador'" :class="currentTab === 'comparador' ? 'bg-white dark:bg-slate-700 shadow-md text-indigo-600 dark:text-indigo-400' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'" class="px-6 py-2.5 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2">
+          ⚖️ ¿Qué conviene?
+        </button>
         <button @click="currentTab = 'calculadora'" :class="currentTab === 'calculadora' ? 'bg-white dark:bg-slate-700 shadow-md text-indigo-600 dark:text-indigo-400' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'" class="px-6 py-2.5 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2">
-          ⏱️ Calculadora
+          ⏱️ Calculadora Histórica
         </button>
         <button @click="currentTab = 'cartera'" :class="currentTab === 'cartera' ? 'bg-white dark:bg-slate-700 shadow-md text-indigo-600 dark:text-indigo-400' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'" class="px-6 py-2.5 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2">
           💼 Mi Cartera
@@ -101,14 +104,14 @@
 
       <!-- PESTAÑA: CALCULADORA -->
       <div v-if="currentTab === 'calculadora'" class="space-y-10 animate-fade-in">
-      <!-- El Delorean Financiero -->
+      <!-- Calculadora de Retorno Histórico -->
       <section class="dark:bg-slate-900/80 bg-white border dark:border-white/10 border-slate-200 rounded-[2.5rem] p-6 md:p-10 shadow-2xl relative overflow-hidden dark:text-white text-slate-900 transition-all duration-300">
-        <div class="absolute top-0 right-0 -mt-10 -mr-10 opacity-10 text-9xl pointer-events-none">🚗⚡</div>
+        <div class="absolute top-0 right-0 -mt-10 -mr-10 opacity-10 text-9xl pointer-events-none">📊📈</div>
         
         <!-- Cabecera colapsable -->
         <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 cursor-pointer select-none" @click="showCalculator = !showCalculator">
           <h2 class="text-2xl md:text-3xl font-bold flex items-center gap-2 md:gap-3 leading-tight">
-            <span>⏱️</span> El Delorean Financiero
+            <span>⏱️</span> Calculadora de Retorno Histórico
           </h2>
           <button class="dark:text-slate-400 text-slate-600 dark:hover:text-white hover:text-slate-900 dark:bg-slate-800 bg-slate-100 border dark:border-white/5 border-slate-300 px-4 py-2 rounded-xl transition text-sm font-bold w-full sm:w-fit" @click.stop="showCalculator = !showCalculator">
             {{ showCalculator ? 'Ocultar Calculadora ⬆️' : 'Abrir Calculadora ⬇️' }}
@@ -117,7 +120,7 @@
 
         <div v-show="showCalculator" class="relative z-10 animate-fade-in">
           <p class="dark:text-slate-400 text-slate-600 mb-8 max-w-2xl">
-            ¿Qué hubiera pasado si no te la patinabas? Ingresá un monto, elegí en qué momento del pasado te bajaste de la máquina del tiempo, y mirá cómo te hubiera ido hoy.
+            Simula el rendimiento que habrían tenido tus fondos si los hubieses invertido en el pasado en diferentes clases de activos.
           </p>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -142,16 +145,16 @@
                 <option value="3m">Hace 3 meses</option>
                 <option value="6m">Hace 6 meses</option>
                 <option value="ytd">YTD (Desde enero)</option>
-                <option value="1y">Hace 1 año (Fiebre pre-electoral)</option>
-                <option value="3y">Hace 3 años (Plena post-pandemia)</option>
-                <option value="5y">Hace 5 años (Pre-pandemia 2019)</option>
+                <option value="1y">Hace 1 año (Período electoral)</option>
+                <option value="3y">Hace 3 años (Mediano plazo)</option>
+                <option value="5y">Hace 5 años (Largo plazo 2019)</option>
               </select>
             </div>
 
             <!-- Botón -->
             <div class="flex items-end">
               <button @click="calculateTravel" class="w-full bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-300 hover:to-orange-400 text-slate-900 font-black text-lg py-[11px] px-6 rounded-xl transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(251,191,36,0.4)] hover:shadow-[0_0_30px_rgba(251,191,36,0.7)]">
-                Viajar al Presente ⚡
+                Calcular Rendimiento 📊
               </button>
             </div>
           </div>
@@ -194,6 +197,218 @@
       </section>
 
       </div> <!-- Fin Pestaña Calculadora -->
+      
+      <!-- PESTAÑA: COMPARADOR DE INVERSIONES -->
+      <div v-if="currentTab === 'comparador'" class="space-y-10 animate-fade-in">
+        
+        <!-- Perfil Patrimonial -->
+        <section class="dark:bg-slate-900 bg-white border dark:border-white/5 border-slate-200 rounded-[2rem] p-6 md:p-8 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+          <div class="space-y-2 text-center md:text-left">
+            <h2 class="text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500">
+              Perfil Patrimonial & Recomendaciones
+            </h2>
+            <p class="text-sm dark:text-slate-400 text-slate-500 font-medium">
+              Selecciona tu prioridad estratégica para contrastar la rentabilidad frente a la seguridad.
+            </p>
+          </div>
+          
+          <div class="flex flex-wrap justify-center gap-2 bg-slate-100 dark:bg-slate-950 p-1.5 rounded-2xl border dark:border-slate-800 border-slate-300">
+            <button @click="userPreference = 'seguridad'" 
+                    :class="userPreference === 'seguridad' ? 'bg-indigo-500 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'"
+                    class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-300 flex items-center gap-2">
+              🛡️ Priorizar Seguridad
+            </button>
+            <button @click="userPreference = 'balanceado'" 
+                    :class="userPreference === 'balanceado' ? 'bg-indigo-500 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'"
+                    class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-300 flex items-center gap-2">
+              ⚖️ Perfil Balanceado
+            </button>
+            <button @click="userPreference = 'rendimiento'" 
+                    :class="userPreference === 'rendimiento' ? 'bg-indigo-500 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'"
+                    class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-300 flex items-center gap-2">
+              📈 Priorizar Rendimiento
+            </button>
+          </div>
+        </section>
+
+        <!-- Contenido Principal en Dos Columnas -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          
+          <!-- Clasificación de Rendimientos (Columna Izquierda - 7/12) -->
+          <div class="lg:col-span-7 space-y-6">
+            <div class="flex justify-between items-center mb-2">
+              <h3 class="text-xl font-bold dark:text-white text-slate-800">
+                Clasificación de Rendimientos (USD)
+              </h3>
+              <span class="text-xs uppercase tracking-wider dark:text-slate-400 text-slate-500 font-bold">
+                Medido en base al período seleccionado
+              </span>
+            </div>
+
+            <div class="space-y-4">
+              <div v-for="(asset, index) in comparisonData" :key="asset.id"
+                   class="dark:bg-slate-900 bg-white border rounded-[2rem] p-5 md:p-6 shadow-lg flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all duration-300 relative overflow-hidden"
+                   :class="[
+                     asset.id === bestMatchAsset?.id 
+                       ? 'ring-2 ring-indigo-500 shadow-[0_0_30px_rgba(99,102,241,0.2)] transform scale-[1.01] dark:border-indigo-500/50 border-indigo-400' 
+                       : 'dark:border-white/5 border-slate-200 hover:border-slate-300 dark:hover:border-slate-800'
+                   ]">
+                
+                <!-- Badge de Activo Recomendado para el perfil -->
+                <div v-if="asset.id === bestMatchAsset?.id" 
+                     class="absolute top-0 right-0 bg-indigo-500 text-white font-extrabold text-[10px] uppercase tracking-widest px-3 py-1 rounded-bl-xl shadow-md">
+                  ⭐ Recomendado para ti
+                </div>
+
+                <div class="flex items-start gap-4">
+                  <span class="text-3xl md:text-4xl dark:bg-slate-950 bg-slate-50 p-2.5 rounded-xl border dark:border-white/5 border-slate-200">
+                    {{ asset.emoji }}
+                  </span>
+                  <div class="space-y-1 max-w-[280px] sm:max-w-xs md:max-w-sm">
+                    <div class="flex items-center gap-2">
+                      <span class="text-sm font-black text-slate-400">#{{ index + 1 }}</span>
+                      <h4 class="font-extrabold text-base md:text-lg dark:text-white text-slate-800 leading-tight">
+                        {{ asset.name }}
+                      </h4>
+                    </div>
+                    <p class="text-xs dark:text-slate-400 text-slate-500 font-semibold leading-relaxed">
+                      {{ asset.desc }}
+                    </p>
+                    <div v-if="asset.detail" class="text-[10px] dark:text-slate-500 text-slate-400 font-bold bg-slate-50 dark:bg-slate-950 px-2 py-1 rounded w-fit border dark:border-white/5 border-slate-200">
+                      {{ asset.detail }}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-center border-t sm:border-0 border-slate-100 dark:border-slate-800 pt-3 sm:pt-0 gap-3">
+                  <div class="text-left sm:text-right">
+                    <span class="block text-[10px] dark:text-slate-500 text-slate-400 font-black uppercase tracking-wider">Retorno Acumulado</span>
+                    <span class="text-lg md:text-xl font-black" 
+                          :class="asset.returnUSD >= 0 ? 'text-emerald-500' : 'text-red-500'">
+                      {{ asset.returnUSD >= 0 ? '+' : '' }}{{ asset.returnUSD.toFixed(2) }}%
+                    </span>
+                  </div>
+                  
+                  <div class="flex flex-col items-end gap-1.5">
+                    <span class="text-[10px] font-black px-2 py-1 rounded-lg border shadow-inner flex items-center gap-1"
+                          :class="[
+                            asset.matchScore >= 80 
+                              ? 'dark:bg-emerald-500/20 bg-emerald-50 text-emerald-600 dark:text-emerald-400 dark:border-emerald-500/30 border-emerald-300' 
+                              : asset.matchScore >= 50 
+                                ? 'dark:bg-amber-500/20 bg-amber-50 text-amber-600 dark:text-amber-400 dark:border-amber-500/30 border-amber-300' 
+                                : 'dark:bg-red-500/20 bg-red-50 text-red-600 dark:text-red-400 dark:border-red-500/30 border-red-300'
+                          ]">
+                      Compatibilidad: {{ asset.matchScore }}%
+                    </span>
+                    
+                    <div class="flex items-center gap-2 text-[10px] font-bold text-slate-400">
+                      <span title="Seguridad (Paz Mental)">🛡️ {{ asset.safety }}/10</span>
+                      <span>•</span>
+                      <span title="Riesgo / Volatilidad">🎲 {{ asset.volatility }}/10</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- Asesoramiento y Gráfico (Columna Derecha - 5/12) -->
+          <div class="lg:col-span-5 space-y-8">
+            
+            <!-- Gráfico Comparativo -->
+            <div class="dark:bg-slate-900 bg-white border dark:border-white/5 border-slate-200 rounded-[2rem] p-6 shadow-xl space-y-4">
+              <h3 class="text-lg font-bold dark:text-white text-slate-800 flex items-center gap-2">
+                📊 Rendimiento Visual Comparado (USD)
+              </h3>
+              <div class="h-64 relative">
+                <canvas id="comparisonChart" ref="comparisonChartRef"></canvas>
+              </div>
+            </div>
+
+            <!-- Veredicto AI Patrimonial -->
+            <div class="dark:bg-slate-900 bg-white border dark:border-white/5 border-slate-200 rounded-[2rem] p-6 shadow-xl space-y-4 relative overflow-hidden">
+              <div class="absolute top-0 right-0 -mt-6 -mr-6 opacity-5 text-7xl pointer-events-none">⚖️</div>
+              <h3 class="text-lg font-bold dark:text-white text-slate-800 flex items-center gap-2">
+                ⚖️ Asesoramiento Patrimonial
+              </h3>
+              <div class="space-y-3 text-sm dark:text-slate-300 text-slate-600 leading-relaxed font-medium">
+                <p>
+                  Para el período seleccionado de <span class="text-indigo-500 dark:text-indigo-400 font-bold">{{ marketPeriodLabels[marketPeriod] }}</span>, 
+                  el activo con mejor rendimiento histórico absoluto es <span class="font-extrabold text-slate-800 dark:text-white">{{ comparisonData[0]?.name }}</span> con un retorno de <span class="font-black text-emerald-500">{{ comparisonData[0]?.returnUSD >= 0 ? '+' : '' }}{{ comparisonData[0]?.returnUSD.toFixed(2) }}%</span> en dólares.
+                </p>
+                <p>
+                  Según tu preferencia por <span class="text-indigo-500 dark:text-indigo-400 font-bold">{{ userPreference === 'seguridad' ? 'minimizar riesgos (Seguridad)' : userPreference === 'rendimiento' ? 'maximizar ganancias (Rendimiento)' : 'un balance equilibrado' }}</span>, 
+                  la inversión óptima sugerida para ti es <span class="font-extrabold text-slate-800 dark:text-white">{{ bestMatchAsset?.name }}</span> (Compatibilidad del {{ bestMatchAsset?.matchScore }}%).
+                </p>
+                <p class="pt-3 border-t border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                  💡 **Análisis de Bienes Raíces (Ladrillo)**: Aporta un retorno total compuesto de <span class="font-bold dark:text-slate-300 text-slate-700">{{ comparisonData.find(a => a.id === 'realestate')?.returnUSD.toFixed(2) }}% USD</span> en este horizonte. Al ser un activo de baja volatilidad histórica en comparación con la timba bursátil o criptográfica, representa una opción óptima para la preservación de riqueza y resguardo de capital.
+                </p>
+              </div>
+            </div>
+
+            <!-- Ranking Inmobiliario por Barrio -->
+            <div class="dark:bg-slate-900 bg-white border dark:border-white/5 border-slate-200 rounded-[2rem] p-6 shadow-xl space-y-5">
+              <div class="space-y-1">
+                <h3 class="text-lg font-bold dark:text-white text-slate-800 flex items-center gap-2">
+                  🏢 Rendimiento por Barrio (CABA)
+                </h3>
+                <p class="text-[10px] dark:text-slate-500 text-slate-400 font-bold uppercase tracking-wider">
+                  Valores promedio para unidades estándar de 50 m²
+                </p>
+              </div>
+
+              <div class="space-y-4">
+                <!-- Top 3 Yield -->
+                <div class="space-y-2">
+                  <h4 class="text-xs font-black dark:text-emerald-400 text-emerald-600 uppercase tracking-widest flex items-center gap-1">
+                    ▲ Mayor Rentabilidad por Alquiler (Yield Anual)
+                  </h4>
+                  <div class="space-y-2">
+                    <div v-for="(b, idx) in top3NeighborhoodYields" :key="b.code"
+                         class="flex items-center justify-between p-3 rounded-xl bg-emerald-500/5 dark:bg-emerald-950/20 border border-emerald-500/10 text-sm">
+                      <div class="flex items-center gap-2">
+                        <span class="font-bold text-slate-400 text-xs">#{{ idx + 1 }}</span>
+                        <span class="font-bold dark:text-white text-slate-800">{{ b.name }}</span>
+                      </div>
+                      <div class="text-right">
+                        <span class="font-black dark:text-emerald-400 text-emerald-600 block">{{ b.yieldPercent }}% anual</span>
+                        <span class="text-[10px] text-slate-400 font-semibold block">M2: US$ {{ b.priceM2.toLocaleString('es-AR') }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Bottom 3 Yield -->
+                <div class="space-y-2">
+                  <h4 class="text-xs font-black dark:text-red-400 text-red-600 uppercase tracking-widest flex items-center gap-1">
+                    ▼ Menor Rentabilidad por Alquiler (Yield Anual)
+                  </h4>
+                  <div class="space-y-2">
+                    <div v-for="(b, idx) in bottom3NeighborhoodYields" :key="b.code"
+                         class="flex items-center justify-between p-3 rounded-xl bg-red-500/5 dark:bg-red-950/20 border border-red-500/10 text-sm">
+                      <div class="flex items-center gap-2">
+                        <span class="font-bold text-slate-400 text-xs">#{{ idx + 1 }}</span>
+                        <span class="font-bold dark:text-white text-slate-800">{{ b.name }}</span>
+                      </div>
+                      <div class="text-right">
+                        <span class="font-black dark:text-red-400 text-red-600 block">{{ b.yieldPercent }}% anual</span>
+                        <span class="text-[10px] text-slate-400 font-semibold block">M2: US$ {{ b.priceM2.toLocaleString('es-AR') }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <p class="text-[10px] text-slate-500 dark:text-slate-500 font-semibold bg-slate-50 dark:bg-slate-950/50 p-3 rounded-xl border dark:border-white/5 border-slate-200">
+                ℹ️ **Nota metodológica**: El rendimiento anual se calcula proyectando los alquileres en pesos a USD MEP divididos por el valor total estimado de la unidad.
+              </p>
+            </div>
+
+          </div>
+        </div>
+        
+      </div> <!-- Fin Pestaña Comparador -->
 
       <!-- PESTAÑA: PORTAFOLIO -->
       <div v-if="currentTab === 'cartera'" class="space-y-10 animate-fade-in">
@@ -747,13 +962,18 @@ const calculateTravel = () => {
   const inflacionAR_acumulada = ((1 + varMEP / 100) * 1.15) - 1; 
   const poderCompraPesos = ((1 / (1 + inflacionAR_acumulada)) - 1) * 100;
 
+  const getM2AvgVariation = () => {
+    const items = livePrices.value.filter(a => a.categoria === 'Real Estate' && a.simbolo.startsWith('M2_'));
+    return items.length ? items.reduce((acc, a) => acc + Number(a.variaciones[selectedPeriod.value] || 0), 0) / items.length : 0;
+  };
+
   const dynamicAssets = [
-    { id: 'merval', name: 'Merval (Promedio)', emoji: '🎢', varUSD: getAvgVariation('Merval') },
+    { id: 'merval', name: 'Acciones Argentinas (Merval)', emoji: '🇦🇷', varUSD: getAvgVariation('Merval') },
     { id: 'sp500', name: 'S&P 500 (SPY)', emoji: '📈', varUSD: getVariation('SPY') },
-    { id: 'big6', name: 'Big 6 (Tecnológicas)', emoji: '🦅', varUSD: getAvgVariation('Big Tech') },
-    { id: 'mep', name: 'Dólar MEP / Efectivo', emoji: '💵', varUSD: inflacionUS }, // El MEP en base USD solo sufre la inflación de USA
-    { id: 'realestate', name: 'Real Estate (Acciones)', emoji: '🏢', varUSD: getAvgVariation('Real Estate') },
-    { id: 'efectivo', name: 'Efectivo bajo el colchón (Pesos)', emoji: '💸', varUSD: ((1 / (1 + varMEP / 100)) - 1) * 100 } 
+    { id: 'big6', name: 'Big Tech (Tecnológicas)', emoji: '🦅', varUSD: getAvgVariation('Big Tech') },
+    { id: 'mep', name: 'Dólar MEP (Efectivo)', emoji: '💵', varUSD: inflacionUS }, // El MEP en base USD solo sufre la devaluación del poder de compra del USD
+    { id: 'realestate', name: 'Bienes Raíces (Apreciación M2)', emoji: '🏢', varUSD: getM2AvgVariation() },
+    { id: 'efectivo', name: 'Efectivo en Pesos (ARS)', emoji: '💸', varUSD: ((1 / (1 + varMEP / 100)) - 1) * 100 } 
   ];
 
   const calculated = dynamicAssets.map(asset => {
@@ -779,13 +999,13 @@ const calculateTravel = () => {
   // Ordenamos de mayor a menor ganancia final
   results.value = calculated.sort((a, b) => b.finalAmount - a.finalAmount);
 
-  // Asignamos una frase picante dependiendo del ganador
+  // Asignamos una descripción analítica dependiendo del ganador
   const winner = results.value[0].id;
-  if (winner === 'merval') funnyPhrase.value = '¡Mervalazo pa! 🚀 Sos el lobo de Wall Street versión San Martín.';
-  else if (winner === 'mep') funnyPhrase.value = 'El colchón manda. 💵 Lloran los plazos fijos. Refugio de valor y paz mental.';
-  else if (winner === 'sp500') funnyPhrase.value = 'A lo Warren Buffett. 👴 Tranquilidad mental, la tuya está trabajando sola.';
-  else if (winner === 'big6') funnyPhrase.value = '¡El futuro es hoy, oíste viejo! 🤖 Las tecnológicas imprimen billetes.';
-  else funnyPhrase.value = 'El ladrillo nunca te abandona. 🏢 Lento pero seguro, como buen conservador.';
+  if (winner === 'merval') funnyPhrase.value = 'La renta variable local lideró el rendimiento en este período, impulsada por una fuerte revalorización de los activos cotizados en el mercado de valores argentino.';
+  else if (winner === 'mep') funnyPhrase.value = 'El dólar MEP conservó el poder de compra real, mitigando la volatilidad cambiaria propia de la moneda local.';
+  else if (winner === 'sp500') funnyPhrase.value = 'El índice S&P 500 consolidó un retorno diversificado y de bajo riesgo en moneda dura, superando a la inflación estadounidense en el mediano/largo plazo.';
+  else if (winner === 'big6') funnyPhrase.value = 'Las corporaciones tecnológicas globales generaron los retornos más elevados, apalancadas por el crecimiento del sector digital y de inteligencia artificial.';
+  else funnyPhrase.value = 'Bienes Raíces demostró ser una inversión defensiva óptima, preservando el valor real del capital y brindando cobertura patrimonial de largo plazo.';
 
   // Costo de Oportunidad a Bienes Reales
   const bestProfit = results.value[0].profit;
@@ -793,20 +1013,20 @@ const calculateTravel = () => {
   
   if (bestProfit > 0) {
     if (currency.value === 'ARS') {
-      const asados = Math.floor(bestProfit / 45000);
+      const canastas = Math.floor(bestProfit / 120000);
       const alquileres = Math.floor(bestProfit / 350000);
-      if (alquileres >= 1) equivalencyText.value = `💡 Costo de Oportunidad: Te hubieras pagado ${alquileres} meses de alquiler en CABA.`;
-      else if (asados >= 1) equivalencyText.value = `💡 Costo de Oportunidad: Te perdiste de invitar ${asados} asados a todo trapo para 10 personas. 🥩`;
-      else equivalencyText.value = `💡 Costo de Oportunidad: Equivalente a comprar ${(bestProfit / 2500).toFixed(0)} alfajores. 🍫`;
+      if (alquileres >= 1) equivalencyText.value = `💡 Costo de Oportunidad Real: El rendimiento obtenido equivale a cubrir el costo de ${alquileres} meses de alquiler promedio de un departamento de 2 ambientes en CABA. 🏢`;
+      else if (canastas >= 1) equivalencyText.value = `💡 Costo de Oportunidad Real: La ganancia equivale a adquirir ${canastas} Canastas Básicas Alimentarias individuales de referencia. 🛒`;
+      else equivalencyText.value = `💡 Costo de Oportunidad Real: El rendimiento es equivalente a comprar ${(bestProfit / 2500).toFixed(0)} unidades de consumo básico. 📦`;
     } else {
       const iphones = Math.floor(bestProfit / 1200);
-      const brasil = Math.floor(bestProfit / 800);
-      if (iphones >= 1) equivalencyText.value = `💡 Costo de Oportunidad: Esa ganancia equivale a ${iphones} iPhones 15 Pro Max nuevitos. 📱`;
-      else if (brasil >= 1) equivalencyText.value = `💡 Costo de Oportunidad: Podrías haberte ido ${brasil} veces a Brasil todo pago. 🏖️`;
-      else equivalencyText.value = `💡 Costo de Oportunidad: Son como ${(bestProfit / 5).toFixed(0)} cafés grandes en Starbucks. ☕`;
+      const viajes = Math.floor(bestProfit / 1500);
+      if (viajes >= 1) equivalencyText.value = `💡 Costo de Oportunidad Real: Este retorno financiero es equivalente a costear ${viajes} viajes de vacaciones de mediano plazo al exterior. ✈️`;
+      else if (iphones >= 1) equivalencyText.value = `💡 Costo de Oportunidad Real: El capital ganado equivale al valor de mercado de ${iphones} dispositivos móviles de alta gama (iPhones de referencia). 📱`;
+      else equivalencyText.value = `💡 Costo de Oportunidad Real: Representa una ganancia de capital marginal equivalente a ${(bestProfit / 5).toFixed(0)} unidades de café de especialidad. ☕`;
     }
   } else {
-    equivalencyText.value = '💀 El mercado te pasó por encima o la inflación de USA hizo lo suyo. Acá no hay asado ni iPhone para vos.';
+    equivalencyText.value = '📉 El capital no ha superado la tasa de inflación en dólares o el costo de financiamiento en el período seleccionado.';
   }
   
 };
@@ -837,6 +1057,254 @@ const livePrices = ref([]);
 const selectedCategory = ref(null);
 const realEstateTab = ref('m2');
 const portfolioChartRef = ref(null);
+
+// --- SECCIÓN COMPARADOR DE INVERSIONES ---
+const comparisonChartRef = ref(null);
+const userPreference = ref('balanceado');
+
+// Ponderaciones de Seguridad (safety) y Volatilidad/Riesgo (volatility) [1 a 10]
+const assetMetrics = {
+  realestate: { safety: 10, volatility: 2 },
+  bonos:      { safety: 9,  volatility: 1 },
+  sp500:      { safety: 8,  volatility: 4 },
+  big6:       { safety: 7,  volatility: 5 },
+  merval:     { safety: 4,  volatility: 8 },
+  cripto:     { safety: 1,  volatility: 10 },
+  efectivo:   { safety: 6,  volatility: 2 }
+};
+
+const assetDescriptions = {
+  realestate: 'Apreciación M2 promedio en CABA + cobro de alquileres en USD.',
+  bonos:      'Bono del Tesoro de EE.UU. a 10 años, rendimiento libre de riesgo acumulado.',
+  sp500:      'Diversificación pasiva en las 500 corporaciones líderes de EE.UU. (SPY).',
+  big6:       'Inversión concentrada en gigantes de tecnología e inteligencia artificial.',
+  merval:     'Acciones argentinas líderes valuadas en USD (GGAL, YPF, PAM, BMA).',
+  cripto:     'Bitcoin (BTC-USD), activo digital con alta volatilidad y retorno descentralizado.',
+  efectivo:   'Dólar billete MEP/CCL en custodia. Pierde valor adquisitivo real por inflación en USD.'
+};
+
+const getYearsForPeriod = (period) => {
+  if (period === 'ytd') {
+    const now = new Date();
+    return (now - new Date(now.getFullYear(), 0, 1)) / (1000 * 60 * 60 * 24 * 365);
+  }
+  if (period === '1w') return 7 / 365;
+  if (period === '1m') return 1 / 12;
+  if (period === '3m') return 3 / 12;
+  if (period === '6m') return 6 / 12;
+  const num = parseInt(period[0]);
+  return period.endsWith('y') ? num : num / 12;
+};
+
+const comparisonData = computed(() => {
+  if (livePrices.value.length === 0) return [];
+
+  const getVar = (simbolo) => Number(livePrices.value.find(a => a.simbolo === simbolo)?.variaciones[marketPeriod.value] || 0);
+  const getAvgVar = (categoria, filterFn = null) => {
+    let items = livePrices.value.filter(a => a.categoria === categoria);
+    if (filterFn) items = items.filter(filterFn);
+    return items.length ? items.reduce((acc, a) => acc + Number(a.variaciones[marketPeriod.value] || 0), 0) / items.length : 0;
+  };
+
+  const years = getYearsForPeriod(marketPeriod.value);
+
+  // 1. Real Estate (Ladrillo)
+  const m2Appreciation = getAvgVar('Real Estate', a => a.simbolo.startsWith('M2_'));
+  const yieldAsset = livePrices.value.find(a => a.simbolo === 'ALQ_YIELD');
+  const annualYield = yieldAsset ? Number(yieldAsset.precio) : 4.5;
+  const rentAccumulated = annualYield * years;
+  const realEstateTotal = m2Appreciation + rentAccumulated;
+
+  // 2. Merval en USD
+  const mervalTotal = getAvgVar('Merval');
+
+  // 3. S&P 500
+  const sp500Total = getVar('SPY');
+
+  // 4. Big Tech
+  const bigTechTotal = getAvgVar('Big Tech');
+
+  // 5. Cripto (Bitcoin)
+  const criptoTotal = getVar('BTC-USD');
+
+  // 6. Bonos EE.UU.
+  const tnxAsset = livePrices.value.find(a => a.simbolo === '^TNX');
+  const tnxYield = tnxAsset ? Number(tnxAsset.precio) : 4.2;
+  const bonosTotal = tnxYield * years;
+
+  // 7. Dólar Colchón
+  const inflacionUSAnual = 3;
+  const efectivoTotal = -inflacionUSAnual * years;
+
+  const rawAssets = [
+    { id: 'realestate', name: 'Bienes Raíces (Ladrillo CABA)', emoji: '🏢', returnUSD: realEstateTotal, detail: `Apreciación M2: ${m2Appreciation.toFixed(2)}% | Alquileres: ${rentAccumulated.toFixed(2)}%` },
+    { id: 'merval', name: 'Acciones Argentinas (Merval)', emoji: '🇦🇷', returnUSD: mervalTotal, detail: `Promedio consolidado de ADRs argentinos líderes en USD.` },
+    { id: 'sp500', name: 'S&P 500 (SPY)', emoji: '📈', returnUSD: sp500Total, detail: `ETF referencial de capitalización bursátil estadounidense.` },
+    { id: 'big6', name: 'Big Tech (Tecnológicas)', emoji: '🦅', returnUSD: bigTechTotal, detail: `Índice de empresas de gran escala tecnológica en Wall Street.` },
+    { id: 'cripto', name: 'Criptomonedas (Bitcoin)', emoji: '₿', returnUSD: criptoTotal, detail: `Cotización de Bitcoin (BTC) frente al Dólar.` },
+    { id: 'bonos', name: 'Bonos del Tesoro EE.UU. (10Y)', emoji: '📜', returnUSD: bonosTotal, detail: `Rendimiento de renta fija libre de riesgo acumulado.` },
+    { id: 'efectivo', name: 'Dólar Colchón (Efectivo)', emoji: '💵', returnUSD: efectivoTotal, detail: `Pérdida por inflación estadounidense acumulada.` }
+  ];
+
+  return rawAssets.map(asset => {
+    const metrics = assetMetrics[asset.id];
+    let matchScore = 0;
+
+    if (userPreference.value === 'seguridad') {
+      matchScore = 100 - (10 - metrics.safety) * 6 - (metrics.volatility - 1) * 4;
+    } else if (userPreference.value === 'rendimiento') {
+      matchScore = 100 - (metrics.safety - 1) * 2 - (10 - metrics.volatility) * 6;
+    } else {
+      const idealSafety = 7;
+      const idealVolatility = 4;
+      matchScore = 100 - Math.abs(metrics.safety - idealSafety) * 10 - Math.abs(metrics.volatility - idealVolatility) * 8;
+    }
+
+    matchScore = Math.max(0, Math.min(100, Math.round(matchScore)));
+
+    return {
+      ...asset,
+      safety: metrics.safety,
+      volatility: metrics.volatility,
+      matchScore,
+      desc: assetDescriptions[asset.id]
+    };
+  }).sort((a, b) => b.returnUSD - a.returnUSD);
+});
+
+const bestMatchAsset = computed(() => {
+  if (comparisonData.value.length === 0) return null;
+  return [...comparisonData.value].sort((a, b) => b.matchScore - a.matchScore || b.returnUSD - a.returnUSD)[0];
+});
+
+const neighborhoodYields = computed(() => {
+  if (livePrices.value.length === 0) return [];
+
+  const mepAsset = livePrices.value.find(a => a.simbolo === 'DOLAR_MEP');
+  const mepRate = mepAsset ? Number(mepAsset.precio) : 1480;
+
+  const yields = [];
+  const m2Assets = livePrices.value.filter(a => a.simbolo.startsWith('M2_'));
+
+  m2Assets.forEach(m2 => {
+    const code = m2.simbolo.replace('M2_', '');
+    const alq = livePrices.value.find(a => a.simbolo === `ALQ_${code}`);
+
+    if (alq) {
+      const priceM2 = Number(m2.precio);
+      const rentARS = Number(alq.precio);
+      const propValUSD = priceM2 * 50;
+      const rentUSDYear = (rentARS * 12) / mepRate;
+      const yieldPercent = (rentUSDYear / propValUSD) * 100;
+      const appreciation = Number(m2.variaciones[marketPeriod.value] || 0);
+      const rentAccumulated = yieldPercent * getYearsForPeriod(marketPeriod.value);
+      const totalReturn = appreciation + rentAccumulated;
+      const name = m2.nombre.replace('M2 ', '');
+
+      yields.push({
+        name,
+        code,
+        priceM2,
+        rentARS,
+        yieldPercent: Number(yieldPercent.toFixed(2)),
+        appreciation: Number(appreciation.toFixed(2)),
+        totalReturn: Number(totalReturn.toFixed(2))
+      });
+    }
+  });
+
+  return yields;
+});
+
+const top3NeighborhoodYields = computed(() => {
+  return [...neighborhoodYields.value].sort((a, b) => b.yieldPercent - a.yieldPercent).slice(0, 3);
+});
+
+const bottom3NeighborhoodYields = computed(() => {
+  return [...neighborhoodYields.value].sort((a, b) => a.yieldPercent - b.yieldPercent).slice(0, 3);
+});
+
+const renderComparisonChart = async () => {
+  if (!comparisonChartRef.value) return;
+  const ChartJS = await loadChartJs();
+
+  const labels = comparisonData.value.map(a => a.emoji + ' ' + a.name.split(' (')[0]);
+  const data = comparisonData.value.map(a => a.returnUSD);
+  
+  const recommendedId = bestMatchAsset.value?.id;
+  const backgroundColors = comparisonData.value.map(a => 
+    a.id === recommendedId 
+      ? 'rgba(99, 102, 241, 0.85)' 
+      : 'rgba(51, 65, 85, 0.6)'
+  );
+  const borderColors = comparisonData.value.map(a => 
+    a.id === recommendedId 
+      ? 'rgb(99, 102, 241)' 
+      : 'rgb(71, 85, 105)'
+  );
+
+  if (window.comparisonChartInstance) window.comparisonChartInstance.destroy();
+  const ctx = comparisonChartRef.value.getContext('2d');
+  
+  window.comparisonChartInstance = new ChartJS(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Retorno Total (USD %)',
+        data,
+        backgroundColor: backgroundColors,
+        borderColor: borderColors,
+        borderWidth: 1.5,
+        borderRadius: 8
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(15, 23, 42, 0.95)',
+          titleColor: '#fff',
+          bodyColor: '#e2e8f0',
+          borderColor: '#334155',
+          borderWidth: 1,
+          padding: 10,
+          callbacks: {
+            label: function(context) {
+              return ` Retorno: ${context.parsed.x >= 0 ? '+' : ''}${context.parsed.x.toFixed(2)}% USD`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: 'rgba(51, 65, 85, 0.3)' },
+          ticks: {
+            color: '#64748b',
+            font: { family: 'monospace' },
+            callback: function(value) { return value + '%'; }
+          }
+        },
+        y: {
+          grid: { display: false },
+          ticks: {
+            color: '#cbd5e1',
+            font: { weight: 'bold' }
+          }
+        }
+      }
+    }
+  });
+};
+
+watch(() => [currentTab.value, marketPeriod.value, userPreference.value, livePrices.value], () => {
+  if (currentTab.value === 'comparador') {
+    setTimeout(renderComparisonChart, 150);
+  }
+}, { deep: true });
 
 // Lógica de Bloqueo de Portafolio
 const isPortfolioUnlocked = ref(false);
