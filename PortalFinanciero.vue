@@ -257,6 +257,11 @@
               <div class="flex items-center gap-2 bg-slate-100 dark:bg-slate-950 px-2.5 py-1.5 rounded-xl border dark:border-slate-800 border-slate-300">
                 <span class="text-xs font-semibold uppercase tracking-wider dark:text-slate-400 text-slate-500 pl-1">Período:</span>
                 <select v-model="comparisonPeriod" class="dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-300 dark:text-white text-slate-900 rounded-lg px-2.5 py-1 outline-none focus:ring-1 focus:ring-indigo-500 font-bold text-xs">
+                  <option value="1w">1 Semana</option>
+                  <option value="1m">1 Mes</option>
+                  <option value="3m">3 Meses</option>
+                  <option value="6m">6 Meses</option>
+                  <option value="ytd">YTD (Desde enero)</option>
                   <option value="1y">1 Año</option>
                   <option value="3y">3 Años</option>
                   <option value="5y">5 Años</option>
@@ -635,16 +640,37 @@
       <div v-if="selectedCategory" class="fixed inset-0 z-50 flex items-center justify-center p-4 dark:bg-black/80 bg-slate-900/60 backdrop-blur-md" @click.self="selectedCategory = null">
         <div class="dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 rounded-2xl w-full max-w-4xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
           <!-- Header Modal -->
-          <div class="p-5 md:p-6 bg-slate-900 border-b border-slate-800 dark:text-white text-slate-100 flex justify-between items-center shrink-0">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700/50 flex items-center justify-center text-xl">
-                {{ categoryMeta[selectedCategory]?.emoji }}
+          <div class="p-5 md:p-6 bg-slate-900 border-b border-slate-800 dark:text-white text-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shrink-0">
+            <div class="flex items-center justify-between w-full sm:w-auto">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700/50 flex items-center justify-center text-xl">
+                  {{ categoryMeta[selectedCategory]?.emoji }}
+                </div>
+                <h2 class="text-xl md:text-2xl font-extrabold">{{ selectedCategory }}</h2>
               </div>
-              <h2 class="text-xl md:text-2xl font-extrabold">{{ selectedCategory }}</h2>
+              <button @click="selectedCategory = null" class="sm:hidden text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg w-8 h-8 flex items-center justify-center transition font-bold border border-slate-700/50">
+                ✕
+              </button>
             </div>
-            <button @click="selectedCategory = null" class="text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg w-8 h-8 flex items-center justify-center transition font-bold border border-slate-700/50">
-              ✕
-            </button>
+            
+            <div class="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto">
+              <div class="flex items-center gap-2 bg-slate-800 px-2.5 py-1.5 rounded-xl border border-slate-700/50">
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 pl-1">Período:</span>
+                <select v-model="marketPeriod" class="bg-slate-900 border border-slate-700 text-white rounded-lg px-2.5 py-1 outline-none focus:ring-1 focus:ring-indigo-500 font-bold text-xs">
+                  <option value="1w">1 Semana</option>
+                  <option value="1m">1 Mes</option>
+                  <option value="3m">3 Meses</option>
+                  <option value="6m">6 Meses</option>
+                  <option value="ytd">YTD (Desde enero)</option>
+                  <option value="1y">1 Año</option>
+                  <option value="3y">3 Años</option>
+                  <option value="5y">5 Años</option>
+                </select>
+              </div>
+              <button @click="selectedCategory = null" class="hidden sm:flex text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg w-8 h-8 items-center justify-center transition font-bold border border-slate-700/50">
+                ✕
+              </button>
+            </div>
           </div>
           
           <!-- Panel Resumen de Real Estate -->
