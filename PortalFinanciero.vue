@@ -1,7 +1,7 @@
 <template>
   <div :class="isDarkMode ? 'dark' : ''">
     <div class="min-h-screen dark:bg-slate-950 bg-slate-50 dark:text-slate-200 text-slate-800 p-4 md:p-8 font-sans transition-colors duration-300">
-      <div class="max-w-6xl mx-auto space-y-10">
+      <div class="max-w-[95%] xl:max-w-[1600px] mx-auto space-y-10">
       
       <!-- Header -->
       <header class="text-center space-y-4 relative">
@@ -75,7 +75,7 @@
         <div v-if="livePrices.length === 0" class="dark:text-slate-400 text-slate-500 italic font-medium mb-6">⏳ Cargando cotizaciones en vivo...</div>
         
         <!-- Grid de Categorías -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           <div v-for="(assets, categoryName) in groupedAssets" :key="categoryName" 
                @click="selectedCategory = categoryName"
                class="cursor-pointer dark:bg-slate-900 bg-white border dark:border-white/5 border-slate-200 rounded-[2rem] p-8 dark:text-white text-slate-800 shadow-xl transform transition hover:-translate-y-2 hover:shadow-2xl flex flex-col justify-between group"
@@ -706,7 +706,7 @@
 
       <!-- PESTAÑA: BASE DE DATOS (Solo Admin) -->
       <div v-if="currentTab === 'add_ticker' && isAdmin" class="space-y-10 animate-fade-in relative z-10 py-8">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
           <!-- Columna 1: Agregar Activo -->
           <section class="dark:bg-slate-900 bg-white p-8 rounded-[2rem] shadow-2xl border dark:border-slate-800 border-slate-200 h-fit">
             <h2 class="text-3xl font-bold dark:text-white text-slate-800 flex items-center gap-3">
