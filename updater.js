@@ -44,10 +44,11 @@ const actualizarPrecios = async () => {
     // Obtener fecha actual en formato YYYY-MM-DD respetando la zona horaria de Argentina
     const fechaActual = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Argentina/Buenos_Aires' });
     
-    // Fecha de hace 1 año exacto (YYYY-MM-DD) para usar en históricos y simulaciones
-    const fechaHaceUnAnio = new Date();
-    fechaHaceUnAnio.setFullYear(fechaHaceUnAnio.getFullYear() - 1);
-    const fechaPasada = fechaHaceUnAnio.toLocaleDateString('en-CA', { timeZone: 'America/Argentina/Buenos_Aires' });
+    // Fecha de hace 5.5 años exactos (YYYY-MM-DD) para usar en históricos y simulaciones
+    const fechaHaceCincoAniosYMedio = new Date();
+    fechaHaceCincoAniosYMedio.setFullYear(fechaHaceCincoAniosYMedio.getFullYear() - 5);
+    fechaHaceCincoAniosYMedio.setMonth(fechaHaceCincoAniosYMedio.getMonth() - 6);
+    const fechaPasada = fechaHaceCincoAniosYMedio.toLocaleDateString('en-CA', { timeZone: 'America/Argentina/Buenos_Aires' });
 
     // 1. Obtener mapeo de símbolos e IDs para evitar consultas redundantes
     const [activosDB] = await pool.execute(
@@ -124,8 +125,8 @@ const actualizarPrecios = async () => {
       await guardarPrecio(idMapRE[re.simbolo], re.simbolo, valor, fechaActual);
     }
 
-    // 4. Limpieza: Eliminar registros más viejos a 1 año (Omitiendo M2_ para no borrar su historial)
-    console.log('🧹 Limpiando base de datos (eliminando registros anteriores a 1 año excluyendo Real Estate)...');
+    // 4. Limpieza: Eliminar registros más viejos a 5.5 años (Omitiendo M2_ para no borrar su historial)
+    console.log('🧹 Limpiando base de datos (eliminando registros anteriores a 5.5 años)...');
     const [cleanResult] = await pool.execute(`
       DELETE ph FROM precios_historicos ph
       JOIN activos a ON ph.activo_id = a.id

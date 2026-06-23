@@ -250,13 +250,18 @@
           
           <!-- Clasificación de Rendimientos (Columna Izquierda - 7/12) -->
           <div class="lg:col-span-7 space-y-6">
-            <div class="flex justify-between items-center mb-2">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2">
               <h3 class="text-xl font-bold dark:text-white text-slate-800">
                 Clasificación de Rendimientos (USD)
               </h3>
-              <span class="text-xs uppercase tracking-wider dark:text-slate-400 text-slate-500 font-bold">
-                Medido en base al período seleccionado
-              </span>
+              <div class="flex items-center gap-2 bg-slate-100 dark:bg-slate-950 px-2.5 py-1.5 rounded-xl border dark:border-slate-800 border-slate-300">
+                <span class="text-xs font-semibold uppercase tracking-wider dark:text-slate-400 text-slate-500 pl-1">Período:</span>
+                <select v-model="comparisonPeriod" class="dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-300 dark:text-white text-slate-900 rounded-lg px-2.5 py-1 outline-none focus:ring-1 focus:ring-indigo-500 font-bold text-xs">
+                  <option value="1y">1 Año</option>
+                  <option value="3y">3 Años</option>
+                  <option value="5y">5 Años</option>
+                </select>
+              </div>
             </div>
 
             <div class="space-y-4">
@@ -348,7 +353,7 @@
               </h3>
               <div class="space-y-3 text-sm dark:text-slate-300 text-slate-600 leading-relaxed font-medium">
                 <p>
-                  Para el período seleccionado de <span class="text-indigo-500 dark:text-indigo-400 font-bold">{{ marketPeriodLabels[marketPeriod] }}</span>, 
+                  Para el período seleccionado de <span class="text-indigo-500 dark:text-indigo-400 font-bold">{{ marketPeriodLabels[comparisonPeriod] }}</span>, 
                   el activo con mejor rendimiento histórico absoluto es <span class="font-extrabold text-slate-800 dark:text-white">{{ comparisonData[0]?.name }}</span> con un retorno de <span class="font-black text-emerald-500">{{ comparisonData[0]?.returnUSD >= 0 ? '+' : '' }}{{ comparisonData[0]?.returnUSD.toFixed(2) }}%</span> en dólares.
                 </p>
                 <p>
@@ -918,6 +923,7 @@ const showAdminLoginModal = ref(false);
 const equivalencyText = ref('');
 const periodLabels = { '1w': 'semanal', '1m': 'mensual', '3m': 'trimestral', '6m': 'semestral', 'ytd': 'Desde enero', '1y': 'Fiebre electoral', '3y': 'Post-pandemia', '5y': 'Pre-pandemia' };
 const marketPeriod = ref('1y');
+const comparisonPeriod = ref('1y');
 const marketPeriodLabels = { '1w': '1 Semana', '1m': '1 Mes', '3m': '3 Meses', '6m': '6 Meses', 'ytd': 'YTD', '1y': '1 Año', '3y': '3 Años', '5y': '5 Años' };
 
 watch(selectedPeriod, (newVal) => {
@@ -1123,14 +1129,14 @@ const getYearsForPeriod = (period) => {
 const comparisonData = computed(() => {
   if (livePrices.value.length === 0) return [];
 
-  const getVar = (simbolo) => Number(livePrices.value.find(a => a.simbolo === simbolo)?.variaciones[marketPeriod.value] || 0);
+  const getVar = (simbolo) => Number(livePrices.value.find(a => a.simbolo === simbolo)?.variaciones[comparisonPeriod.value] || 0);
   const getAvgVar = (categoria, filterFn = null) => {
     let items = livePrices.value.filter(a => a.categoria === categoria);
     if (filterFn) items = items.filter(filterFn);
-    return items.length ? items.reduce((acc, a) => acc + Number(a.variaciones[marketPeriod.value] || 0), 0) / items.length : 0;
+    return items.length ? items.reduce((acc, a) => acc + Number(a.variaciones[comparisonPeriod.value] || 0), 0) / items.length : 0;
   };
 
-  const years = getYearsForPeriod(marketPeriod.value);
+  const years = getYearsForPeriod(comparisonPeriod.value);
 
   // 1. Real Estate (Ladrillo)
   const m2Appreciation = getAvgVar('Real Estate', a => a.simbolo.startsWith('M2_'));
@@ -1220,8 +1226,8 @@ const neighborhoodYields = computed(() => {
       const propValUSD = priceM2 * 50;
       const rentUSDYear = (rentARS * 12) / mepRate;
       const yieldPercent = (rentUSDYear / propValUSD) * 100;
-      const appreciation = Number(m2.variaciones[marketPeriod.value] || 0);
-      const rentAccumulated = yieldPercent * getYearsForPeriod(marketPeriod.value);
+      const appreciation = Number(m2.variaciones[comparisonPeriod.value] || 0);
+      const rentAccumulated = yieldPercent * getYearsForPeriod(comparisonPeriod.value);
       const totalReturn = appreciation + rentAccumulated;
       const name = m2.nombre.replace('M2 ', '');
 
@@ -1324,7 +1330,7 @@ const renderComparisonChart = async () => {
   });
 };
 
-watch(() => [currentTab.value, marketPeriod.value, userPreference.value, livePrices.value], () => {
+watch(() => [currentTab.value, comparisonPeriod.value, userPreference.value, livePrices.value], () => {
   if (currentTab.value === 'comparador') {
     setTimeout(renderComparisonChart, 150);
   }
