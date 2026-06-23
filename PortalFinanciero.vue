@@ -8,7 +8,7 @@
         <button @click="isDarkMode = !isDarkMode" class="absolute right-0 top-0 p-3 rounded-full dark:bg-slate-800 bg-white shadow-md border dark:border-white/5 border-slate-200 hover:scale-110 transition-transform">
           {{ isDarkMode ? '☀️' : '🌙' }}
         </button>
-        <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 pb-2 leading-tight">
+        <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r dark:from-white dark:via-slate-200 dark:to-slate-400 from-slate-950 via-slate-800 to-slate-950 pb-2 leading-tight">
           Portal Financiero Argentino
         </h1>
         <p class="text-lg md:text-xl dark:text-slate-400 text-slate-600 font-medium">
@@ -25,23 +25,35 @@
         </div>
       </header>
 
-      <!-- Navegación de Pestañas -->
-      <div class="flex flex-col sm:flex-row justify-center gap-2 sm:gap-4 bg-slate-200 dark:bg-slate-800/50 p-1.5 rounded-2xl w-fit mx-auto backdrop-blur-sm border border-slate-300 dark:border-slate-700">
-        <button @click="currentTab = 'mercados'" :class="currentTab === 'mercados' ? 'bg-white dark:bg-slate-700 shadow-md text-indigo-600 dark:text-indigo-400' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'" class="px-6 py-2.5 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2">
-          📈 Mercados
-        </button>
-        <button @click="currentTab = 'comparador'" :class="currentTab === 'comparador' ? 'bg-white dark:bg-slate-700 shadow-md text-indigo-600 dark:text-indigo-400' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'" class="px-6 py-2.5 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2">
-          ⚖️ ¿Qué conviene?
-        </button>
-        <button @click="currentTab = 'calculadora'" :class="currentTab === 'calculadora' ? 'bg-white dark:bg-slate-700 shadow-md text-indigo-600 dark:text-indigo-400' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'" class="px-6 py-2.5 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2">
-          ⏱️ Calculadora Histórica
-        </button>
-        <button @click="currentTab = 'cartera'" :class="currentTab === 'cartera' ? 'bg-white dark:bg-slate-700 shadow-md text-indigo-600 dark:text-indigo-400' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'" class="px-6 py-2.5 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2">
-          💼 Mi Cartera
-        </button>
-        <button v-if="isAdmin" @click="currentTab = 'add_ticker'" :class="currentTab === 'add_ticker' ? 'bg-white dark:bg-slate-700 shadow-md text-red-600 dark:text-red-400' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'" class="px-6 py-2.5 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2">
-          ➕ Base de Datos
-        </button>
+      <!-- Navegación de Pestañas (Estilo Financiero con Línea Inferior) -->
+      <div class="border-b border-slate-200 dark:border-slate-800 w-full flex justify-center">
+        <div class="flex flex-wrap justify-center -mb-px gap-2 md:gap-8">
+          <button @click="currentTab = 'mercados'" 
+                  :class="currentTab === 'mercados' ? 'border-indigo-500 dark:border-indigo-400 text-indigo-600 dark:text-indigo-400 font-extrabold' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-bold'" 
+                  class="px-4 py-4 border-b-2 text-sm sm:text-base transition-all duration-200 flex items-center gap-2 outline-none">
+            📈 Mercados
+          </button>
+          <button @click="currentTab = 'comparador'" 
+                  :class="currentTab === 'comparador' ? 'border-indigo-500 dark:border-indigo-400 text-indigo-600 dark:text-indigo-400 font-extrabold' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-bold'" 
+                  class="px-4 py-4 border-b-2 text-sm sm:text-base transition-all duration-200 flex items-center gap-2 outline-none">
+            ⚖️ ¿Qué conviene?
+          </button>
+          <button @click="currentTab = 'calculadora'" 
+                  :class="currentTab === 'calculadora' ? 'border-indigo-500 dark:border-indigo-400 text-indigo-600 dark:text-indigo-400 font-extrabold' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-bold'" 
+                  class="px-4 py-4 border-b-2 text-sm sm:text-base transition-all duration-200 flex items-center gap-2 outline-none">
+            ⏱️ Calculadora Histórica
+          </button>
+          <button @click="currentTab = 'cartera'" 
+                  :class="currentTab === 'cartera' ? 'border-indigo-500 dark:border-indigo-400 text-indigo-600 dark:text-indigo-400 font-extrabold' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-bold'" 
+                  class="px-4 py-4 border-b-2 text-sm sm:text-base transition-all duration-200 flex items-center gap-2 outline-none">
+            💼 Mi Cartera
+          </button>
+          <button v-if="isAdmin" @click="currentTab = 'add_ticker'" 
+                  :class="currentTab === 'add_ticker' ? 'border-red-500 dark:border-red-400 text-red-600 dark:text-red-400 font-extrabold' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-bold'" 
+                  class="px-4 py-4 border-b-2 text-sm sm:text-base transition-all duration-200 flex items-center gap-2 outline-none">
+            ➕ Base de Datos
+          </button>
+        </div>
       </div>
 
       <!-- PESTAÑA: MERCADOS -->
@@ -78,23 +90,25 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           <div v-for="(assets, categoryName) in groupedAssets" :key="categoryName" 
                @click="selectedCategory = categoryName"
-               class="cursor-pointer dark:bg-slate-900 bg-white border dark:border-white/5 border-slate-200 rounded-[2rem] p-8 dark:text-white text-slate-800 shadow-xl transform transition hover:-translate-y-2 hover:shadow-2xl flex flex-col justify-between group"
-               :class="`hover:border-opacity-50 dark:hover:${categoryMeta[categoryName]?.borderHighlight} hover:border-slate-400`">
+               class="cursor-pointer dark:bg-slate-900 bg-white border dark:border-white/5 border-slate-200 rounded-2xl p-6 dark:text-white text-slate-800 shadow-md transform transition hover:-translate-y-1 hover:shadow-lg flex flex-col justify-between group"
+               :class="`hover:border-opacity-50 dark:hover:${categoryMeta[categoryName]?.borderHighlight} hover:border-slate-300`">
             <div>
-              <div class="flex justify-between items-start mb-4">
-                <div class="text-5xl group-hover:scale-110 transition-transform origin-left">{{ categoryMeta[categoryName]?.emoji || '📊' }}</div>
+              <div class="flex justify-between items-center mb-6">
+                <div class="w-12 h-12 rounded-xl dark:bg-slate-800 bg-slate-100 border border-slate-200 dark:border-slate-700/50 flex items-center justify-center text-2xl group-hover:scale-105 transition-transform duration-300">
+                  {{ categoryMeta[categoryName]?.emoji || '📊' }}
+                </div>
                 <div v-if="categoryPerformance[categoryName] !== undefined" 
-                     class="text-lg font-black px-3 py-1 rounded-xl shadow-inner"
-                     :class="Number(categoryPerformance[categoryName]) >= 0 ? 'dark:bg-emerald-500/20 bg-emerald-100 dark:text-emerald-400 text-emerald-700' : 'dark:bg-red-500/20 bg-red-100 dark:text-red-400 text-red-700'">
+                     class="text-xs font-black px-2.5 py-1 rounded-lg border shadow-inner"
+                     :class="Number(categoryPerformance[categoryName]) >= 0 ? 'dark:bg-emerald-500/10 bg-emerald-50 dark:text-emerald-400 text-emerald-700 dark:border-emerald-500/20 border-emerald-200' : 'dark:bg-rose-500/10 bg-rose-50 dark:text-rose-400 text-rose-700 dark:border-rose-500/20 border-rose-200'">
                   {{ Number(categoryPerformance[categoryName]) >= 0 ? '▲' : '▼' }} {{ Math.abs(Number(categoryPerformance[categoryName])).toFixed(2) }}%
                 </div>
               </div>
-              <h3 class="text-2xl font-bold mb-2">{{ categoryName }}</h3>
-              <p class="font-medium mb-6 opacity-90">{{ categoryMeta[categoryName]?.desc || 'Ver activos de esta categoría' }}</p>
+              <h3 class="text-xl font-extrabold mb-2">{{ categoryName }}</h3>
+              <p class="text-sm dark:text-slate-400 text-slate-500 font-semibold mb-6 leading-relaxed">{{ categoryMeta[categoryName]?.desc || 'Ver activos de esta categoría' }}</p>
             </div>
-            <div class="flex items-center justify-between text-sm font-bold dark:bg-black/30 bg-slate-100 rounded-xl p-3 mt-auto border dark:border-white/5 border-slate-200">
+            <div class="flex items-center justify-between text-xs font-bold bg-slate-50 dark:bg-slate-950/40 rounded-xl p-3 mt-auto border border-slate-100 dark:border-slate-800/40 dark:text-slate-400 text-slate-500">
               <span>{{ assets.length }} activos listados</span>
-              <span>Ver detalle ➔</span>
+              <span class="text-indigo-500 dark:text-indigo-400">Ver detalle ➔</span>
             </div>
           </div>
         </div>
@@ -105,7 +119,7 @@
       <!-- PESTAÑA: CALCULADORA -->
       <div v-if="currentTab === 'calculadora'" class="space-y-10 animate-fade-in">
       <!-- Calculadora de Retorno Histórico -->
-      <section class="dark:bg-slate-900/80 bg-white border dark:border-white/10 border-slate-200 rounded-[2.5rem] p-6 md:p-10 shadow-2xl relative overflow-hidden dark:text-white text-slate-900 transition-all duration-300">
+      <section class="dark:bg-slate-900 bg-white border border-slate-200 dark:border-slate-800 rounded-2xl p-6 md:p-8 shadow-md relative overflow-hidden dark:text-white text-slate-900 transition-all duration-300">
         <div class="absolute top-0 right-0 -mt-10 -mr-10 opacity-10 text-9xl pointer-events-none">📊📈</div>
         
         <!-- Cabecera colapsable -->
@@ -153,7 +167,7 @@
 
             <!-- Botón -->
             <div class="flex items-end">
-              <button @click="calculateTravel" class="w-full bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-300 hover:to-orange-400 text-slate-900 font-black text-lg py-[11px] px-6 rounded-xl transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(251,191,36,0.4)] hover:shadow-[0_0_30px_rgba(251,191,36,0.7)]">
+              <button @click="calculateTravel" class="w-full bg-slate-900 dark:bg-slate-100 hover:bg-slate-800 dark:hover:bg-white text-white dark:text-slate-900 font-bold py-[11px] px-6 rounded-xl transition-all shadow-sm">
                 Calcular Rendimiento 📊
               </button>
             </div>
@@ -161,9 +175,9 @@
 
           <!-- Resultados del Delorean -->
           <div v-if="results.length > 0" class="mt-10 dark:bg-slate-950/50 bg-slate-50 rounded-2xl p-6 border dark:border-slate-800 border-slate-200 backdrop-blur-sm animate-fade-in">
-            <h3 class="text-lg md:text-xl font-bold mb-6 text-center text-yellow-400 leading-relaxed">
+            <h3 class="text-lg md:text-xl font-bold mb-6 text-center text-slate-900 dark:text-indigo-400 leading-relaxed">
               {{ funnyPhrase }}
-              <div v-if="equivalencyText" class="block mt-3 text-sm md:text-base font-bold dark:text-slate-300 text-slate-700 bg-white/5 rounded-lg py-2">
+              <div v-if="equivalencyText" class="block mt-3 text-sm md:text-base font-semibold dark:text-slate-300 text-slate-700 bg-slate-100 dark:bg-slate-900 rounded-lg py-2.5 border dark:border-slate-800 border-slate-200">
                 {{ equivalencyText }}
               </div>
             </h3>
@@ -171,7 +185,7 @@
             <div class="space-y-4">
               <div v-for="(result, index) in results" :key="result.id" 
                    class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl transition-all duration-300"
-                   :class="[index === 0 ? 'bg-gradient-to-r dark:from-emerald-900/30 dark:to-green-900/10 from-emerald-100 to-green-50 border border-emerald-500/50 p-6 shadow-[0_0_30px_rgba(16,185,129,0.15)] transform scale-[1.02]' : result.id === 'efectivo' ? 'dark:bg-red-950/20 bg-red-50 border border-red-500/30 p-4 opacity-90' : 'dark:bg-slate-800/40 bg-white border dark:border-white/5 border-slate-200 shadow-sm p-4']">
+                   :class="[index === 0 ? 'bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800/40 p-6 shadow-md dark:shadow-emerald-500/5' : result.id === 'efectivo' ? 'dark:bg-red-950/20 bg-red-50 border border-red-500/30 p-4 opacity-90' : 'dark:bg-slate-800/40 bg-white border dark:border-white/5 border-slate-200 shadow-sm p-4']">
                 <div class="flex items-center gap-4">
                   <span :class="index === 0 ? 'text-4xl md:text-5xl' : 'text-3xl'">{{ result.emoji }}</span>
                   <div>
@@ -202,7 +216,7 @@
       <div v-if="currentTab === 'comparador'" class="space-y-10 animate-fade-in">
         
         <!-- Perfil Patrimonial -->
-        <section class="dark:bg-slate-900 bg-white border dark:border-white/5 border-slate-200 rounded-[2rem] p-6 md:p-8 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+        <section class="dark:bg-slate-900 bg-white border dark:border-white/5 border-slate-200 rounded-2xl p-6 md:p-8 shadow-md flex flex-col md:flex-row items-center justify-between gap-6">
           <div class="space-y-2 text-center md:text-left">
             <h2 class="text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500">
               Perfil Patrimonial & Recomendaciones
@@ -247,10 +261,10 @@
 
             <div class="space-y-4">
               <div v-for="(asset, index) in comparisonData" :key="asset.id"
-                   class="dark:bg-slate-900 bg-white border rounded-[2rem] p-5 md:p-6 shadow-lg flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all duration-300 relative overflow-hidden"
+                   class="dark:bg-slate-900 bg-white border rounded-2xl p-5 md:p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all duration-300 relative overflow-hidden"
                    :class="[
                      asset.id === bestMatchAsset?.id 
-                       ? 'ring-2 ring-indigo-500 shadow-[0_0_30px_rgba(99,102,241,0.2)] transform scale-[1.01] dark:border-indigo-500/50 border-indigo-400' 
+                       ? 'ring-2 ring-indigo-500 dark:border-indigo-500/50 border-indigo-400' 
                        : 'dark:border-white/5 border-slate-200 hover:border-slate-300 dark:hover:border-slate-800'
                    ]">
                 
@@ -317,7 +331,7 @@
           <div class="lg:col-span-5 space-y-8">
             
             <!-- Gráfico Comparativo -->
-            <div class="dark:bg-slate-900 bg-white border dark:border-white/5 border-slate-200 rounded-[2rem] p-6 shadow-xl space-y-4">
+            <div class="dark:bg-slate-900 bg-white border dark:border-white/5 border-slate-200 rounded-2xl p-6 shadow-md space-y-4">
               <h3 class="text-lg font-bold dark:text-white text-slate-800 flex items-center gap-2">
                 📊 Rendimiento Visual Comparado (USD)
               </h3>
@@ -327,7 +341,7 @@
             </div>
 
             <!-- Veredicto AI Patrimonial -->
-            <div class="dark:bg-slate-900 bg-white border dark:border-white/5 border-slate-200 rounded-[2rem] p-6 shadow-xl space-y-4 relative overflow-hidden">
+            <div class="dark:bg-slate-900 bg-white border dark:border-white/5 border-slate-200 rounded-2xl p-6 shadow-md space-y-4 relative overflow-hidden">
               <div class="absolute top-0 right-0 -mt-6 -mr-6 opacity-5 text-7xl pointer-events-none">⚖️</div>
               <h3 class="text-lg font-bold dark:text-white text-slate-800 flex items-center gap-2">
                 ⚖️ Asesoramiento Patrimonial
@@ -348,7 +362,7 @@
             </div>
 
             <!-- Ranking Inmobiliario por Barrio -->
-            <div class="dark:bg-slate-900 bg-white border dark:border-white/5 border-slate-200 rounded-[2rem] p-6 shadow-xl space-y-5">
+            <div class="dark:bg-slate-900 bg-white border dark:border-white/5 border-slate-200 rounded-2xl p-6 shadow-md space-y-5">
               <div class="space-y-1">
                 <h3 class="text-lg font-bold dark:text-white text-slate-800 flex items-center gap-2">
                   🏢 Rendimiento por Barrio (CABA)
@@ -414,7 +428,7 @@
       <div v-if="currentTab === 'cartera'" class="space-y-10 animate-fade-in">
         <!-- Pantalla de Bloqueo -->
         <div v-if="!isPortfolioUnlocked" class="flex flex-col items-center justify-center py-10 md:py-20 animate-fade-in relative z-10">
-          <div class="dark:bg-slate-900 bg-white p-8 rounded-[2rem] shadow-2xl border dark:border-slate-800 border-slate-200 max-w-md w-full text-center relative overflow-hidden">
+          <div class="dark:bg-slate-900 bg-white p-8 rounded-2xl shadow-md border dark:border-slate-800 border-slate-200 max-w-md w-full text-center relative overflow-hidden">
             <div class="absolute top-0 right-0 -mt-8 -mr-8 opacity-5 text-8xl pointer-events-none">🔒</div>
             <div class="text-6xl mb-6 relative z-10">🤫</div>
             <h2 class="text-2xl font-bold dark:text-white text-slate-800 mb-2 relative z-10">Área Privada</h2>
@@ -423,7 +437,7 @@
               <input type="text" v-model="loginUser" required placeholder="Usuario" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-center font-bold" />
               <input type="password" v-model="portfolioPassword" required placeholder="Contraseña" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-center font-bold tracking-widest" />
               <p v-if="portfolioError" class="text-red-500 text-sm font-bold animate-pulse">{{ portfolioError }}</p>
-              <button type="submit" class="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white font-black text-lg py-3 rounded-xl transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(99,102,241,0.4)]">
+              <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-xl transition-all shadow-md">
                 Desbloquear
               </button>
             </form>
@@ -445,7 +459,7 @@
           <!-- KPI Cards -->
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <!-- Tarjeta 1: Valor Consolidado -->
-            <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl p-6 shadow-xl flex flex-col justify-center transform transition-transform hover:-translate-y-1">
+            <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl p-6 shadow-md flex flex-col justify-center transform transition-transform">
               <div class="text-sm font-bold dark:text-slate-400 text-slate-500 uppercase tracking-wider mb-2">Valor Consolidado</div>
               <div class="font-mono font-black text-3xl md:text-4xl dark:text-white text-slate-900 tracking-tight">
                 {{ formatUSD(portfolioTotalValue) }}
@@ -453,7 +467,7 @@
             </div>
             
             <!-- Tarjeta 2: P&L Histórico -->
-            <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl p-6 shadow-xl flex flex-col justify-center transform transition-transform hover:-translate-y-1">
+            <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl p-6 shadow-md flex flex-col justify-center transform transition-transform">
               <div class="text-sm font-bold dark:text-slate-400 text-slate-500 uppercase tracking-wider mb-2">P&L Histórico</div>
               <div class="font-black text-2xl md:text-3xl flex items-center gap-2" :class="portfolioTotalPL >= 0 ? 'text-emerald-400' : 'text-red-400'">
                 <span>{{ portfolioTotalPL >= 0 ? '▲' : '▼' }} {{ formatUSD(Math.abs(portfolioTotalPL)) }}</span>
@@ -464,7 +478,7 @@
             </div>
             
             <!-- Tarjeta 3: Asignación de Activos -->
-            <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl p-6 shadow-xl flex flex-col justify-center transform transition-transform hover:-translate-y-1">
+            <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl p-6 shadow-md flex flex-col justify-center transform transition-transform">
               <div class="text-sm font-bold dark:text-slate-400 text-slate-500 uppercase tracking-wider mb-2">Asignación de Activos</div>
               <div class="flex items-center gap-3">
                 <div class="flex-1 bg-slate-200 dark:bg-slate-700 rounded-full h-3 overflow-hidden flex">
@@ -480,12 +494,12 @@
           </div>
 
           <!-- Gráfico de Evolución Temporal -->
-          <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl p-6 shadow-xl mb-6 h-72 relative">
+          <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl p-6 shadow-md mb-6 h-72 relative">
              <canvas id="portfolioChart" ref="portfolioChartRef"></canvas>
           </div>
 
           <!-- Formulario para Registrar Transacción -->
-          <div id="tx-form-section" class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl p-6 shadow-xl mb-6 transition-all duration-300" :class="editingTxId ? 'ring-2 ring-indigo-500 shadow-indigo-500/20' : ''">
+          <div id="tx-form-section" class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl p-6 shadow-md mb-6 transition-all duration-300" :class="editingTxId ? 'ring-2 ring-indigo-500' : ''">
             <h3 class="text-lg font-bold dark:text-white text-slate-800 mb-4 flex items-center gap-2">
               {{ editingTxId ? '✏️ Editar Transacción' : '📝 Registrar Transacción' }}
             </h3>
@@ -523,10 +537,10 @@
                 <input type="date" v-model="txForm.fecha" required class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-sm cursor-pointer" />
               </div>
               <div class="lg:col-span-1 flex gap-2">
-                <button v-if="editingTxId" @click="cancelEdit" type="button" class="w-full bg-slate-500 hover:bg-slate-400 text-white font-black text-sm py-2.5 px-2 rounded-xl transition-all transform hover:scale-105 shadow-md flex items-center justify-center" title="Cancelar Edición">
+                <button v-if="editingTxId" @click="cancelEdit" type="button" class="w-full bg-slate-500 hover:bg-slate-400 text-white font-black text-sm py-2.5 px-2 rounded-xl transition-all shadow-md flex items-center justify-center" title="Cancelar Edición">
                   ✕
                 </button>
-                <button type="submit" :disabled="isSubmittingTx" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 disabled:opacity-50 text-white font-black text-sm py-2.5 px-4 rounded-xl transition-all transform hover:scale-105 shadow-md flex items-center justify-center">
+                <button type="submit" :disabled="isSubmittingTx" class="w-full bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-bold text-sm py-2.5 px-4 rounded-xl transition-all shadow-md flex items-center justify-center">
                   {{ isSubmittingTx ? '⏳' : (editingTxId ? 'Actualizar' : 'Guardar') }}
                 </button>
               </div>
@@ -536,7 +550,7 @@
           </div>
 
           <!-- Tabla de Tenencias -->
-          <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl overflow-hidden shadow-xl overflow-x-auto mb-6">
+          <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl overflow-hidden shadow-md overflow-x-auto mb-6">
             <table class="w-full text-left border-collapse whitespace-nowrap">
               <thead>
                 <tr class="dark:bg-slate-800/80 bg-slate-100 border-b dark:border-slate-700 border-slate-200 text-xs uppercase tracking-wider dark:text-slate-400 text-slate-500 font-bold">
@@ -573,7 +587,7 @@
           </div>
 
           <!-- Historial de Transacciones -->
-          <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl overflow-hidden shadow-xl overflow-x-auto mb-16">
+          <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl overflow-hidden shadow-md overflow-x-auto mb-16">
             <div class="p-6 border-b dark:border-slate-700 border-slate-200 flex justify-between items-center">
               <h3 class="text-lg font-bold dark:text-white text-slate-800 flex items-center gap-2">⏱️ Historial de Movimientos</h3>
             </div>
@@ -614,35 +628,43 @@
       <!-- Modal de Detalle de Categoría -->
       <Transition name="modal-fade">
       <div v-if="selectedCategory" class="fixed inset-0 z-50 flex items-center justify-center p-4 dark:bg-black/80 bg-slate-900/60 backdrop-blur-md" @click.self="selectedCategory = null">
-        <div class="dark:bg-slate-900 bg-white border dark:border-slate-700 border-slate-200 rounded-[2rem] w-full max-w-4xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+        <div class="dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 rounded-2xl w-full max-w-4xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
           <!-- Header Modal -->
-          <div class="p-6 md:p-8 dark:text-white text-slate-900 flex justify-between items-center border-b dark:border-white/10 border-slate-200 shrink-0" :class="`bg-gradient-to-r ${categoryMeta[selectedCategory]?.gradient || 'dark:from-slate-800 dark:to-slate-900 from-slate-100 to-white'}`">
-            <div class="flex items-center gap-4">
-              <span class="text-4xl">{{ categoryMeta[selectedCategory]?.emoji }}</span>
-              <h2 class="text-3xl font-bold">{{ selectedCategory }}</h2>
+          <div class="p-5 md:p-6 bg-slate-900 border-b border-slate-800 dark:text-white text-slate-100 flex justify-between items-center shrink-0">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700/50 flex items-center justify-center text-xl">
+                {{ categoryMeta[selectedCategory]?.emoji }}
+              </div>
+              <h2 class="text-xl md:text-2xl font-extrabold">{{ selectedCategory }}</h2>
             </div>
-            <button @click="selectedCategory = null" class="dark:text-white/80 text-slate-500 dark:hover:text-white hover:text-slate-900 dark:bg-black/30 bg-black/5 dark:hover:bg-black/50 hover:bg-black/10 rounded-full w-10 h-10 flex items-center justify-center transition text-xl font-bold shadow-inner">
+            <button @click="selectedCategory = null" class="text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg w-8 h-8 flex items-center justify-center transition font-bold border border-slate-700/50">
               ✕
             </button>
           </div>
           
           <!-- Panel Resumen de Real Estate -->
-          <div v-if="selectedCategory === 'Real Estate'" class="dark:bg-slate-950 bg-slate-50 p-4 md:p-6 border-b dark:border-slate-800 border-slate-200 flex flex-col gap-4 dark:text-white text-slate-800 shrink-0">
-            <!-- Tabs Internos -->
-            <div class="flex justify-center gap-2">
-              <button @click="realEstateTab = 'm2'" :class="realEstateTab === 'm2' ? 'bg-indigo-500 text-white shadow-md' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400'" class="px-4 py-2 rounded-lg font-bold text-sm transition-all">
-                🏢 Valor M2
-              </button>
-              <button @click="realEstateTab = 'alquiler'" :class="realEstateTab === 'alquiler' ? 'bg-indigo-500 text-white shadow-md' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400'" class="px-4 py-2 rounded-lg font-bold text-sm transition-all">
-                🔑 Rendimiento Alquiler
-              </button>
+          <div v-if="selectedCategory === 'Real Estate'" class="bg-slate-50 dark:bg-slate-950 p-4 md:p-6 border-b border-slate-200 dark:border-slate-800 flex flex-col gap-4 dark:text-white text-slate-800 shrink-0">
+            <!-- Tabs Internos (Línea Inferior) -->
+            <div class="flex justify-center border-b border-slate-200 dark:border-slate-800">
+              <div class="flex gap-6 -mb-px">
+                <button @click="realEstateTab = 'm2'" 
+                        :class="realEstateTab === 'm2' ? 'border-indigo-500 dark:border-indigo-400 text-indigo-600 dark:text-indigo-400 font-bold' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'"
+                        class="px-4 py-3 border-b-2 text-sm transition-all duration-200 flex items-center gap-2 outline-none">
+                  🏢 Valor M2
+                </button>
+                <button @click="realEstateTab = 'alquiler'" 
+                        :class="realEstateTab === 'alquiler' ? 'border-indigo-500 dark:border-indigo-400 text-indigo-600 dark:text-indigo-400 font-bold' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'"
+                        class="px-4 py-3 border-b-2 text-sm transition-all duration-200 flex items-center gap-2 outline-none">
+                  🔑 Rendimiento Alquiler
+                </button>
+              </div>
             </div>
             
             <div v-if="realEstateTab === 'm2'" class="flex justify-around mt-2 animate-fade-in">
               <div class="text-center">
-                <div class="text-xs md:text-sm font-bold dark:text-slate-400 text-slate-500 uppercase">M2 Promedio (CABA)</div>
-                <div class="text-2xl md:text-3xl font-black dark:text-emerald-400 text-emerald-600">US$ {{ m2AveragePrice.toLocaleString('es-AR') }}</div>
-                <div class="text-xs md:text-sm font-bold mt-1" :class="m2AverageVariation >= 0 ? 'dark:text-emerald-400 text-emerald-600' : 'dark:text-red-400 text-red-600'">
+                <div class="text-xs font-bold dark:text-slate-400 text-slate-500 uppercase tracking-wider">M2 Promedio (CABA)</div>
+                <div class="text-2xl font-black dark:text-emerald-400 text-emerald-600">US$ {{ m2AveragePrice.toLocaleString('es-AR') }}</div>
+                <div class="text-xs font-bold mt-1.5" :class="m2AverageVariation >= 0 ? 'dark:text-emerald-400 text-emerald-600' : 'dark:text-rose-400 text-rose-600'">
                   {{ marketPeriodLabels[marketPeriod] }}: US$ {{ m2HistoricAveragePrice.toLocaleString('es-AR') }} 
                   ({{ m2AverageVariation >= 0 ? '▲' : '▼' }} {{ Math.abs(m2AverageVariation) }}%)
                 </div>
@@ -651,9 +673,9 @@
             
             <div v-if="realEstateTab === 'alquiler'" class="flex justify-around mt-2 animate-fade-in">
               <div class="text-center">
-                <div class="text-xs md:text-sm font-bold dark:text-slate-400 text-slate-500 uppercase">Alquiler Promedio</div>
-                <div class="text-2xl md:text-3xl font-black dark:text-amber-400 text-amber-600">{{ rentYield }}% <span class="text-sm dark:text-slate-500 text-slate-400 font-bold">anual</span></div>
-                <div class="text-xs md:text-sm font-bold mt-1" :class="rentYieldVariation >= 0 ? 'dark:text-emerald-400 text-emerald-600' : 'dark:text-red-400 text-red-600'">
+                <div class="text-xs font-bold dark:text-slate-400 text-slate-500 uppercase tracking-wider">Alquiler Promedio</div>
+                <div class="text-2xl font-black dark:text-amber-400 text-amber-600">{{ rentYield }}% <span class="text-sm dark:text-slate-500 text-slate-400 font-bold">anual</span></div>
+                <div class="text-xs font-bold mt-1.5" :class="rentYieldVariation >= 0 ? 'dark:text-emerald-400 text-emerald-600' : 'dark:text-rose-400 text-rose-600'">
                   {{ marketPeriodLabels[marketPeriod] }}: {{ rentYieldHistoric }}% 
                   ({{ rentYieldVariation >= 0 ? '▲' : '▼' }} {{ Math.abs(rentYieldVariation) }}%)
                 </div>
@@ -662,39 +684,41 @@
           </div>
 
           <!-- Lista de Activos dentro de la categoría -->
-          <div class="p-6 md:p-8 overflow-y-auto custom-scrollbar dark:bg-slate-950/50 bg-slate-100/50 flex-1 min-h-0">
+          <div class="p-6 md:p-8 overflow-y-auto custom-scrollbar bg-slate-50 dark:bg-slate-950/40 flex-1 min-h-0">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <div v-if="filteredAssetsForCategory.length === 0" class="col-span-full text-center text-slate-500 dark:text-slate-400 py-8 font-medium">
                 Todavía no hay datos cargados en esta sección.
               </div>
               <div v-for="activo in filteredAssetsForCategory" :key="activo.id" 
-                   class="dark:bg-slate-900 bg-white p-5 rounded-2xl border shadow-sm transition flex flex-col justify-between group relative"
-                   :class="isAdmin ? 'animate-jiggle dark:border-red-500/50 border-red-500/50 bg-red-50/10 dark:bg-red-900/10' : 'dark:border-slate-800 border-slate-200 dark:hover:border-slate-600 hover:border-slate-400'">
+                   class="dark:bg-slate-900 bg-white p-5 rounded-xl border shadow-sm transition flex flex-col justify-between group relative"
+                   :class="isAdmin ? 'animate-jiggle dark:border-red-500/50 border-red-500/50 bg-red-50/10 dark:bg-red-900/10' : 'dark:border-slate-800/80 border-slate-200 dark:hover:border-slate-700 hover:border-slate-300'">
                 
                 <!-- Efecto iPhone "X" para Desinstalar (Solo Admin) -->
                 <button v-if="isAdmin" @click.stop="deleteAsset(activo.simbolo)" class="absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold shadow-lg z-20 hover:bg-red-600 hover:scale-110 transition-transform">✕</button>
 
-                <div class="flex items-center gap-4 mb-4">
-                  <div class="text-4xl dark:bg-slate-950 bg-slate-50 p-3 rounded-xl border dark:border-white/5 border-slate-200 group-hover:scale-110 transition-transform">{{ activo.emoji }}</div>
+                <div class="flex items-center gap-3 mb-4">
+                  <div class="w-10 h-10 rounded-lg dark:bg-slate-950 bg-slate-50 border border-slate-200 dark:border-slate-800 flex items-center justify-center text-xl shrink-0">
+                    {{ activo.emoji }}
+                  </div>
                   <div class="flex-1 min-w-0">
-                    <div class="text-[10px] dark:text-slate-500 text-slate-400 font-bold tracking-widest uppercase">{{ activo.simbolo }}</div>
-                    <div class="font-bold dark:text-white text-slate-800 leading-tight truncate" :title="activo.nombre">{{ activo.nombre }}</div>
+                    <div class="text-[9px] dark:text-slate-500 text-slate-400 font-bold tracking-widest uppercase">{{ activo.simbolo }}</div>
+                    <div class="font-extrabold dark:text-white text-slate-800 leading-tight truncate text-sm sm:text-base" :title="activo.nombre">{{ activo.nombre }}</div>
                   </div>
                 </div>
-                <div class="bg-slate-50 dark:bg-slate-950 p-4 rounded-xl border border-slate-200 dark:border-slate-800 relative">
-                  <div class="flex justify-between items-end mb-2">
-                     <span class="text-xs font-bold text-slate-500 dark:text-slate-400">Actual:</span>
-                     <span class="text-lg font-black" :class="activo.categoria === 'Moneda' ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'">{{ formatAssetPrice(activo) }}</span>
+                <div class="bg-slate-50 dark:bg-slate-950/60 p-4 rounded-xl border border-slate-200 dark:border-slate-800/60 relative space-y-2">
+                  <div class="flex justify-between items-center text-xs">
+                     <span class="font-bold text-slate-500 dark:text-slate-400">Actual:</span>
+                     <span class="font-black text-slate-900 dark:text-white" :class="activo.categoria === 'Moneda' ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'">{{ formatAssetPrice(activo) }}</span>
                   </div>
-                  <div class="flex justify-between items-end mb-3">
-                     <span class="text-xs font-bold text-slate-500 dark:text-slate-400">{{ marketPeriodLabels[marketPeriod] }}:</span>
-                     <span class="text-sm font-bold text-slate-600 dark:text-slate-300">{{ getPastPriceFormatted(activo) }}</span>
+                  <div class="flex justify-between items-center text-xs">
+                     <span class="font-bold text-slate-500 dark:text-slate-400">{{ marketPeriodLabels[marketPeriod] }}:</span>
+                     <span class="font-semibold text-slate-600 dark:text-slate-300">{{ getPastPriceFormatted(activo) }}</span>
                   </div>
-                  <div class="pt-3 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center">
-                     <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase">Rendimiento Real</span>
-                     <div :class="getDynamicRendimiento(activo) >= 0 ? 'dark:text-emerald-500 text-emerald-600' : 'dark:text-red-500 text-red-600'" class="text-sm font-black bg-white dark:bg-slate-900 px-2 py-1 rounded-md shadow-sm border border-slate-100 dark:border-slate-700">
+                  <div class="pt-2.5 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center text-xs">
+                     <span class="font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider text-[10px]">Rendimiento Real</span>
+                     <div :class="getDynamicRendimiento(activo) >= 0 ? 'dark:bg-emerald-500/10 bg-emerald-50 text-emerald-600 dark:text-emerald-400 border-emerald-500/20' : 'dark:bg-rose-500/10 bg-rose-50 text-rose-600 dark:text-rose-400 border-rose-500/20'" class="text-xs font-black px-2 py-0.5 rounded border">
                        {{ getDynamicRendimiento(activo) >= 0 ? '▲' : '▼' }} {{ Math.abs(getDynamicRendimiento(activo)) }}%
-                     </div>
+                      </div>
                   </div>
                 </div>
               </div>
@@ -708,7 +732,7 @@
       <div v-if="currentTab === 'add_ticker' && isAdmin" class="space-y-10 animate-fade-in relative z-10 py-8">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
           <!-- Columna 1: Agregar Activo -->
-          <section class="dark:bg-slate-900 bg-white p-8 rounded-[2rem] shadow-2xl border dark:border-slate-800 border-slate-200 h-fit">
+          <section class="dark:bg-slate-900 bg-white p-8 rounded-2xl shadow-md border dark:border-slate-800 border-slate-200 h-fit">
             <h2 class="text-3xl font-bold dark:text-white text-slate-800 flex items-center gap-3">
               ⚙️ Agregar Activo
             </h2>
@@ -787,7 +811,7 @@
                 </select>
               </div>
             </div>
-            <button type="submit" :disabled="isSubmittingAdmin" class="w-full mt-4 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 disabled:opacity-50 text-white font-black text-lg py-3 rounded-xl transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(99,102,241,0.4)]">
+            <button type="submit" :disabled="isSubmittingAdmin" class="w-full mt-4 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-bold py-3 rounded-xl transition-all shadow-md">
               {{ isSubmittingAdmin ? 'Guardando...' : 'Guardar en Base de Datos' }}
             </button>
             <p v-if="adminError" class="text-red-500 font-bold text-center mt-4 bg-red-500/10 p-2 rounded-lg">{{ adminError }}</p>
@@ -796,7 +820,7 @@
         </section>
 
           <!-- Columna 2: Crear Usuario -->
-          <section class="dark:bg-slate-900 bg-white p-8 rounded-[2rem] shadow-2xl border dark:border-slate-800 border-slate-200 h-fit">
+          <section class="dark:bg-slate-900 bg-white p-8 rounded-2xl shadow-md border dark:border-slate-800 border-slate-200 h-fit">
             <h2 class="text-3xl font-bold dark:text-white text-slate-800 flex items-center gap-3 mb-2">
               👤 Crear Usuario
             </h2>
@@ -812,7 +836,7 @@
                 <label class="block text-sm font-bold dark:text-slate-400 text-slate-500 mb-1">Contraseña</label>
                 <input type="password" v-model="userForm.password" required placeholder="Contraseña segura" class="w-full dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 font-bold tracking-widest" />
               </div>
-              <button type="submit" :disabled="isSubmittingUser" class="w-full mt-4 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 disabled:opacity-50 text-white font-black text-lg py-3 rounded-xl transition-all transform hover:scale-105 shadow-lg">
+              <button type="submit" :disabled="isSubmittingUser" class="w-full mt-4 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-bold py-3 rounded-xl transition-all shadow-md">
                 {{ isSubmittingUser ? 'Guardando...' : 'Crear Usuario' }}
               </button>
               <p v-if="userError" class="text-red-500 font-bold text-center mt-4 bg-red-500/10 p-2 rounded-lg">{{ userError }}</p>

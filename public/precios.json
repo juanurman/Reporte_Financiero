@@ -385,12 +385,12 @@
     "simbolo": "ALQ_YIELD",
     "categoria": "Real Estate",
     "emoji": "🏠",
-    "precio": 5.19,
+    "precio": 5.2,
     "fecha": "2026-06-22T03:00:00.000Z",
     "variaciones": {
-      "1w": 0.58,
-      "1m": 0.19,
-      "3m": 0.58,
+      "1w": 0.78,
+      "1m": 0.39,
+      "3m": 0.78,
       "6m": 0,
       "ytd": 0,
       "9m": 0,
@@ -465,16 +465,16 @@
     "simbolo": "BTC-USD",
     "categoria": "Cripto",
     "emoji": "₿",
-    "precio": 64186.8008,
-    "fecha": "2026-06-21T03:00:00.000Z",
+    "precio": 64023.0313,
+    "fecha": "2026-06-22T03:00:00.000Z",
     "variaciones": {
-      "1w": -3.17,
-      "1m": -16.29,
-      "3m": -8.98,
-      "6m": -26.74,
-      "ytd": -28.64,
-      "9m": -41.14,
-      "1y": -39.2,
+      "1w": -2.4,
+      "1m": -16.83,
+      "3m": -10.22,
+      "6m": -26.61,
+      "ytd": -28.82,
+      "9m": -41.64,
+      "1y": -39.36,
       "3y": 45.3,
       "5y": 125.8
     }
@@ -1726,7 +1726,7 @@
     "categoria": "Real Estate",
     "emoji": "🔑",
     "precio": 0,
-    "fecha": "2026-06-22",
+    "fecha": "2026-06-23",
     "variaciones": {
       "1w": 0,
       "1m": 0,
@@ -1745,7 +1745,7 @@
     "categoria": "Real Estate",
     "emoji": "🔑",
     "precio": 0,
-    "fecha": "2026-06-22",
+    "fecha": "2026-06-23",
     "variaciones": {
       "1w": 0,
       "1m": 0,
@@ -1764,7 +1764,7 @@
     "categoria": "Real Estate",
     "emoji": "🔑",
     "precio": 0,
-    "fecha": "2026-06-22",
+    "fecha": "2026-06-23",
     "variaciones": {
       "1w": 0,
       "1m": 0,
@@ -1783,7 +1783,7 @@
     "categoria": "Real Estate",
     "emoji": "🔑",
     "precio": 0,
-    "fecha": "2026-06-22",
+    "fecha": "2026-06-23",
     "variaciones": {
       "1w": 0,
       "1m": 0,
@@ -1802,7 +1802,7 @@
     "categoria": "Real Estate",
     "emoji": "🔑",
     "precio": 0,
-    "fecha": "2026-06-22",
+    "fecha": "2026-06-23",
     "variaciones": {
       "1w": 0,
       "1m": 0,
@@ -1821,7 +1821,7 @@
     "categoria": "Real Estate",
     "emoji": "🔑",
     "precio": 0,
-    "fecha": "2026-06-22",
+    "fecha": "2026-06-23",
     "variaciones": {
       "1w": 0,
       "1m": 0,
@@ -1840,7 +1840,7 @@
     "categoria": "Real Estate",
     "emoji": "🔑",
     "precio": 0,
-    "fecha": "2026-06-22",
+    "fecha": "2026-06-23",
     "variaciones": {
       "1w": 0,
       "1m": 0,
@@ -1859,7 +1859,7 @@
     "categoria": "Real Estate",
     "emoji": "🔑",
     "precio": 0,
-    "fecha": "2026-06-22",
+    "fecha": "2026-06-23",
     "variaciones": {
       "1w": 0,
       "1m": 0,
@@ -1878,7 +1878,7 @@
     "categoria": "Real Estate",
     "emoji": "🔑",
     "precio": 0,
-    "fecha": "2026-06-22",
+    "fecha": "2026-06-23",
     "variaciones": {
       "1w": 0,
       "1m": 0,
@@ -1897,7 +1897,7 @@
     "categoria": "Real Estate",
     "emoji": "🔑",
     "precio": 0,
-    "fecha": "2026-06-22",
+    "fecha": "2026-06-23",
     "variaciones": {
       "1w": 0,
       "1m": 0,
@@ -1916,7 +1916,7 @@
     "categoria": "Real Estate",
     "emoji": "🔑",
     "precio": 0,
-    "fecha": "2026-06-22",
+    "fecha": "2026-06-23",
     "variaciones": {
       "1w": 0,
       "1m": 0,
@@ -1935,7 +1935,7 @@
     "categoria": "Real Estate",
     "emoji": "🔑",
     "precio": 0,
-    "fecha": "2026-06-22",
+    "fecha": "2026-06-23",
     "variaciones": {
       "1w": 0,
       "1m": 0,
@@ -1954,7 +1954,7 @@
     "categoria": "Real Estate",
     "emoji": "🔑",
     "precio": 0,
-    "fecha": "2026-06-22",
+    "fecha": "2026-06-23",
     "variaciones": {
       "1w": 0,
       "1m": 0,
@@ -1973,7 +1973,7 @@
     "categoria": "Real Estate",
     "emoji": "🔑",
     "precio": 0,
-    "fecha": "2026-06-22",
+    "fecha": "2026-06-23",
     "variaciones": {
       "1w": 0,
       "1m": 0,
@@ -1992,7 +1992,7 @@
     "categoria": "Real Estate",
     "emoji": "🔑",
     "precio": 0,
-    "fecha": "2026-06-22",
+    "fecha": "2026-06-23",
     "variaciones": {
       "1w": 0,
       "1m": 0,
@@ -2011,7 +2011,7 @@
     "categoria": "Real Estate",
     "emoji": "🔑",
     "precio": 0,
-    "fecha": "2026-06-22",
+    "fecha": "2026-06-23",
     "variaciones": {
       "1w": 0,
       "1m": 0,
@@ -2030,7 +2030,7 @@
     "categoria": "Real Estate",
     "emoji": "🔑",
     "precio": 0,
-    "fecha": "2026-06-22",
+    "fecha": "2026-06-23",
     "variaciones": {
       "1w": 0,
       "1m": 0,
