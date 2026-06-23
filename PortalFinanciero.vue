@@ -969,6 +969,8 @@ const equivalencyText = ref('');
 const periodLabels = { '1w': 'semanal', '1m': 'mensual', '3m': 'trimestral', '6m': 'semestral', 'ytd': 'Desde enero', '1y': 'Fiebre electoral', '3y': 'Post-pandemia', '5y': 'Pre-pandemia' };
 const marketPeriod = ref('1y');
 const comparisonPeriod = ref('1y');
+const selectedCategory = ref(null);
+const realEstateTab = ref('m2');
 const assetSearchQuery = ref('');
 const marketPeriodLabels = { '1w': '1 Semana', '1m': '1 Mes', '3m': '3 Meses', '6m': '6 Meses', 'ytd': 'YTD', '1y': '1 Año', '3y': '3 Años', '5y': '5 Años' };
 
@@ -1134,8 +1136,6 @@ const API_BASE_URL = import.meta.env.DEV ? 'http://localhost:5000' : 'https://re
 
 // Integración con la API Express (Base de Datos)
 const livePrices = ref([]);
-const selectedCategory = ref(null);
-const realEstateTab = ref('m2');
 const portfolioChartRef = ref(null);
 
 // --- SECCIÓN COMPARADOR DE INVERSIONES ---
