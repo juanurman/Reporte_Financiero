@@ -22,12 +22,31 @@ const monthMap = {
   'jul': '07', 'ago': '08', 'sep': '09', 'oct': '10', 'nov': '11', 'dic': '12'
 };
 
+// Normalizar nombres de barrios inconsistentes
+const normalizeBarrioName = (barrio) => {
+  if (!barrio) return '';
+  const unified = {
+    'Paternal': 'La Paternal',
+    'La Paternal': 'La Paternal',
+    'Santa Rita': 'Villa Santa Rita',
+    'Villa Santa Rita': 'Villa Santa Rita',
+    'Agronomia': 'Agronomía',
+    'Agronomía': 'Agronomía',
+    'Nunez': 'Nuñez',
+    'Nuñez': 'Nuñez',
+    'San Nicolás': 'San Nicolás',
+    'San Nicolas': 'San Nicolás',
+  };
+  return unified[barrio.trim()] || barrio.trim();
+};
+
 // Función para generar un Ticker consistente y mantener compatibilidad con los 4 originales
 const getTicker = (barrio) => {
-  const fixes = { 'Nuñez': 'M2_NUN', 'Nunez': 'M2_NUN', 'Belgrano': 'M2_BEL', 'Palermo': 'M2_PAL', 'Recoleta': 'M2_REC' };
-  if (fixes[barrio]) return fixes[barrio];
+  const normalized = normalizeBarrioName(barrio);
+  const fixes = { 'Nuñez': 'M2_NUN', 'Belgrano': 'M2_BEL', 'Palermo': 'M2_PAL', 'Recoleta': 'M2_REC' };
+  if (fixes[normalized]) return fixes[normalized];
   
-  const clean = barrio.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().replace(/[^A-Z]/g, '');
+  const clean = normalized.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().replace(/[^A-Z]/g, '');
   // Aumentamos a 20 caracteres para evitar colisiones entre "Villas" y "Parques"
   return `M2_${clean.substring(0, 20)}`;
 };
@@ -63,8 +82,9 @@ const runImport = async () => {
 
     // Insertar sólo los barrios que tienen datos reales
     for (const barrio of barriosConDatos) {
-      const ticker = getTicker(barrio);
-      await pool.execute('INSERT IGNORE INTO activos (simbolo, nombre, categoria, emoji) VALUES (?, ?, "Real Estate", "🏢")', [ticker, `M2 ${barrio}`]);
+      const normalized = normalizeBarrioName(barrio);
+      const ticker = getTicker(normalized);
+      await pool.execute('INSERT IGNORE INTO activos (simbolo, nombre, categoria, emoji) VALUES (?, ?, "Real Estate", "🏢")', [ticker, `M2 ${normalized}`]);
     }
 
     const [activos] = await pool.execute('SELECT id, simbolo FROM activos WHERE simbolo LIKE "M2_%"');
@@ -83,7 +103,8 @@ const runImport = async () => {
       const barrio = cols[2];  // ej: "Nuñez"
       const indexPrecioStr = cols[5]; // ej: "3.026"
 
-      const simbolo = getTicker(barrio);
+      const normalized = normalizeBarrioName(barrio);
+      const simbolo = getTicker(normalized);
       if (!simbolo || !idMap[simbolo] || !indexPrecioStr || indexPrecioStr === '-') continue;
 
       const parts = periodo.replace('.', '').split(' ').filter(Boolean);

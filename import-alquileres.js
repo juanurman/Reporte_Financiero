@@ -21,12 +21,31 @@ const monthMap = {
   'jul': '07', 'ago': '08', 'sep': '09', 'oct': '10', 'nov': '11', 'dic': '12'
 };
 
+// Normalizar nombres de barrios inconsistentes
+const normalizeBarrioName = (barrio) => {
+  if (!barrio) return '';
+  const unified = {
+    'Paternal': 'La Paternal',
+    'La Paternal': 'La Paternal',
+    'Santa Rita': 'Villa Santa Rita',
+    'Villa Santa Rita': 'Villa Santa Rita',
+    'Agronomia': 'Agronomía',
+    'Agronomía': 'Agronomía',
+    'Nunez': 'Nuñez',
+    'Nuñez': 'Nuñez',
+    'San Nicolás': 'San Nicolás',
+    'San Nicolas': 'San Nicolás',
+  };
+  return unified[barrio.trim()] || barrio.trim();
+};
+
 // Generador de Tickers para Alquileres (ALQ_...) compatible con fixes
 const getTicker = (barrio) => {
-  const fixes = { 'Nuñez': 'ALQ_NUN', 'Nunez': 'ALQ_NUN', 'Belgrano': 'ALQ_BEL', 'Palermo': 'ALQ_PAL', 'Recoleta': 'ALQ_REC' };
-  if (fixes[barrio]) return fixes[barrio];
+  const normalized = normalizeBarrioName(barrio);
+  const fixes = { 'Nuñez': 'ALQ_NUN', 'Belgrano': 'ALQ_BEL', 'Palermo': 'ALQ_PAL', 'Recoleta': 'ALQ_REC' };
+  if (fixes[normalized]) return fixes[normalized];
   
-  const clean = barrio.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().replace(/[^A-Z]/g, '');
+  const clean = normalized.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().replace(/[^A-Z]/g, '');
   return `ALQ_${clean.substring(0, 20)}`;
 };
 
@@ -66,8 +85,9 @@ const runImport = async () => {
 
     // 2. Insertar los activos de alquiler
     for (const barrio of barriosConDatos) {
-      const ticker = getTicker(barrio);
-      await pool.execute('INSERT IGNORE INTO activos (simbolo, nombre, categoria, emoji) VALUES (?, ?, "Real Estate", "🔑")', [ticker, `Alquiler ${barrio}`]);
+      const normalized = normalizeBarrioName(barrio);
+      const ticker = getTicker(normalized);
+      await pool.execute('INSERT IGNORE INTO activos (simbolo, nombre, categoria, emoji) VALUES (?, ?, "Real Estate", "🔑")', [ticker, `Alquiler ${normalized}`]);
     }
 
     const [activos] = await pool.execute('SELECT id, simbolo FROM activos WHERE simbolo LIKE "ALQ_%" AND simbolo <> "ALQ_YIELD"');
@@ -87,7 +107,8 @@ const runImport = async () => {
       const barrio = cols[2];
       const indexPrecioStr = cols[4]; // En alquileres, Index es celdas[3]/cols[4]
 
-      const simbolo = getTicker(barrio);
+      const normalized = normalizeBarrioName(barrio);
+      const simbolo = getTicker(normalized);
       if (!simbolo || !idMap[simbolo] || !indexPrecioStr || indexPrecioStr === '-') continue;
 
       const parts = periodo.replace('.', '').split(' ').filter(Boolean);
