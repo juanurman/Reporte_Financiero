@@ -28,8 +28,18 @@ const buildApi = async () => {
     const [activos] = await connection.execute('SELECT * FROM activos');
     const [precios] = await connection.execute('SELECT activo_id, fecha, valor FROM precios_historicos ORDER BY fecha DESC');
 
+    // Indexamos los precios por ID de activo para evitar el filter anidado (O(N) complejidad lineal)
+    const preciosMap = {};
+    for (const p of precios) {
+      const aid = Number(p.activo_id);
+      if (!preciosMap[aid]) {
+        preciosMap[aid] = [];
+      }
+      preciosMap[aid].push(p);
+    }
+
     const resultados = activos.map(activo => {
-      const historial = precios.filter(p => Number(p.activo_id) === Number(activo.id));
+      const historial = preciosMap[activo.id] || [];
 
       // Si el activo no tiene precios aún, lo enviamos con 0 para que sea visible
       if (historial.length === 0) {

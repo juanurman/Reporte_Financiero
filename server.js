@@ -69,13 +69,26 @@ app.get('/', (req, res) => {
 // Endpoint para obtener todos los activos con su último precio guardado
 app.get('/api/precios', async (req, res) => {
   try {
+    // Cabeceras de caché CDN para Vercel (Cachear por 15 min, revalidar en segundo plano hasta 30 min)
+    res.setHeader('Cache-Control', 's-maxage=900, stale-while-revalidate=1800');
+
     // Obtenemos todos los activos
     const [activos] = await pool.execute('SELECT * FROM activos');
     // Obtenemos TODOS los precios ordenados por fecha (del más nuevo al más viejo)
     const [precios] = await pool.execute('SELECT activo_id, fecha, valor FROM precios_historicos ORDER BY fecha DESC');
 
+    // Indexamos los precios por ID de activo para evitar el filter anidado (O(N) complejidad lineal)
+    const preciosMap = {};
+    for (const p of precios) {
+      const aid = Number(p.activo_id);
+      if (!preciosMap[aid]) {
+        preciosMap[aid] = [];
+      }
+      preciosMap[aid].push(p);
+    }
+
     const resultados = activos.map(activo => {
-      const historial = precios.filter(p => Number(p.activo_id) === Number(activo.id));
+      const historial = preciosMap[activo.id] || [];
 
       // Si el activo es nuevo y no tiene precios, no lo borramos, lo mostramos en 0
       if (historial.length === 0) {
