@@ -2,9 +2,28 @@ import express from 'express';
 import cors from 'cors';
 import mysql from 'mysql2/promise';
 import dotenv from 'dotenv';
+import crypto from 'crypto';
 import { actualizarPrecios } from './updater.js';
 
 dotenv.config();
+
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin';
+
+// Funciones auxiliares para hashing de contraseñas con scrypt
+function hashPassword(password) {
+  const salt = crypto.randomBytes(16).toString('hex');
+  const hash = crypto.scryptSync(password, salt, 64).toString('hex');
+  return `${salt}:${hash}`;
+}
+
+function verifyPassword(password, storedPassword) {
+  if (!storedPassword.includes(':')) {
+    return password === storedPassword; // Contraseña legacy en texto plano
+  }
+  const [salt, hash] = storedPassword.split(':');
+  const verifyHash = crypto.scryptSync(password, salt, 64).toString('hex');
+  return hash === verifyHash;
+}
 
 const app = express();
 
@@ -146,8 +165,8 @@ app.get('/api/precios', async (req, res) => {
 app.post('/api/activos', async (req, res) => {
   const { simbolo, nombre, categoria, emoji, adminPassword } = req.body;
   
-  // Validación básica (puedes mejorarla)
-  if (adminPassword !== 'admin') {
+  // Validación básica
+  if (adminPassword !== ADMIN_PASSWORD) {
     return res.status(401).json({ error: 'No autorizado' });
   }
 
@@ -169,7 +188,7 @@ app.post('/api/activos', async (req, res) => {
 app.delete('/api/activos/:simbolo', async (req, res) => {
   const { adminPassword } = req.body;
   
-  if (adminPassword !== 'admin') {
+  if (adminPassword !== ADMIN_PASSWORD) {
     return res.status(401).json({ error: 'No autorizado' });
   }
   try {
@@ -186,7 +205,7 @@ app.delete('/api/activos/:simbolo', async (req, res) => {
 app.post('/api/admin/run-updater', async (req, res) => {
   const { adminPassword } = req.body;
   
-  if (adminPassword !== 'admin') {
+  if (adminPassword !== ADMIN_PASSWORD) {
     return res.status(401).json({ error: 'No autorizado' });
   }
 
@@ -204,7 +223,7 @@ app.post('/api/admin/run-updater', async (req, res) => {
 app.post('/api/usuarios', async (req, res) => {
   const { username, password, adminPassword } = req.body;
   
-  if (adminPassword !== 'admin') {
+  if (adminPassword !== ADMIN_PASSWORD) {
     return res.status(401).json({ error: 'No autorizado' });
   }
   if (!username || !password) {
@@ -220,12 +239,13 @@ app.post('/api/usuarios', async (req, res) => {
       )
     `);
 
+    const hashedPassword = hashPassword(password);
     const query = `
       INSERT INTO usuarios (username, password)
       VALUES (?, ?)
       ON DUPLICATE KEY UPDATE password = VALUES(password)
     `;
-    await pool.execute(query, [username.toUpperCase(), password]);
+    await pool.execute(query, [username.toUpperCase(), hashedPassword]);
     res.json({ message: `Usuario ${username.toUpperCase()} creado/actualizado con éxito` });
   } catch (error) {
     console.error('❌ Error al crear usuario:', error.message);
@@ -236,7 +256,7 @@ app.post('/api/usuarios', async (req, res) => {
 // Endpoint para obtener la lista de usuarios (Admin)
 app.get('/api/usuarios', async (req, res) => {
   const { adminPassword } = req.query;
-  if (adminPassword !== 'admin') {
+  if (adminPassword !== ADMIN_PASSWORD) {
     return res.status(401).json({ error: 'No autorizado' });
   }
   try {
@@ -251,7 +271,7 @@ app.get('/api/usuarios', async (req, res) => {
 // Endpoint para eliminar un usuario (Admin)
 app.delete('/api/usuarios/:username', async (req, res) => {
   const { adminPassword } = req.body;
-  if (adminPassword !== 'admin') {
+  if (adminPassword !== ADMIN_PASSWORD) {
     return res.status(401).json({ error: 'No autorizado' });
   }
   try {
@@ -273,8 +293,19 @@ app.post('/api/login', async (req, res) => {
       return res.status(401).json({ error: 'El usuario no existe. Pedile al Admin que te cree una cuenta.' });
     }
 
-    // Si existe, verificamos que su contraseña sea exactamente la correcta
-    if (users[0].password === password) {
+    const user = users[0];
+    // Si existe, verificamos que su contraseña coincida (soporta hash y legacy)
+    if (verifyPassword(password, user.password)) {
+      // Si la contraseña es válida pero está en formato texto plano (legacy), la migramos de forma transparente
+      if (!user.password.includes(':')) {
+        try {
+          const newHashed = hashPassword(password);
+          await pool.execute('UPDATE usuarios SET password = ? WHERE id = ?', [newHashed, user.id]);
+          console.log(`🔒 Contraseña migrada exitosamente a hash seguro para el usuario: ${username.toUpperCase()}`);
+        } catch (migrationErr) {
+          console.error('⚠️ Error al migrar contraseña legacy:', migrationErr.message);
+        }
+      }
       res.json({ success: true });
     } else {
       res.status(401).json({ error: 'Contraseña incorrecta' });

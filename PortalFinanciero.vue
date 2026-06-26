@@ -1907,15 +1907,28 @@ const deleteUser = async (username) => {
   }
 };
 
-const loginAdmin = () => {
-  if (adminLoginUser.value === 'admin' && adminLoginPass.value === 'admin') {
-    isAdmin.value = true;
-    adminLoginError.value = '';
-    showAdminLoginModal.value = false;
-    fetchUsers(); // Buscamos los usuarios en la BD apenas entra el admin
-    currentTab.value = 'mercados'; // Fuerza la redirección al Home
-  } else {
-    adminLoginError.value = 'Credenciales incorrectas.';
+const loginAdmin = async () => {
+  if (adminLoginUser.value !== 'admin') {
+    adminLoginError.value = 'Usuario incorrecto.';
+    return;
+  }
+  adminLoginError.value = '';
+  try {
+    // Intentamos traer la lista de usuarios. Si el password es válido, el backend devolverá 200 OK y la lista.
+    const response = await fetch(`${API_BASE_URL}/api/usuarios?adminPassword=${adminLoginPass.value}`);
+    if (response.ok) {
+      isAdmin.value = true;
+      adminLoginError.value = '';
+      showAdminLoginModal.value = false;
+      usersList.value = await response.json();
+      currentTab.value = 'mercados'; // Fuerza la redirección al Home
+    } else {
+      adminLoginError.value = 'Contraseña incorrecta.';
+    }
+  } catch (err) {
+    adminLoginError.value = err.message === 'Failed to fetch' 
+      ? 'No se pudo conectar. Verifica que tu servidor local (node server.js) esté corriendo.' 
+      : 'Error al conectar con el servidor: ' + err.message;
   }
 };
 
