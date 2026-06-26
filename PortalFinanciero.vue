@@ -1873,7 +1873,7 @@ const usersList = ref([]);
 
 const fetchUsers = async () => {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/usuarios?adminPassword=${adminLoginPass.value}`);
+    const response = await fetch(`${API_BASE_URL}/api/usuarios?adminPassword=${encodeURIComponent(adminLoginPass.value)}`);
     if (response.ok) {
       usersList.value = await response.json();
     }
@@ -1915,7 +1915,7 @@ const loginAdmin = async () => {
   adminLoginError.value = '';
   try {
     // Intentamos traer la lista de usuarios. Si el password es válido, el backend devolverá 200 OK y la lista.
-    const response = await fetch(`${API_BASE_URL}/api/usuarios?adminPassword=${adminLoginPass.value}`);
+    const response = await fetch(`${API_BASE_URL}/api/usuarios?adminPassword=${encodeURIComponent(adminLoginPass.value)}`);
     if (response.ok) {
       isAdmin.value = true;
       adminLoginError.value = '';
