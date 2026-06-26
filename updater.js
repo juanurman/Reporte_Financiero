@@ -37,7 +37,7 @@ const guardarPrecio = async (activoId, simbolo, valor, fecha) => {
 };
 
 // Lógica principal de recolección de datos
-const actualizarPrecios = async () => {
+const actualizarPrecios = async (shouldExit = true) => {
   console.log(`\n[${new Date().toLocaleString('es-AR')}] Iniciando actualización de precios...`);
 
   try {
@@ -54,7 +54,7 @@ const actualizarPrecios = async () => {
     const [activosDB] = await pool.execute(
       `SELECT id, simbolo FROM activos
        WHERE simbolo NOT LIKE "M2_%"
-       AND simbolo <> "ALQ_YIELD" 
+       AND simbolo NOT LIKE "ALQ_%"
        AND simbolo NOT IN ("DOLAR_OFICIAL", "DOLAR_BLUE", "DOLAR_MEP", "DOLAR_CCL")`
     );
 
@@ -136,16 +136,32 @@ const actualizarPrecios = async () => {
 
     console.log('Actualización completada con éxito.');
     
-    // Cerramos el pool de conexiones para que Node.js pueda finalizar y cerrarse
-    await new Promise(resolve => setTimeout(resolve, 500)); // Pequeña espera para flush de logs
-    await pool.end();
-    process.exit(0); // Forzamos el cierre inmediato del script (0 = Éxito)
+    // Cerramos el pool de conexiones si se requiere finalizar el proceso
+    if (shouldExit) {
+      await new Promise(resolve => setTimeout(resolve, 500)); // Pequeña espera para flush de logs
+      await pool.end();
+      process.exit(0); // Forzamos el cierre inmediato del script (0 = Éxito)
+    }
   } catch (error) {
     console.error('Error durante la actualización de precios:', error.message);
-    await pool.end();
-    process.exit(1); // Forzamos la salida con error para que GitHub Actions lo marque en rojo
+    if (shouldExit) {
+      await pool.end();
+      process.exit(1); // Forzamos la salida con error para que GitHub Actions lo marque en rojo
+    } else {
+      throw error;
+    }
   }
 };
 
-// Ejecutamos la recolección de datos (GitHub Actions se encarga de llamar a este script diariamente)
-actualizarPrecios();
+// Ejecutamos la recolección de datos si el archivo se ejecuta directamente
+import { fileURLToPath } from 'url';
+import path from 'path';
+
+const nodePath = process.argv[1] ? path.resolve(process.argv[1]) : '';
+const currentPath = fileURLToPath(import.meta.url);
+
+if (nodePath === currentPath || nodePath.endsWith('updater.js')) {
+  actualizarPrecios(true);
+}
+
+export { actualizarPrecios };

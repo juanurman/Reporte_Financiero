@@ -894,24 +894,49 @@
             </form>
           </section>
           
-          <!-- Fila inferior: Lista de Usuarios -->
-          <div class="lg:col-span-2">
-            <section class="dark:bg-slate-900 bg-white p-8 rounded-[2rem] shadow-2xl border dark:border-slate-800 border-slate-200">
-              <div class="flex justify-between items-center mb-6">
-                <h3 class="text-2xl font-bold dark:text-white text-slate-800 flex items-center gap-2">👥 Inversores Registrados</h3>
-                <button @click="fetchUsers" class="text-sm font-bold bg-indigo-500/10 text-indigo-500 px-3 py-1.5 rounded-lg hover:bg-indigo-500/20 transition">↻ Actualizar</button>
-              </div>
-              <div v-if="usersList.length === 0" class="text-slate-500 font-medium text-center py-4">No hay usuarios creados aún en la base de datos.</div>
-              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                <div v-for="user in usersList" :key="user.id" class="flex justify-between items-center dark:bg-slate-950 bg-slate-50 p-4 rounded-xl border dark:border-slate-800 border-slate-200 shadow-sm transition hover:border-slate-400 dark:hover:border-slate-600">
-                  <span class="font-bold dark:text-white text-slate-800 text-lg">👤 {{ user.username }}</span>
-                  <div class="flex gap-2">
-                    <button @click="viewUserPortfolio(user.username)" class="text-indigo-500 hover:text-indigo-600 font-bold bg-indigo-500/10 hover:bg-indigo-500/20 px-3 py-1.5 rounded-lg transition-colors text-xs uppercase tracking-wider">Ver</button>
-                    <button @click="deleteUser(user.username)" class="text-red-500 hover:text-red-600 font-bold bg-red-500/10 hover:bg-red-500/20 px-3 py-1.5 rounded-lg transition-colors text-xs uppercase tracking-wider">Borrar</button>
+          <!-- Fila inferior: Lista de Usuarios y Actualizador de Precios -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:col-span-2">
+            <!-- Lista de Usuarios (Col-span 2) -->
+            <div class="lg:col-span-2">
+              <section class="dark:bg-slate-900 bg-white p-8 rounded-[2rem] shadow-2xl border dark:border-slate-800 border-slate-200 h-full">
+                <div class="flex justify-between items-center mb-6">
+                  <h3 class="text-2xl font-bold dark:text-white text-slate-800 flex items-center gap-2">👥 Inversores Registrados</h3>
+                  <button @click="fetchUsers" class="text-sm font-bold bg-indigo-500/10 text-indigo-500 px-3 py-1.5 rounded-lg hover:bg-indigo-500/20 transition">↻ Actualizar</button>
+                </div>
+                <div v-if="usersList.length === 0" class="text-slate-500 font-medium text-center py-4">No hay usuarios creados aún en la base de datos.</div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div v-for="user in usersList" :key="user.id" class="flex justify-between items-center dark:bg-slate-950 bg-slate-50 p-4 rounded-xl border dark:border-slate-800 border-slate-200 shadow-sm transition hover:border-slate-400 dark:hover:border-slate-600">
+                    <span class="font-bold dark:text-white text-slate-800 text-lg">👤 {{ user.username }}</span>
+                    <div class="flex gap-2">
+                      <button @click="viewUserPortfolio(user.username)" class="text-indigo-500 hover:text-indigo-600 font-bold bg-indigo-500/10 hover:bg-indigo-500/20 px-3 py-1.5 rounded-lg transition-colors text-xs uppercase tracking-wider">Ver</button>
+                      <button @click="deleteUser(user.username)" class="text-red-500 hover:text-red-600 font-bold bg-red-500/10 hover:bg-red-500/20 px-3 py-1.5 rounded-lg transition-colors text-xs uppercase tracking-wider">Borrar</button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </section>
+              </section>
+            </div>
+
+            <!-- Actualizador Manual de Precios (Col-span 1) -->
+            <div class="lg:col-span-1">
+              <section class="dark:bg-slate-900 bg-white p-8 rounded-[2rem] shadow-2xl border dark:border-slate-800 border-slate-200 h-full flex flex-col justify-between">
+                <div>
+                  <h3 class="text-2xl font-bold dark:text-white text-slate-800 flex items-center gap-2 mb-4">
+                    🔄 Actualizar Precios
+                  </h3>
+                  <p class="dark:text-slate-400 text-slate-500 text-sm mb-6 leading-relaxed">
+                    Ejecuta el recolector manual de precios para traer los últimos valores del mercado (Yahoo Finance, DolarAPI y Alquileres) de inmediato.
+                  </p>
+                </div>
+                <div>
+                  <button @click="runManualUpdater" :disabled="isUpdatingPrecios" class="w-full bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-bold py-3 rounded-xl transition-all shadow-md flex items-center justify-center gap-2">
+                    <span v-if="isUpdatingPrecios" class="animate-spin text-lg">⏳</span>
+                    <span>{{ isUpdatingPrecios ? 'Actualizando...' : 'Actualizar Precios Ahora' }}</span>
+                  </button>
+                  <p v-if="updateError" class="text-red-500 font-bold text-center text-sm mt-4 bg-red-500/10 p-2 rounded-lg">{{ updateError }}</p>
+                  <p v-if="updateMessage" class="text-emerald-500 font-bold text-center text-sm mt-4 bg-emerald-500/10 p-2 rounded-lg">{{ updateMessage }}</p>
+                </div>
+              </section>
+            </div>
           </div>
 
         </div>
@@ -1812,6 +1837,10 @@ const adminError = ref('');
 const adminMessage = ref('');
 const isSubmittingAdmin = ref(false);
 
+const isUpdatingPrecios = ref(false);
+const updateMessage = ref('');
+const updateError = ref('');
+
 // --- Lógica de la sub-sección de usuarios ---
 const userForm = ref({ username: '', password: '' });
 const userError = ref('');
@@ -1923,6 +1952,27 @@ const submitAdminForm = async () => {
     adminError.value = err.message === 'Failed to fetch' ? 'No se pudo conectar. Verifica que tu servidor local (node server.js) esté corriendo.' : err.message;
   } finally {
     isSubmittingAdmin.value = false;
+  }
+};
+
+const runManualUpdater = async () => {
+  updateError.value = '';
+  updateMessage.value = '';
+  isUpdatingPrecios.value = true;
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/admin/run-updater`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ adminPassword: adminLoginPass.value })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Error al actualizar precios.');
+    updateMessage.value = data.message;
+    await fetchLivePrices();
+  } catch (err) {
+    updateError.value = err.message === 'Failed to fetch' ? 'No se pudo conectar. Verifica que tu servidor local (node server.js) esté corriendo.' : err.message;
+  } finally {
+    isUpdatingPrecios.value = false;
   }
 };
 

@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import mysql from 'mysql2/promise';
 import dotenv from 'dotenv';
+import { actualizarPrecios } from './updater.js';
 
 dotenv.config();
 
@@ -178,6 +179,24 @@ app.delete('/api/activos/:simbolo', async (req, res) => {
   } catch (error) {
     console.error('❌ Error al eliminar activo:', error.message);
     res.status(500).json({ error: 'Error al eliminar el activo' });
+  }
+});
+
+// Endpoint para ejecutar la actualización manual de precios (Admin)
+app.post('/api/admin/run-updater', async (req, res) => {
+  const { adminPassword } = req.body;
+  
+  if (adminPassword !== 'admin') {
+    return res.status(401).json({ error: 'No autorizado' });
+  }
+
+  try {
+    console.log('🔄 Iniciando actualización manual de precios desde Panel de Administración...');
+    await actualizarPrecios(false);
+    res.json({ success: true, message: 'Actualización manual completada con éxito' });
+  } catch (error) {
+    console.error('❌ Error en actualización manual de precios:', error.message);
+    res.status(500).json({ error: 'Error al ejecutar el actualizador: ' + error.message });
   }
 });
 
