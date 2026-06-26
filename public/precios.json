@@ -5,18 +5,18 @@
     "simbolo": "DOLAR_OFICIAL",
     "categoria": "Moneda",
     "emoji": "💵",
-    "precio": 1481.79,
-    "fecha": "2026-06-22T03:00:00.000Z",
+    "precio": 1495,
+    "fecha": "2026-06-26T03:00:00.000Z",
     "variaciones": {
-      "1w": 0.4,
-      "1m": 1.73,
-      "3m": 5.39,
-      "6m": 11.38,
-      "ytd": 10.82,
-      "9m": 18.11,
-      "1y": 26.14,
-      "3y": 211.25,
-      "5y": 1493.15
+      "1w": 1.06,
+      "1m": 2.4,
+      "3m": 6.07,
+      "6m": 12.09,
+      "ytd": 11.81,
+      "9m": 18.84,
+      "1y": 26.9,
+      "3y": 209.53,
+      "5y": 1503.91
     }
   },
   {
@@ -25,18 +25,18 @@
     "simbolo": "DOLAR_BLUE",
     "categoria": "Moneda",
     "emoji": "💵",
-    "precio": 1495,
-    "fecha": "2026-06-22T03:00:00.000Z",
+    "precio": 1515,
+    "fecha": "2026-06-26T03:00:00.000Z",
     "variaciones": {
-      "1w": 0.05,
-      "1m": 0.21,
-      "3m": 0.62,
-      "6m": 1.25,
-      "ytd": 1.19,
-      "9m": 1.88,
-      "1y": 2.56,
-      "3y": 123.86,
-      "5y": 706.45
+      "1w": 1.36,
+      "1m": 1.52,
+      "3m": 1.94,
+      "6m": 2.57,
+      "ytd": 2.55,
+      "9m": 3.22,
+      "1y": 3.91,
+      "3y": 124.35,
+      "5y": 715.17
     }
   },
   {
@@ -45,18 +45,18 @@
     "simbolo": "DOLAR_MEP",
     "categoria": "Moneda",
     "emoji": "💵",
-    "precio": 1485.8,
-    "fecha": "2026-06-22T03:00:00.000Z",
+    "precio": 1502.5,
+    "fecha": "2026-06-26T03:00:00.000Z",
     "variaciones": {
-      "1w": 0.08,
-      "1m": 0.32,
-      "3m": 0.98,
-      "6m": 1.97,
-      "ytd": 1.88,
-      "9m": 2.99,
-      "1y": 4.09,
-      "3y": 130.66,
-      "5y": 787.1
+      "1w": 1.16,
+      "1m": 1.41,
+      "3m": 2.07,
+      "6m": 3.07,
+      "ytd": 3.03,
+      "9m": 4.1,
+      "1y": 5.21,
+      "3y": 130.64,
+      "5y": 793.65
     }
   },
   {
@@ -65,18 +65,18 @@
     "simbolo": "DOLAR_CCL",
     "categoria": "Moneda",
     "emoji": "💵",
-    "precio": 1527,
-    "fecha": "2026-06-22T03:00:00.000Z",
+    "precio": 1541.6,
+    "fecha": "2026-06-26T03:00:00.000Z",
     "variaciones": {
-      "1w": 0.09,
-      "1m": 0.39,
-      "3m": 1.19,
-      "6m": 2.41,
-      "ytd": 2.3,
-      "9m": 3.65,
-      "1y": 5,
-      "3y": 138.23,
-      "5y": 787.69
+      "1w": 1,
+      "1m": 1.3,
+      "3m": 2.1,
+      "6m": 3.33,
+      "ytd": 3.27,
+      "9m": 4.59,
+      "1y": 5.95,
+      "3y": 137.93,
+      "5y": 792.96
     }
   },
   {
@@ -85,18 +85,18 @@
     "simbolo": "SPY",
     "categoria": "Índice/ETF",
     "emoji": "📈",
-    "precio": 744.39,
-    "fecha": "2026-06-22T03:00:00.000Z",
+    "precio": 728.99,
+    "fecha": "2026-06-26T03:00:00.000Z",
     "variaciones": {
-      "1w": -1.38,
-      "1m": -0.17,
-      "3m": 13.96,
-      "6m": 7.82,
-      "ytd": 8.96,
-      "9m": 13.12,
-      "1y": 24.03,
-      "3y": 71.83,
-      "5y": 76.15
+      "1w": -2.38,
+      "1m": -2.86,
+      "3m": 14.97,
+      "6m": 5.98,
+      "ytd": 6.71,
+      "9m": 9.84,
+      "1y": 19.14,
+      "3y": 67.13,
+      "5y": 70.54
     }
   },
   {
@@ -105,18 +105,18 @@
     "simbolo": "AAPL",
     "categoria": "Big Tech",
     "emoji": "🍎",
-    "precio": 297.01,
-    "fecha": "2026-06-22T03:00:00.000Z",
+    "precio": 283.78,
+    "fecha": "2026-06-26T03:00:00.000Z",
     "variaciones": {
-      "1w": 0.2,
-      "1m": -3.82,
-      "3m": 18.03,
-      "6m": 8.47,
-      "ytd": 9.59,
-      "9m": 15.63,
-      "1y": 47.4,
-      "3y": 59.1,
-      "5y": 122.15
+      "1w": -4.78,
+      "1m": -8.71,
+      "3m": 14.06,
+      "6m": 3.66,
+      "ytd": 4.71,
+      "9m": 11.54,
+      "1y": 41.18,
+      "3y": 50.9,
+      "5y": 110.55
     }
   },
   {
@@ -125,18 +125,18 @@
     "simbolo": "GOOGL",
     "categoria": "Big Tech",
     "emoji": "🔍",
-    "precio": 349.68,
-    "fecha": "2026-06-22T03:00:00.000Z",
+    "precio": 337.39,
+    "fecha": "2026-06-26T03:00:00.000Z",
     "variaciones": {
-      "1w": -5.33,
-      "1m": -8.69,
-      "3m": 20.4,
-      "6m": 11.33,
-      "ytd": 10.96,
-      "9m": 42.27,
-      "1y": 111.68,
-      "3y": 185.83,
-      "5y": 186.32
+      "1w": -8.33,
+      "1m": -13.23,
+      "3m": 22.98,
+      "6m": 7.6,
+      "ytd": 7.06,
+      "9m": 38.25,
+      "1y": 94.42,
+      "3y": 185.13,
+      "5y": 175.34
     }
   },
   {
@@ -145,18 +145,18 @@
     "simbolo": "MSFT",
     "categoria": "Big Tech",
     "emoji": "🪟",
-    "precio": 367.34,
-    "fecha": "2026-06-22T03:00:00.000Z",
+    "precio": 372.97,
+    "fecha": "2026-06-26T03:00:00.000Z",
     "variaciones": {
-      "1w": -8.11,
-      "1m": -12.24,
-      "3m": -1.45,
-      "6m": -24.73,
-      "ytd": -22.33,
-      "9m": -27.55,
-      "1y": -24.42,
-      "3y": 9.65,
-      "5y": 38.48
+      "1w": -1.69,
+      "1m": -9.62,
+      "3m": 4.54,
+      "6m": -23.43,
+      "ytd": -21.14,
+      "9m": -27.52,
+      "1y": -25.02,
+      "3y": 11.48,
+      "5y": 38.8
     }
   },
   {
@@ -165,18 +165,18 @@
     "simbolo": "NVDA",
     "categoria": "Big Tech",
     "emoji": "🟩",
-    "precio": 208.65,
-    "fecha": "2026-06-22T03:00:00.000Z",
+    "precio": 192.53,
+    "fecha": "2026-06-26T03:00:00.000Z",
     "variaciones": {
-      "1w": -1.79,
-      "1m": -3.1,
-      "3m": 19.09,
-      "6m": 10.63,
-      "ytd": 10.48,
-      "9m": 17.42,
-      "1y": 44.72,
-      "3y": 394.33,
-      "5y": 994.86
+      "1w": -8.62,
+      "1m": -9.44,
+      "3m": 14.93,
+      "6m": 2.29,
+      "ytd": 1.95,
+      "9m": 5.87,
+      "1y": 24.2,
+      "3y": 359.76,
+      "5y": 863.37
     }
   },
   {
@@ -185,18 +185,18 @@
     "simbolo": "META",
     "categoria": "Big Tech",
     "emoji": "🌐",
-    "precio": 563.85,
-    "fecha": "2026-06-22T03:00:00.000Z",
+    "precio": 550.25,
+    "fecha": "2026-06-26T03:00:00.000Z",
     "variaciones": {
-      "1w": -4.99,
-      "1m": -7.6,
-      "3m": -4.9,
-      "6m": -15.53,
-      "ytd": -13.31,
-      "9m": -24.71,
-      "1y": -19.28,
-      "3y": 95.29,
-      "5y": 65.55
+      "1w": -4.67,
+      "1m": -13.38,
+      "3m": 4.67,
+      "6m": -16.46,
+      "ytd": -15.4,
+      "9m": -25.98,
+      "1y": -24.22,
+      "3y": 91.69,
+      "5y": 54.72
     }
   },
   {
@@ -205,18 +205,18 @@
     "simbolo": "AMZN",
     "categoria": "Big Tech",
     "emoji": "📦",
-    "precio": 232.79,
-    "fecha": "2026-06-22T03:00:00.000Z",
+    "precio": 232.69,
+    "fecha": "2026-06-26T03:00:00.000Z",
     "variaciones": {
-      "1w": -5.38,
-      "1m": -12.59,
-      "3m": 12.33,
-      "6m": 0.18,
-      "ytd": 2.78,
-      "9m": 6.71,
-      "1y": 11.67,
-      "3y": 80,
-      "5y": 32.88
+      "1w": -4.79,
+      "1m": -14.41,
+      "3m": 16.73,
+      "6m": 0.27,
+      "ytd": 2.73,
+      "9m": 4.74,
+      "1y": 7.17,
+      "3y": 80.13,
+      "5y": 35.13
     }
   },
   {
@@ -225,18 +225,18 @@
     "simbolo": "YPF",
     "categoria": "Merval",
     "emoji": "🛢️",
-    "precio": 49.47,
-    "fecha": "2026-06-22T03:00:00.000Z",
+    "precio": 45.33,
+    "fecha": "2026-06-26T03:00:00.000Z",
     "variaciones": {
-      "1w": -5.93,
-      "1m": 3.08,
-      "3m": 16.24,
-      "6m": 37.34,
-      "ytd": 36.32,
-      "9m": 84.8,
-      "1y": 46.4,
-      "3y": 234.48,
-      "5y": 879.6
+      "1w": -10.15,
+      "1m": -12.13,
+      "3m": 0.35,
+      "6m": 24.33,
+      "ytd": 24.91,
+      "9m": 78.82,
+      "1y": 35.8,
+      "3y": 202.4,
+      "5y": 866.52
     }
   },
   {
@@ -245,18 +245,18 @@
     "simbolo": "GGAL",
     "categoria": "Merval",
     "emoji": "🏦",
-    "precio": 53.33,
-    "fecha": "2026-06-22T03:00:00.000Z",
+    "precio": 49.97,
+    "fecha": "2026-06-26T03:00:00.000Z",
     "variaciones": {
-      "1w": -4.7,
-      "1m": 22.46,
-      "3m": 18.41,
-      "6m": -1.75,
-      "ytd": -0.04,
-      "9m": 74.68,
-      "1y": 5.88,
-      "3y": 217.82,
-      "5y": 456.68
+      "1w": -11.35,
+      "1m": 3.72,
+      "3m": 17.03,
+      "6m": -8.7,
+      "ytd": -6.34,
+      "9m": 69.56,
+      "1y": -3.81,
+      "3y": 197.97,
+      "5y": 445.52
     }
   },
   {
@@ -265,18 +265,18 @@
     "simbolo": "PAM",
     "categoria": "Merval",
     "emoji": "⚡",
-    "precio": 84.53,
-    "fecha": "2026-06-22T03:00:00.000Z",
+    "precio": 80.78,
+    "fecha": "2026-06-26T03:00:00.000Z",
     "variaciones": {
-      "1w": -2.84,
-      "1m": 4.77,
-      "3m": -0.42,
-      "6m": -5.36,
-      "ytd": -3.95,
-      "9m": 32.2,
-      "1y": 19.7,
-      "3y": 101.07,
-      "5y": 413.24
+      "1w": -6.7,
+      "1m": -3.38,
+      "3m": -3.74,
+      "6m": -7.87,
+      "ytd": -8.21,
+      "9m": 33.74,
+      "1y": 14.87,
+      "3y": 93.25,
+      "5y": 431.45
     }
   },
   {
@@ -285,18 +285,18 @@
     "simbolo": "BMA",
     "categoria": "Merval",
     "emoji": "🏛️",
-    "precio": 97.28,
-    "fecha": "2026-06-22T03:00:00.000Z",
+    "precio": 91.44,
+    "fecha": "2026-06-26T03:00:00.000Z",
     "variaciones": {
-      "1w": -2.67,
-      "1m": 28.08,
-      "3m": 38.01,
-      "6m": 6.89,
-      "ytd": 9.59,
-      "9m": 105.62,
-      "1y": 40.86,
-      "3y": 284.35,
-      "5y": 492.45
+      "1w": -10.07,
+      "1m": 7.25,
+      "3m": 32.02,
+      "6m": 1.23,
+      "ytd": 3.01,
+      "9m": 104.43,
+      "1y": 27.39,
+      "3y": 245.71,
+      "5y": 482.79
     }
   },
   {
@@ -385,12 +385,12 @@
     "simbolo": "ALQ_YIELD",
     "categoria": "Real Estate",
     "emoji": "🏠",
-    "precio": 5.16,
-    "fecha": "2026-06-22T03:00:00.000Z",
+    "precio": 5.17,
+    "fecha": "2026-06-26T03:00:00.000Z",
     "variaciones": {
-      "1w": 0,
-      "1m": -0.39,
-      "3m": 0,
+      "1w": 0.39,
+      "1m": -0.19,
+      "3m": 0.19,
       "6m": 0,
       "ytd": 0,
       "9m": 0,
@@ -405,18 +405,18 @@
     "simbolo": "MU",
     "categoria": "Wall Street",
     "emoji": "💾",
-    "precio": 1211.38,
-    "fecha": "2026-06-22T03:00:00.000Z",
+    "precio": 1132.33,
+    "fecha": "2026-06-26T03:00:00.000Z",
     "variaciones": {
-      "1w": 11.34,
-      "1m": 61.3,
-      "3m": 206.27,
-      "6m": 322.55,
-      "ytd": 284.05,
-      "9m": 672.42,
-      "1y": 892.28,
-      "3y": 1755.67,
-      "5y": 1433
+      "1w": -0.15,
+      "1m": 21.96,
+      "3m": 216.98,
+      "6m": 284.66,
+      "ytd": 258.99,
+      "9m": 590.87,
+      "1y": 798.67,
+      "3y": 1595.36,
+      "5y": 1258.04
     }
   },
   {
@@ -425,18 +425,18 @@
     "simbolo": "TSM",
     "categoria": "Wall Street",
     "emoji": "🏭",
-    "precio": 467.67,
-    "fecha": "2026-06-22T03:00:00.000Z",
+    "precio": 432.35,
+    "fecha": "2026-06-26T03:00:00.000Z",
     "variaciones": {
-      "1w": 5.95,
-      "1m": 15.61,
-      "3m": 36.25,
-      "6m": 56.52,
-      "ytd": 46.33,
-      "9m": 69.04,
-      "1y": 122.36,
-      "3y": 358.9,
-      "5y": 302.99
+      "1w": -6.44,
+      "1m": 2.28,
+      "3m": 32.32,
+      "6m": 43.68,
+      "ytd": 35.27,
+      "9m": 58.24,
+      "1y": 93,
+      "3y": 323.54,
+      "5y": 261.47
     }
   },
   {
@@ -445,18 +445,18 @@
     "simbolo": "KO",
     "categoria": "Wall Street",
     "emoji": "🥤",
-    "precio": 79.53,
-    "fecha": "2026-06-22T03:00:00.000Z",
+    "precio": 82.63,
+    "fecha": "2026-06-26T03:00:00.000Z",
     "variaciones": {
-      "1w": -1.71,
-      "1m": -2.39,
-      "3m": 6.51,
-      "6m": 13.44,
-      "ytd": 15.06,
-      "9m": 20.54,
-      "1y": 14.04,
-      "3y": 29.95,
-      "5y": 46.95
+      "1w": 4.08,
+      "1m": 1.24,
+      "3m": 9.14,
+      "6m": 17.77,
+      "ytd": 19.55,
+      "9m": 25.12,
+      "1y": 18.94,
+      "3y": 35.26,
+      "5y": 52.29
     }
   },
   {
@@ -465,18 +465,18 @@
     "simbolo": "BTC-USD",
     "categoria": "Cripto",
     "emoji": "₿",
-    "precio": 64010.1719,
-    "fecha": "2026-06-22T03:00:00.000Z",
+    "precio": 59744.7813,
+    "fecha": "2026-06-25T03:00:00.000Z",
     "variaciones": {
-      "1w": -2.42,
-      "1m": -16.85,
-      "3m": -10.24,
-      "6m": -26.62,
-      "ytd": -28.83,
-      "9m": -41.66,
-      "1y": -39.37,
-      "3y": 109.53,
-      "5y": 84.67
+      "1w": -5.97,
+      "1m": -19.64,
+      "3m": -9.91,
+      "6m": -31.98,
+      "ytd": -33.58,
+      "9m": -47.78,
+      "1y": -44.14,
+      "3y": 94.68,
+      "5y": 72.43
     }
   },
   {
@@ -485,18 +485,18 @@
     "simbolo": "QQQ",
     "categoria": "Índice/ETF",
     "emoji": "📊",
-    "precio": 737.95,
-    "fecha": "2026-06-22T03:00:00.000Z",
+    "precio": 706.52,
+    "fecha": "2026-06-26T03:00:00.000Z",
     "variaciones": {
-      "1w": -0.81,
-      "1m": 2.84,
-      "3m": 26.37,
-      "6m": 18.27,
-      "ytd": 20.36,
-      "9m": 24.33,
-      "1y": 38.8,
-      "3y": 103.55,
-      "5y": 112.21
+      "1w": -4.6,
+      "1m": -3.14,
+      "3m": 25.59,
+      "6m": 13.8,
+      "ytd": 15.23,
+      "9m": 18,
+      "1y": 29.35,
+      "3y": 94.19,
+      "5y": 99.75
     }
   },
   {
@@ -505,18 +505,18 @@
     "simbolo": "TSLA",
     "categoria": "Wall Street",
     "emoji": "🚗",
-    "precio": 405.05,
-    "fecha": "2026-06-22T03:00:00.000Z",
+    "precio": 379.71,
+    "fecha": "2026-06-26T03:00:00.000Z",
     "variaciones": {
-      "1w": -1.48,
-      "1m": -4.92,
-      "3m": 5.75,
-      "6m": -16.55,
-      "ytd": -7.54,
-      "9m": -4.33,
-      "1y": 16.17,
-      "3y": 57.85,
-      "5y": 85.08
+      "1w": -5.19,
+      "1m": -13.77,
+      "3m": 4.94,
+      "6m": -17.39,
+      "ytd": -13.32,
+      "9m": -14.33,
+      "1y": 16.55,
+      "3y": 51.76,
+      "5y": 65.4
     }
   },
   {
@@ -525,18 +525,18 @@
     "simbolo": "DIS",
     "categoria": "Wall Street",
     "emoji": "🏰",
-    "precio": 102.45,
-    "fecha": "2026-06-22T03:00:00.000Z",
+    "precio": 98.79,
+    "fecha": "2026-06-26T03:00:00.000Z",
     "variaciones": {
-      "1w": 0.75,
-      "1m": -0.53,
-      "3m": 6.29,
-      "6m": -10.51,
-      "ytd": -8.4,
-      "9m": -9.33,
-      "1y": -12.99,
-      "3y": 16.29,
-      "5y": -41.57
+      "1w": -4.91,
+      "1m": -5.17,
+      "3m": 6.89,
+      "6m": -13.49,
+      "ytd": -11.68,
+      "9m": -13.93,
+      "1y": -18.66,
+      "3y": 10.93,
+      "5y": -44.05
     }
   },
   {
@@ -545,18 +545,18 @@
     "simbolo": "V",
     "categoria": "Wall Street",
     "emoji": "💳",
-    "precio": 326.6,
-    "fecha": "2026-06-22T03:00:00.000Z",
+    "precio": 336.23,
+    "fecha": "2026-06-26T03:00:00.000Z",
     "variaciones": {
-      "1w": 0.86,
-      "1m": -0.69,
-      "3m": 7.52,
-      "6m": -8.04,
-      "ytd": -5.74,
-      "9m": -2.49,
-      "1y": -4.99,
-      "3y": 42.28,
-      "5y": 39.17
+      "1w": 2.75,
+      "1m": 2.63,
+      "3m": 13.78,
+      "6m": -5.18,
+      "ytd": -2.96,
+      "9m": -1.16,
+      "1y": -2.83,
+      "3y": 47.9,
+      "5y": 43.63
     }
   },
   {
@@ -565,18 +565,18 @@
     "simbolo": "BRK-B",
     "categoria": "Wall Street",
     "emoji": "🏠",
-    "precio": 488.69,
-    "fecha": "2026-06-22T03:00:00.000Z",
+    "precio": 498.66,
+    "fecha": "2026-06-26T03:00:00.000Z",
     "variaciones": {
-      "1w": -1.38,
-      "1m": 0.47,
-      "3m": 1.95,
-      "6m": -2.52,
-      "ytd": -1.64,
-      "9m": -1.27,
-      "1y": 0.19,
-      "3y": 45.77,
-      "5y": 77.93
+      "1w": 1.88,
+      "1m": 3.9,
+      "3m": 6.44,
+      "6m": -0.48,
+      "ytd": 0.36,
+      "9m": -0.12,
+      "1y": 2.81,
+      "3y": 48.7,
+      "5y": 80.28
     }
   },
   {
@@ -585,22 +585,422 @@
     "simbolo": "^TNX",
     "categoria": "Bonos",
     "emoji": "📜",
-    "precio": 4.509,
-    "fecha": "2026-06-22T03:00:00.000Z",
+    "precio": 4.372,
+    "fecha": "2026-06-26T03:00:00.000Z",
     "variaciones": {
-      "1w": 0.9,
-      "1m": -1.08,
-      "3m": 2.66,
-      "6m": 9.02,
-      "ytd": 7.69,
-      "9m": 8.08,
-      "1y": 4.38,
-      "3y": 20.59,
-      "5y": 203.23
+      "1w": -1.77,
+      "1m": -2.43,
+      "3m": -1.53,
+      "6m": 6.22,
+      "ytd": 4.42,
+      "9m": 5.58,
+      "1y": 2.8,
+      "3y": 16.03,
+      "5y": 195.81
     }
   },
   {
-    "id": 2640001,
+    "id": 2790081,
+    "nombre": "Alquiler Puerto Madero",
+    "simbolo": "ALQ_PUERTOMADERO",
+    "categoria": "Real Estate",
+    "emoji": "🔑",
+    "precio": 1285939,
+    "fecha": "2026-05-01T03:00:00.000Z",
+    "variaciones": {
+      "1w": 0,
+      "1m": -6.93,
+      "3m": -2.76,
+      "6m": 3.81,
+      "ytd": 3.64,
+      "9m": 7.01,
+      "1y": 9.04,
+      "3y": 45.3,
+      "5y": 1609.23
+    }
+  },
+  {
+    "id": 2790082,
+    "nombre": "Alquiler Nuñez",
+    "simbolo": "ALQ_NUN",
+    "categoria": "Real Estate",
+    "emoji": "🔑",
+    "precio": 951766,
+    "fecha": "2026-05-01T03:00:00.000Z",
+    "variaciones": {
+      "1w": 0,
+      "1m": 2.38,
+      "3m": 8.35,
+      "6m": 16.35,
+      "ytd": 12.59,
+      "9m": 27.64,
+      "1y": 31.08,
+      "3y": 524.38,
+      "5y": 2069.51
+    }
+  },
+  {
+    "id": 2790083,
+    "nombre": "Alquiler Palermo",
+    "simbolo": "ALQ_PAL",
+    "categoria": "Real Estate",
+    "emoji": "🔑",
+    "precio": 943809,
+    "fecha": "2026-05-01T03:00:00.000Z",
+    "variaciones": {
+      "1w": 0,
+      "1m": 1.48,
+      "3m": 5.9,
+      "6m": 15.85,
+      "ytd": 9.95,
+      "9m": 25.32,
+      "1y": 33.74,
+      "3y": 406.64,
+      "5y": 2018.11
+    }
+  },
+  {
+    "id": 2790084,
+    "nombre": "Alquiler Belgrano",
+    "simbolo": "ALQ_BEL",
+    "categoria": "Real Estate",
+    "emoji": "🔑",
+    "precio": 939679,
+    "fecha": "2026-05-01T03:00:00.000Z",
+    "variaciones": {
+      "1w": 0,
+      "1m": 1.44,
+      "3m": 9.8,
+      "6m": 19.7,
+      "ytd": 14.19,
+      "9m": 27.47,
+      "1y": 36.04,
+      "3y": 467.03,
+      "5y": 2109.5
+    }
+  },
+  {
+    "id": 2790085,
+    "nombre": "Alquiler Chacarita",
+    "simbolo": "ALQ_CHACARITA",
+    "categoria": "Real Estate",
+    "emoji": "🔑",
+    "precio": 922792,
+    "fecha": "2026-05-01T03:00:00.000Z",
+    "variaciones": {
+      "1w": 0,
+      "1m": 3.33,
+      "3m": 8.94,
+      "6m": 20.38,
+      "ytd": 13.47,
+      "9m": 29.58,
+      "1y": 34.83,
+      "3y": 492.66,
+      "5y": 2265.89
+    }
+  },
+  {
+    "id": 2790086,
+    "nombre": "Alquiler Coghlan",
+    "simbolo": "ALQ_COGHLAN",
+    "categoria": "Real Estate",
+    "emoji": "🔑",
+    "precio": 903204,
+    "fecha": "2026-05-01T03:00:00.000Z",
+    "variaciones": {
+      "1w": 0,
+      "1m": 1.31,
+      "3m": 7.06,
+      "6m": 17.34,
+      "ytd": 8.94,
+      "9m": 24.12,
+      "1y": 31.6,
+      "3y": 486.44,
+      "5y": 2127.71
+    }
+  },
+  {
+    "id": 2790087,
+    "nombre": "Alquiler Colegiales",
+    "simbolo": "ALQ_COLEGIALES",
+    "categoria": "Real Estate",
+    "emoji": "🔑",
+    "precio": 900993,
+    "fecha": "2026-05-01T03:00:00.000Z",
+    "variaciones": {
+      "1w": 0,
+      "1m": 1.43,
+      "3m": 5.71,
+      "6m": 17.81,
+      "ytd": 10.46,
+      "9m": 24.15,
+      "1y": 33.96,
+      "3y": 454.11,
+      "5y": 2267.61
+    }
+  },
+  {
+    "id": 2790088,
+    "nombre": "Alquiler Villa Urquiza",
+    "simbolo": "ALQ_VILLAURQUIZA",
+    "categoria": "Real Estate",
+    "emoji": "🔑",
+    "precio": 900881,
+    "fecha": "2026-05-01T03:00:00.000Z",
+    "variaciones": {
+      "1w": 0,
+      "1m": 1.93,
+      "3m": 6.98,
+      "6m": 16.27,
+      "ytd": 10.58,
+      "9m": 23.91,
+      "1y": 31.73,
+      "3y": 458.36,
+      "5y": 2106.91
+    }
+  },
+  {
+    "id": 2790089,
+    "nombre": "Alquiler Saavedra",
+    "simbolo": "ALQ_SAAVEDRA",
+    "categoria": "Real Estate",
+    "emoji": "🔑",
+    "precio": 900483,
+    "fecha": "2026-05-01T03:00:00.000Z",
+    "variaciones": {
+      "1w": 0,
+      "1m": 1.57,
+      "3m": 4.99,
+      "6m": 11.08,
+      "ytd": 8.58,
+      "9m": 23.54,
+      "1y": 27.38,
+      "3y": 451.53,
+      "5y": 2063.84
+    }
+  },
+  {
+    "id": 2790090,
+    "nombre": "Alquiler Recoleta",
+    "simbolo": "ALQ_REC",
+    "categoria": "Real Estate",
+    "emoji": "🔑",
+    "precio": 888666,
+    "fecha": "2026-05-01T03:00:00.000Z",
+    "variaciones": {
+      "1w": 0,
+      "1m": 1.54,
+      "3m": 6.63,
+      "6m": 18.85,
+      "ytd": 12.11,
+      "9m": 27.48,
+      "1y": 34.5,
+      "3y": 433.04,
+      "5y": 2167.29
+    }
+  },
+  {
+    "id": 2790091,
+    "nombre": "Alquiler Villa Crespo",
+    "simbolo": "ALQ_VILLACRESPO",
+    "categoria": "Real Estate",
+    "emoji": "🔑",
+    "precio": 879044,
+    "fecha": "2026-05-01T03:00:00.000Z",
+    "variaciones": {
+      "1w": 0,
+      "1m": 1.3,
+      "3m": 5.64,
+      "6m": 13.96,
+      "ytd": 9.19,
+      "9m": 24.48,
+      "1y": 35.06,
+      "3y": 495.45,
+      "5y": 2207.63
+    }
+  },
+  {
+    "id": 2790092,
+    "nombre": "Alquiler Villa Ortuzar",
+    "simbolo": "ALQ_VILLAORTUZAR",
+    "categoria": "Real Estate",
+    "emoji": "🔑",
+    "precio": 869459,
+    "fecha": "2026-05-01T03:00:00.000Z",
+    "variaciones": {
+      "1w": 0,
+      "1m": 3.53,
+      "3m": 7.07,
+      "6m": 19.92,
+      "ytd": 12.77,
+      "9m": 23.05,
+      "1y": 32.89,
+      "3y": 454.77,
+      "5y": 1999.48
+    }
+  },
+  {
+    "id": 2790094,
+    "nombre": "Alquiler Almagro",
+    "simbolo": "ALQ_ALMAGRO",
+    "categoria": "Real Estate",
+    "emoji": "🔑",
+    "precio": 854213,
+    "fecha": "2026-05-01T03:00:00.000Z",
+    "variaciones": {
+      "1w": 0,
+      "1m": 2.12,
+      "3m": 7.23,
+      "6m": 18.51,
+      "ytd": 11.34,
+      "9m": 28.94,
+      "1y": 36.07,
+      "3y": 490,
+      "5y": 125.8
+    }
+  },
+  {
+    "id": 2790095,
+    "nombre": "Alquiler Parque Chas",
+    "simbolo": "ALQ_PARQUECHAS",
+    "categoria": "Real Estate",
+    "emoji": "🔑",
+    "precio": 853308,
+    "fecha": "2026-05-01T03:00:00.000Z",
+    "variaciones": {
+      "1w": 0,
+      "1m": -0.87,
+      "3m": 4.38,
+      "6m": 10.91,
+      "ytd": 8.9,
+      "9m": 24.05,
+      "1y": 27.68,
+      "3y": 45.3,
+      "5y": 1996.73
+    }
+  },
+  {
+    "id": 2790096,
+    "nombre": "Alquiler Villa Devoto",
+    "simbolo": "ALQ_VILLADEVOTO",
+    "categoria": "Real Estate",
+    "emoji": "🔑",
+    "precio": 851853,
+    "fecha": "2026-05-01T03:00:00.000Z",
+    "variaciones": {
+      "1w": 0,
+      "1m": 2.5,
+      "3m": 6.06,
+      "6m": 13.9,
+      "ytd": 9.03,
+      "9m": 19.41,
+      "1y": 31.35,
+      "3y": 444.53,
+      "5y": 2204.8
+    }
+  },
+  {
+    "id": 2790097,
+    "nombre": "Alquiler Caballito",
+    "simbolo": "ALQ_CABALLITO",
+    "categoria": "Real Estate",
+    "emoji": "🔑",
+    "precio": 844887,
+    "fecha": "2026-05-01T03:00:00.000Z",
+    "variaciones": {
+      "1w": 0,
+      "1m": 1.89,
+      "3m": 5.32,
+      "6m": 15.44,
+      "ytd": 11.96,
+      "9m": 22.96,
+      "1y": 30.37,
+      "3y": 500.28,
+      "5y": 125.8
+    }
+  },
+  {
+    "id": 2790098,
+    "nombre": "Alquiler Villa Pueyrredon",
+    "simbolo": "ALQ_VILLAPUEYRREDON",
+    "categoria": "Real Estate",
+    "emoji": "🔑",
+    "precio": 822123,
+    "fecha": "2026-05-01T03:00:00.000Z",
+    "variaciones": {
+      "1w": 0,
+      "1m": 0.06,
+      "3m": 3.88,
+      "6m": 0,
+      "ytd": 3.88,
+      "9m": 0,
+      "1y": 35.21,
+      "3y": 570.48,
+      "5y": 2108.7
+    }
+  },
+  {
+    "id": 2790099,
+    "nombre": "Alquiler Retiro",
+    "simbolo": "ALQ_RETIRO",
+    "categoria": "Real Estate",
+    "emoji": "🔑",
+    "precio": 774369,
+    "fecha": "2026-02-01T03:00:00.000Z",
+    "variaciones": {
+      "1w": 0,
+      "1m": 0,
+      "3m": 0,
+      "6m": 0,
+      "ytd": 0,
+      "9m": 0,
+      "1y": 35.45,
+      "3y": 576.86,
+      "5y": 2198.51
+    }
+  },
+  {
+    "id": 2790103,
+    "nombre": "Alquiler San Telmo",
+    "simbolo": "ALQ_SANTELMO",
+    "categoria": "Real Estate",
+    "emoji": "🔑",
+    "precio": 555807,
+    "fecha": "2025-01-01T03:00:00.000Z",
+    "variaciones": {
+      "1w": 0,
+      "1m": 0,
+      "3m": 0,
+      "6m": 19.25,
+      "ytd": 0,
+      "9m": 0,
+      "1y": 36.72,
+      "3y": 45.3,
+      "5y": 2781.92
+    }
+  },
+  {
+    "id": 2790105,
+    "nombre": "Alquiler Parque Chacabuco",
+    "simbolo": "ALQ_PARQUECHACABUCO",
+    "categoria": "Real Estate",
+    "emoji": "🔑",
+    "precio": 509846,
+    "fecha": "2024-10-01T03:00:00.000Z",
+    "variaciones": {
+      "1w": 0,
+      "1m": 0,
+      "3m": 0,
+      "6m": 0,
+      "ytd": 37.8,
+      "9m": 37.8,
+      "1y": 81.98,
+      "3y": 45.3,
+      "5y": 2590.48
+    }
+  },
+  {
+    "id": 2790119,
     "nombre": "M2 Puerto Madero",
     "simbolo": "M2_PUERTOMADERO",
     "categoria": "Real Estate",
@@ -620,7 +1020,7 @@
     }
   },
   {
-    "id": 2640006,
+    "id": 2790124,
     "nombre": "M2 Colegiales",
     "simbolo": "M2_COLEGIALES",
     "categoria": "Real Estate",
@@ -640,7 +1040,7 @@
     }
   },
   {
-    "id": 2640007,
+    "id": 2790125,
     "nombre": "M2 Retiro",
     "simbolo": "M2_RETIRO",
     "categoria": "Real Estate",
@@ -660,7 +1060,7 @@
     }
   },
   {
-    "id": 2640008,
+    "id": 2790126,
     "nombre": "M2 Coghlan",
     "simbolo": "M2_COGHLAN",
     "categoria": "Real Estate",
@@ -680,7 +1080,7 @@
     }
   },
   {
-    "id": 2640009,
+    "id": 2790127,
     "nombre": "M2 Villa Urquiza",
     "simbolo": "M2_VILLAURQUIZA",
     "categoria": "Real Estate",
@@ -700,7 +1100,7 @@
     }
   },
   {
-    "id": 2640010,
+    "id": 2790128,
     "nombre": "M2 Chacarita",
     "simbolo": "M2_CHACARITA",
     "categoria": "Real Estate",
@@ -720,7 +1120,7 @@
     }
   },
   {
-    "id": 2640011,
+    "id": 2790129,
     "nombre": "M2 Saavedra",
     "simbolo": "M2_SAAVEDRA",
     "categoria": "Real Estate",
@@ -740,7 +1140,7 @@
     }
   },
   {
-    "id": 2640012,
+    "id": 2790130,
     "nombre": "M2 Villa Devoto",
     "simbolo": "M2_VILLADEVOTO",
     "categoria": "Real Estate",
@@ -760,7 +1160,7 @@
     }
   },
   {
-    "id": 2640014,
+    "id": 2790132,
     "nombre": "M2 Villa Ortuzar",
     "simbolo": "M2_VILLAORTUZAR",
     "categoria": "Real Estate",
@@ -780,7 +1180,7 @@
     }
   },
   {
-    "id": 2640015,
+    "id": 2790133,
     "nombre": "M2 Caballito",
     "simbolo": "M2_CABALLITO",
     "categoria": "Real Estate",
@@ -800,7 +1200,7 @@
     }
   },
   {
-    "id": 2640016,
+    "id": 2790134,
     "nombre": "M2 Villa Crespo",
     "simbolo": "M2_VILLACRESPO",
     "categoria": "Real Estate",
@@ -820,7 +1220,7 @@
     }
   },
   {
-    "id": 2640017,
+    "id": 2790135,
     "nombre": "M2 Parque Chas",
     "simbolo": "M2_PARQUECHAS",
     "categoria": "Real Estate",
@@ -840,7 +1240,7 @@
     }
   },
   {
-    "id": 2640018,
+    "id": 2790136,
     "nombre": "M2 San Telmo",
     "simbolo": "M2_SANTELMO",
     "categoria": "Real Estate",
@@ -860,7 +1260,7 @@
     }
   },
   {
-    "id": 2640019,
+    "id": 2790137,
     "nombre": "M2 Almagro",
     "simbolo": "M2_ALMAGRO",
     "categoria": "Real Estate",
@@ -880,27 +1280,7 @@
     }
   },
   {
-    "id": 2640020,
-    "nombre": "M2 Villa del Parque",
-    "simbolo": "M2_VILLADELPARQUE",
-    "categoria": "Real Estate",
-    "emoji": "🏢",
-    "precio": 2281,
-    "fecha": "2026-04-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": 0.75,
-      "3m": 0.48,
-      "6m": 1.02,
-      "ytd": 0.48,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2640021,
+    "id": 2790139,
     "nombre": "M2 Villa Pueyrredon",
     "simbolo": "M2_VILLAPUEYRREDON",
     "categoria": "Real Estate",
@@ -920,7 +1300,7 @@
     }
   },
   {
-    "id": 2640022,
+    "id": 2790140,
     "nombre": "M2 Parque Chacabuco",
     "simbolo": "M2_PARQUECHACABUCO",
     "categoria": "Real Estate",
@@ -937,1109 +1317,6 @@
       "1y": 0,
       "3y": -2.27,
       "5y": -18.36
-    }
-  },
-  {
-    "id": 2640023,
-    "nombre": "M2 Monserrat",
-    "simbolo": "M2_MONSERRAT",
-    "categoria": "Real Estate",
-    "emoji": "🏢",
-    "precio": 2127,
-    "fecha": "2025-02-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": 0,
-      "3m": 0,
-      "6m": 0,
-      "ytd": 0,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2640024,
-    "nombre": "M2 Villa Luro",
-    "simbolo": "M2_VILLALURO",
-    "categoria": "Real Estate",
-    "emoji": "🏢",
-    "precio": 2023,
-    "fecha": "2024-05-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": -0.05,
-      "3m": 0,
-      "6m": 0.5,
-      "ytd": 0,
-      "9m": -0.2,
-      "1y": 0.1,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2640025,
-    "nombre": "M2 Agronomía",
-    "simbolo": "M2_AGRONOMIA",
-    "categoria": "Real Estate",
-    "emoji": "🏢",
-    "precio": 2412,
-    "fecha": "2021-09-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": -0.33,
-      "3m": -2.03,
-      "6m": 0,
-      "ytd": -0.25,
-      "9m": -0.33,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2640026,
-    "nombre": "M2 Paternal",
-    "simbolo": "M2_PATERNAL",
-    "categoria": "Real Estate",
-    "emoji": "🏢",
-    "precio": 2742,
-    "fecha": "2019-07-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": -0.18,
-      "3m": 1.52,
-      "6m": 0,
-      "ytd": 0,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2640027,
-    "nombre": "M2 San Nicolás",
-    "simbolo": "M2_SANNICOLAS",
-    "categoria": "Real Estate",
-    "emoji": "🏢",
-    "precio": 2302,
-    "fecha": "2018-01-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": -1.88,
-      "3m": 0,
-      "6m": 0,
-      "ytd": 0,
-      "9m": -1.92,
-      "1y": 3.14,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2640028,
-    "nombre": "M2 Barracas",
-    "simbolo": "M2_BARRACAS",
-    "categoria": "Real Estate",
-    "emoji": "🏢",
-    "precio": 2170,
-    "fecha": "2017-02-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": 0,
-      "3m": 0,
-      "6m": 0,
-      "ytd": 0,
-      "9m": 0,
-      "1y": 2.5,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2640030,
-    "nombre": "M2 Liniers",
-    "simbolo": "M2_LINIERS",
-    "categoria": "Real Estate",
-    "emoji": "🏢",
-    "precio": 2140,
-    "fecha": "2016-04-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": 16.43,
-      "3m": 18.36,
-      "6m": 0,
-      "ytd": 18.36,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2640031,
-    "nombre": "M2 Boedo",
-    "simbolo": "M2_BOEDO",
-    "categoria": "Real Estate",
-    "emoji": "🏢",
-    "precio": 2139,
-    "fecha": "2016-04-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": 0.99,
-      "3m": 0.42,
-      "6m": 0,
-      "ytd": 0.42,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2640032,
-    "nombre": "M2 Monte Castro",
-    "simbolo": "M2_MONTECASTRO",
-    "categoria": "Real Estate",
-    "emoji": "🏢",
-    "precio": 2134,
-    "fecha": "2016-04-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": 10.51,
-      "3m": 8.55,
-      "6m": 0,
-      "ytd": 8.55,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2640033,
-    "nombre": "M2 Santa Rita",
-    "simbolo": "M2_SANTARITA",
-    "categoria": "Real Estate",
-    "emoji": "🏢",
-    "precio": 2107,
-    "fecha": "2016-04-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": 0,
-      "3m": 0,
-      "6m": 0,
-      "ytd": 0,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2640034,
-    "nombre": "M2 Flores",
-    "simbolo": "M2_FLORES",
-    "categoria": "Real Estate",
-    "emoji": "🏢",
-    "precio": 2096,
-    "fecha": "2016-04-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": 11.91,
-      "3m": 12.75,
-      "6m": 0,
-      "ytd": 12.75,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2640035,
-    "nombre": "M2 Villa Real",
-    "simbolo": "M2_VILLAREAL",
-    "categoria": "Real Estate",
-    "emoji": "🏢",
-    "precio": 1992,
-    "fecha": "2016-04-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": 0,
-      "3m": 7.73,
-      "6m": 0,
-      "ytd": 7.73,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2640036,
-    "nombre": "M2 Mataderos",
-    "simbolo": "M2_MATADEROS",
-    "categoria": "Real Estate",
-    "emoji": "🏢",
-    "precio": 1987,
-    "fecha": "2016-04-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": 11.13,
-      "3m": 10.45,
-      "6m": 0,
-      "ytd": 10.45,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2640037,
-    "nombre": "M2 San Cristobal",
-    "simbolo": "M2_SANCRISTOBAL",
-    "categoria": "Real Estate",
-    "emoji": "🏢",
-    "precio": 2035,
-    "fecha": "2016-03-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": -0.34,
-      "3m": -2.16,
-      "6m": 0,
-      "ytd": -2.16,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2640038,
-    "nombre": "M2 Villa Santa Rita",
-    "simbolo": "M2_VILLASANTARITA",
-    "categoria": "Real Estate",
-    "emoji": "🏢",
-    "precio": 1939,
-    "fecha": "2016-03-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": 1.68,
-      "3m": 3.86,
-      "6m": 0,
-      "ytd": 3.86,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2640040,
-    "nombre": "M2 La Paternal",
-    "simbolo": "M2_LAPATERNAL",
-    "categoria": "Real Estate",
-    "emoji": "🏢",
-    "precio": 1892,
-    "fecha": "2016-03-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": 0.8,
-      "3m": 0.85,
-      "6m": 0,
-      "ytd": 0.85,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2640041,
-    "nombre": "M2 Parque Patricios",
-    "simbolo": "M2_PARQUEPATRICIOS",
-    "categoria": "Real Estate",
-    "emoji": "🏢",
-    "precio": 1867,
-    "fecha": "2016-03-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": -0.27,
-      "3m": 0.43,
-      "6m": 0,
-      "ytd": 0.43,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2640042,
-    "nombre": "M2 Balvanera",
-    "simbolo": "M2_BALVANERA",
-    "categoria": "Real Estate",
-    "emoji": "🏢",
-    "precio": 1811,
-    "fecha": "2016-03-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": 1,
-      "3m": 0,
-      "6m": 0,
-      "ytd": 1,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2760033,
-    "nombre": "Alquiler Puerto Madero",
-    "simbolo": "ALQ_PUERTOMADERO",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 1285939,
-    "fecha": "2026-05-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": -6.93,
-      "3m": -2.76,
-      "6m": 3.81,
-      "ytd": 3.64,
-      "9m": 7.01,
-      "1y": 0,
-      "3y": 45.3,
-      "5y": 125.8
-    }
-  },
-  {
-    "id": 2760034,
-    "nombre": "Alquiler Nuñez",
-    "simbolo": "ALQ_NUN",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 951766,
-    "fecha": "2026-05-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": 2.38,
-      "3m": 8.35,
-      "6m": 16.35,
-      "ytd": 12.59,
-      "9m": 27.64,
-      "1y": 0,
-      "3y": 45.3,
-      "5y": 125.8
-    }
-  },
-  {
-    "id": 2760035,
-    "nombre": "Alquiler Palermo",
-    "simbolo": "ALQ_PAL",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 943809,
-    "fecha": "2026-05-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": 1.48,
-      "3m": 5.9,
-      "6m": 15.85,
-      "ytd": 9.95,
-      "9m": 25.32,
-      "1y": 0,
-      "3y": 45.3,
-      "5y": 125.8
-    }
-  },
-  {
-    "id": 2760036,
-    "nombre": "Alquiler Belgrano",
-    "simbolo": "ALQ_BEL",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 939679,
-    "fecha": "2026-05-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": 1.44,
-      "3m": 9.8,
-      "6m": 19.7,
-      "ytd": 14.19,
-      "9m": 27.47,
-      "1y": 0,
-      "3y": 45.3,
-      "5y": 125.8
-    }
-  },
-  {
-    "id": 2760037,
-    "nombre": "Alquiler Chacarita",
-    "simbolo": "ALQ_CHACARITA",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 922792,
-    "fecha": "2026-05-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": 3.33,
-      "3m": 8.94,
-      "6m": 20.38,
-      "ytd": 13.47,
-      "9m": 29.58,
-      "1y": 0,
-      "3y": 45.3,
-      "5y": 125.8
-    }
-  },
-  {
-    "id": 2760038,
-    "nombre": "Alquiler Coghlan",
-    "simbolo": "ALQ_COGHLAN",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 903204,
-    "fecha": "2026-05-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": 1.31,
-      "3m": 7.06,
-      "6m": 17.34,
-      "ytd": 8.94,
-      "9m": 24.12,
-      "1y": 0,
-      "3y": 45.3,
-      "5y": 125.8
-    }
-  },
-  {
-    "id": 2760039,
-    "nombre": "Alquiler Colegiales",
-    "simbolo": "ALQ_COLEGIALES",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 900993,
-    "fecha": "2026-05-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": 1.43,
-      "3m": 5.71,
-      "6m": 17.81,
-      "ytd": 10.46,
-      "9m": 24.15,
-      "1y": 0,
-      "3y": 45.3,
-      "5y": 125.8
-    }
-  },
-  {
-    "id": 2760040,
-    "nombre": "Alquiler Villa Urquiza",
-    "simbolo": "ALQ_VILLAURQUIZA",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 900881,
-    "fecha": "2026-05-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": 1.93,
-      "3m": 6.98,
-      "6m": 16.27,
-      "ytd": 10.58,
-      "9m": 23.91,
-      "1y": 0,
-      "3y": 45.3,
-      "5y": 125.8
-    }
-  },
-  {
-    "id": 2760041,
-    "nombre": "Alquiler Saavedra",
-    "simbolo": "ALQ_SAAVEDRA",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 900483,
-    "fecha": "2026-05-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": 1.57,
-      "3m": 4.99,
-      "6m": 11.08,
-      "ytd": 8.58,
-      "9m": 23.54,
-      "1y": 0,
-      "3y": 45.3,
-      "5y": 125.8
-    }
-  },
-  {
-    "id": 2760042,
-    "nombre": "Alquiler Recoleta",
-    "simbolo": "ALQ_REC",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 888666,
-    "fecha": "2026-05-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": 1.54,
-      "3m": 6.63,
-      "6m": 18.85,
-      "ytd": 12.11,
-      "9m": 27.48,
-      "1y": 0,
-      "3y": 45.3,
-      "5y": 125.8
-    }
-  },
-  {
-    "id": 2760043,
-    "nombre": "Alquiler Villa Crespo",
-    "simbolo": "ALQ_VILLACRESPO",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 879044,
-    "fecha": "2026-05-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": 1.3,
-      "3m": 5.64,
-      "6m": 13.96,
-      "ytd": 9.19,
-      "9m": 24.48,
-      "1y": 0,
-      "3y": 45.3,
-      "5y": 125.8
-    }
-  },
-  {
-    "id": 2760044,
-    "nombre": "Alquiler Villa Ortuzar",
-    "simbolo": "ALQ_VILLAORTUZAR",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 869459,
-    "fecha": "2026-05-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": 3.53,
-      "3m": 7.07,
-      "6m": 19.92,
-      "ytd": 12.77,
-      "9m": 23.05,
-      "1y": 0,
-      "3y": 45.3,
-      "5y": 125.8
-    }
-  },
-  {
-    "id": 2760045,
-    "nombre": "Alquiler Agronomía",
-    "simbolo": "ALQ_AGRONOMIA",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 861264,
-    "fecha": "2026-05-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": 1.01,
-      "3m": 10.25,
-      "6m": 10.13,
-      "ytd": 15.4,
-      "9m": 22.43,
-      "1y": 0,
-      "3y": 45.3,
-      "5y": 125.8
-    }
-  },
-  {
-    "id": 2760046,
-    "nombre": "Alquiler Almagro",
-    "simbolo": "ALQ_ALMAGRO",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 854213,
-    "fecha": "2026-05-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": 2.12,
-      "3m": 7.23,
-      "6m": 18.51,
-      "ytd": 11.34,
-      "9m": 28.94,
-      "1y": 0,
-      "3y": 45.3,
-      "5y": 125.8
-    }
-  },
-  {
-    "id": 2760047,
-    "nombre": "Alquiler Parque Chas",
-    "simbolo": "ALQ_PARQUECHAS",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 853308,
-    "fecha": "2026-05-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": -0.87,
-      "3m": 4.38,
-      "6m": 10.91,
-      "ytd": 8.9,
-      "9m": 24.05,
-      "1y": 0,
-      "3y": 45.3,
-      "5y": 125.8
-    }
-  },
-  {
-    "id": 2760048,
-    "nombre": "Alquiler Villa Devoto",
-    "simbolo": "ALQ_VILLADEVOTO",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 851853,
-    "fecha": "2026-05-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": 2.5,
-      "3m": 6.06,
-      "6m": 13.9,
-      "ytd": 9.03,
-      "9m": 19.41,
-      "1y": 0,
-      "3y": 45.3,
-      "5y": 125.8
-    }
-  },
-  {
-    "id": 2760049,
-    "nombre": "Alquiler Caballito",
-    "simbolo": "ALQ_CABALLITO",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 844887,
-    "fecha": "2026-05-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": 1.89,
-      "3m": 5.32,
-      "6m": 15.44,
-      "ytd": 11.96,
-      "9m": 22.96,
-      "1y": 0,
-      "3y": 45.3,
-      "5y": 125.8
-    }
-  },
-  {
-    "id": 2760050,
-    "nombre": "Alquiler Villa Pueyrredon",
-    "simbolo": "ALQ_VILLAPUEYRREDON",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 822123,
-    "fecha": "2026-05-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": 0.06,
-      "3m": 3.88,
-      "6m": 0,
-      "ytd": 3.88,
-      "9m": 0,
-      "1y": 0,
-      "3y": 45.3,
-      "5y": 125.8
-    }
-  },
-  {
-    "id": 2760051,
-    "nombre": "Alquiler Retiro",
-    "simbolo": "ALQ_RETIRO",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 774369,
-    "fecha": "2026-02-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": 0,
-      "3m": 0,
-      "6m": 0,
-      "ytd": 0,
-      "9m": 0,
-      "1y": 0,
-      "3y": 45.3,
-      "5y": 125.8
-    }
-  },
-  {
-    "id": 2760052,
-    "nombre": "Alquiler Paternal",
-    "simbolo": "ALQ_PATERNAL",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 747218,
-    "fecha": "2026-01-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": -1.12,
-      "3m": 0.35,
-      "6m": 7.04,
-      "ytd": 0,
-      "9m": 0,
-      "1y": 0,
-      "3y": 45.3,
-      "5y": 125.8
-    }
-  },
-  {
-    "id": 2760053,
-    "nombre": "Alquiler Villa del Parque",
-    "simbolo": "ALQ_VILLADELPARQUE",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 718974,
-    "fecha": "2025-10-01T03:00:00.000Z",
-    "variaciones": {
-      "1w": 0,
-      "1m": 0.97,
-      "3m": 7.25,
-      "6m": 0,
-      "ytd": 0,
-      "9m": 0,
-      "1y": 0,
-      "3y": 45.3,
-      "5y": 125.8
-    }
-  },
-  {
-    "id": 2760054,
-    "nombre": "Alquiler Barracas",
-    "simbolo": "ALQ_BARRACAS",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 0,
-    "fecha": "2026-06-23",
-    "variaciones": {
-      "1w": 0,
-      "1m": 0,
-      "3m": 0,
-      "6m": 0,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2760055,
-    "nombre": "Alquiler San Telmo",
-    "simbolo": "ALQ_SANTELMO",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 0,
-    "fecha": "2026-06-23",
-    "variaciones": {
-      "1w": 0,
-      "1m": 0,
-      "3m": 0,
-      "6m": 0,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2760056,
-    "nombre": "Alquiler Boedo",
-    "simbolo": "ALQ_BOEDO",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 0,
-    "fecha": "2026-06-23",
-    "variaciones": {
-      "1w": 0,
-      "1m": 0,
-      "3m": 0,
-      "6m": 0,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2760057,
-    "nombre": "Alquiler Parque Chacabuco",
-    "simbolo": "ALQ_PARQUECHACABUCO",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 0,
-    "fecha": "2026-06-23",
-    "variaciones": {
-      "1w": 0,
-      "1m": 0,
-      "3m": 0,
-      "6m": 0,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2760058,
-    "nombre": "Alquiler Monserrat",
-    "simbolo": "ALQ_MONSERRAT",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 0,
-    "fecha": "2026-06-23",
-    "variaciones": {
-      "1w": 0,
-      "1m": 0,
-      "3m": 0,
-      "6m": 0,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2760059,
-    "nombre": "Alquiler Villa Luro",
-    "simbolo": "ALQ_VILLALURO",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 0,
-    "fecha": "2026-06-23",
-    "variaciones": {
-      "1w": 0,
-      "1m": 0,
-      "3m": 0,
-      "6m": 0,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2760060,
-    "nombre": "Alquiler San Cristobal",
-    "simbolo": "ALQ_SANCRISTOBAL",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 0,
-    "fecha": "2026-06-23",
-    "variaciones": {
-      "1w": 0,
-      "1m": 0,
-      "3m": 0,
-      "6m": 0,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2760061,
-    "nombre": "Alquiler Flores",
-    "simbolo": "ALQ_FLORES",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 0,
-    "fecha": "2026-06-23",
-    "variaciones": {
-      "1w": 0,
-      "1m": 0,
-      "3m": 0,
-      "6m": 0,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2760062,
-    "nombre": "Alquiler Villa Gral Mitre",
-    "simbolo": "ALQ_VILLAGRALMITRE",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 0,
-    "fecha": "2026-06-23",
-    "variaciones": {
-      "1w": 0,
-      "1m": 0,
-      "3m": 0,
-      "6m": 0,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2760063,
-    "nombre": "Alquiler Santa Rita",
-    "simbolo": "ALQ_SANTARITA",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 0,
-    "fecha": "2026-06-23",
-    "variaciones": {
-      "1w": 0,
-      "1m": 0,
-      "3m": 0,
-      "6m": 0,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2760064,
-    "nombre": "Alquiler Monte Castro",
-    "simbolo": "ALQ_MONTECASTRO",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 0,
-    "fecha": "2026-06-23",
-    "variaciones": {
-      "1w": 0,
-      "1m": 0,
-      "3m": 0,
-      "6m": 0,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2760065,
-    "nombre": "Alquiler Mataderos",
-    "simbolo": "ALQ_MATADEROS",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 0,
-    "fecha": "2026-06-23",
-    "variaciones": {
-      "1w": 0,
-      "1m": 0,
-      "3m": 0,
-      "6m": 0,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2760066,
-    "nombre": "Alquiler Parque Patricios",
-    "simbolo": "ALQ_PARQUEPATRICIOS",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 0,
-    "fecha": "2026-06-23",
-    "variaciones": {
-      "1w": 0,
-      "1m": 0,
-      "3m": 0,
-      "6m": 0,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2760067,
-    "nombre": "Alquiler Villa Real",
-    "simbolo": "ALQ_VILLAREAL",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 0,
-    "fecha": "2026-06-23",
-    "variaciones": {
-      "1w": 0,
-      "1m": 0,
-      "3m": 0,
-      "6m": 0,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2760068,
-    "nombre": "Alquiler Nueva Pompeya",
-    "simbolo": "ALQ_NUEVAPOMPEYA",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 0,
-    "fecha": "2026-06-23",
-    "variaciones": {
-      "1w": 0,
-      "1m": 0,
-      "3m": 0,
-      "6m": 0,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2760069,
-    "nombre": "Alquiler Villa Riachuelo",
-    "simbolo": "ALQ_VILLARIACHUELO",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 0,
-    "fecha": "2026-06-23",
-    "variaciones": {
-      "1w": 0,
-      "1m": 0,
-      "3m": 0,
-      "6m": 0,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
-    }
-  },
-  {
-    "id": 2760070,
-    "nombre": "Alquiler San Nicolás",
-    "simbolo": "ALQ_SANNICOLAS",
-    "categoria": "Real Estate",
-    "emoji": "🔑",
-    "precio": 0,
-    "fecha": "2026-06-23",
-    "variaciones": {
-      "1w": 0,
-      "1m": 0,
-      "3m": 0,
-      "6m": 0,
-      "9m": 0,
-      "1y": 0,
-      "3y": 0,
-      "5y": 0
     }
   }
 ]
