@@ -125,12 +125,14 @@ const actualizarPrecios = async (shouldExit = true) => {
       await guardarPrecio(idMapRE[re.simbolo], re.simbolo, valor, fechaActual);
     }
 
-    // 4. Limpieza: Eliminar registros más viejos a 5.5 años (Omitiendo M2_ para no borrar su historial)
+    // 4. Limpieza: Eliminar registros más viejos a 5.5 años (Omitiendo M2_ y ALQ_ de barrios para no borrar su historial)
     console.log('🧹 Limpiando base de datos (eliminando registros anteriores a 5.5 años)...');
     const [cleanResult] = await pool.execute(`
       DELETE ph FROM precios_historicos ph
       JOIN activos a ON ph.activo_id = a.id
-      WHERE ph.fecha < ? AND a.simbolo NOT LIKE "M2_%"
+      WHERE ph.fecha < ? 
+      AND a.simbolo NOT LIKE "M2_%" 
+      AND (a.simbolo NOT LIKE "ALQ_%" OR a.simbolo = "ALQ_YIELD")
     `, [fechaPasada]).catch(() => [{affectedRows: 0}]);
     console.log(` - Se eliminaron ${cleanResult.affectedRows || 0} registros antiguos.`);
 
