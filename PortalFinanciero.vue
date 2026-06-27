@@ -1,13 +1,13 @@
 <template>
   <div :class="isDarkMode ? 'dark' : ''">
-    <div class="min-h-screen dark:bg-[#080b11] bg-[#f8fafc] dark:text-slate-200 text-slate-800 p-4 md:p-8 font-sans transition-colors duration-300">
+    <div class="min-h-screen dark:bg-[#0a0f1d] bg-[#f8fafc] dark:text-slate-200 text-slate-800 p-4 md:p-8 font-sans transition-colors duration-300">
       <div class="max-w-[95%] xl:max-w-[1600px] mx-auto space-y-8">
       
       <!-- Header -->
-      <header class="flex flex-col lg:flex-row lg:items-center lg:justify-between border-b border-slate-200 dark:border-slate-800/60/60 pb-6 gap-6 relative">
+      <header class="flex flex-col lg:flex-row lg:items-center lg:justify-between border-b border-slate-200 dark:border-slate-800/80 pb-6 gap-6 relative">
         <div class="flex items-center gap-4">
           <!-- Icono/Logo -->
-          <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/10">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-700 to-emerald-600 dark:from-blue-500 dark:to-emerald-400 flex items-center justify-center text-white shadow-lg shadow-blue-500/10">
             <span class="text-2xl font-bold">P</span>
           </div>
           <div>
@@ -21,7 +21,7 @@
         </div>
 
         <div class="flex items-center flex-wrap gap-4 lg:self-center">
-          <div class="inline-flex items-center gap-2 bg-slate-100 dark:bg-[#111622] px-3.5 py-1.5 rounded-full border border-slate-200 dark:border-slate-800/60 shadow-sm">
+          <div class="inline-flex items-center gap-2 bg-slate-100 dark:bg-[#151c2c] px-3.5 py-1.5 rounded-full border border-slate-200 dark:border-slate-800/80 shadow-sm">
             <span class="relative flex h-2 w-2">
               <span v-if="livePrices.length > 0" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span class="relative inline-flex rounded-full h-2 w-2" :class="livePrices.length > 0 ? 'bg-emerald-500' : 'bg-amber-500'"></span>
@@ -31,37 +31,37 @@
             </span>
           </div>
 
-          <button @click="isDarkMode = !isDarkMode" class="p-2.5 rounded-xl dark:bg-[#111622] bg-white shadow-sm border dark:border-slate-800/60 border-slate-200 hover:scale-105 transition-transform">
+          <button @click="isDarkMode = !isDarkMode" class="p-2.5 rounded-xl dark:bg-[#151c2c] bg-white shadow-sm border dark:border-slate-800/80 border-slate-200 hover:scale-105 transition-transform">
             {{ isDarkMode ? '☀️' : '🌙' }}
           </button>
         </div>
       </header>
 
       <!-- Navegación de Pestañas -->
-      <div class="w-full flex justify-start border-b border-slate-200 dark:border-slate-800/60/60 pb-1">
-        <div class="flex gap-1.5 bg-slate-100 dark:bg-[#111622] p-1.5 rounded-2xl border dark:border-slate-800/60/50 border-slate-200 overflow-x-auto no-scrollbar max-w-full">
+      <div class="w-full flex justify-start border-b border-slate-200 dark:border-slate-800/80 pb-1">
+        <div class="flex gap-1.5 bg-slate-100 dark:bg-[#151c2c] p-1.5 rounded-2xl border dark:border-slate-800/80 border-slate-200 overflow-x-auto no-scrollbar max-w-full">
           <button @click="currentTab = 'mercados'" 
-                  :class="currentTab === 'mercados' ? 'bg-white dark:bg-[#080b11] text-indigo-600 dark:text-indigo-400 font-extrabold shadow-sm' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-bold'" 
+                  :class="currentTab === 'mercados' ? 'bg-white dark:bg-[#0a0f1d] text-blue-700 dark:text-blue-400 font-extrabold shadow-sm' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-bold'" 
                   class="px-4 py-2.5 rounded-xl text-xs sm:text-sm transition-all duration-200 flex items-center gap-2 outline-none whitespace-nowrap">
             📈 Mercados
           </button>
           <button @click="currentTab = 'comparador'" 
-                  :class="currentTab === 'comparador' ? 'bg-white dark:bg-[#080b11] text-indigo-600 dark:text-indigo-400 font-extrabold shadow-sm' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-bold'" 
+                  :class="currentTab === 'comparador' ? 'bg-white dark:bg-[#0a0f1d] text-blue-700 dark:text-blue-400 font-extrabold shadow-sm' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-bold'" 
                   class="px-4 py-2.5 rounded-xl text-xs sm:text-sm transition-all duration-200 flex items-center gap-2 outline-none whitespace-nowrap">
             ⚖️ ¿Qué conviene?
           </button>
           <button @click="currentTab = 'calculadora'" 
-                  :class="currentTab === 'calculadora' ? 'bg-white dark:bg-[#080b11] text-indigo-600 dark:text-indigo-400 font-extrabold shadow-sm' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-bold'" 
+                  :class="currentTab === 'calculadora' ? 'bg-white dark:bg-[#0a0f1d] text-blue-700 dark:text-blue-400 font-extrabold shadow-sm' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-bold'" 
                   class="px-4 py-2.5 rounded-xl text-xs sm:text-sm transition-all duration-200 flex items-center gap-2 outline-none whitespace-nowrap">
             ⏱️ Calculadora
           </button>
           <button @click="currentTab = 'cartera'" 
-                  :class="currentTab === 'cartera' ? 'bg-white dark:bg-[#080b11] text-indigo-600 dark:text-indigo-400 font-extrabold shadow-sm' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-bold'" 
+                  :class="currentTab === 'cartera' ? 'bg-white dark:bg-[#0a0f1d] text-blue-700 dark:text-blue-400 font-extrabold shadow-sm' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-bold'" 
                   class="px-4 py-2.5 rounded-xl text-xs sm:text-sm transition-all duration-200 flex items-center gap-2 outline-none whitespace-nowrap">
             💼 Mi Cartera
           </button>
           <button v-if="isAdmin" @click="currentTab = 'add_ticker'" 
-                  :class="currentTab === 'add_ticker' ? 'bg-white dark:bg-[#080b11] text-red-600 dark:text-red-400 font-extrabold shadow-sm' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-bold'" 
+                  :class="currentTab === 'add_ticker' ? 'bg-white dark:bg-[#0a0f1d] text-red-600 dark:text-red-400 font-extrabold shadow-sm' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-bold'" 
                   class="px-4 py-2.5 rounded-xl text-xs sm:text-sm transition-all duration-200 flex items-center gap-2 outline-none whitespace-nowrap">
             ➕ Base de Datos
           </button>
@@ -83,7 +83,7 @@
           </h2>
           <div class="flex items-center gap-2">
             <label class="text-sm font-semibold uppercase tracking-wider dark:text-slate-400 text-slate-500">Variación:</label>
-            <select v-model="marketPeriod" class="dark:bg-[#111622] bg-white border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-sm">
+            <select v-model="marketPeriod" class="dark:bg-[#151c2c] bg-white border dark:border-slate-800/80 border-slate-300 dark:text-white text-slate-900 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-600 font-bold text-sm">
               <option value="1w">1 Semana</option>
               <option value="1m">1 Mes</option>
               <option value="3m">3 Meses</option>
@@ -102,11 +102,11 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           <div v-for="(assets, categoryName) in groupedAssets" :key="categoryName" 
                @click="selectedCategory = categoryName"
-               class="cursor-pointer dark:bg-[#111622] bg-white border dark:border-white/5 border-slate-200 rounded-2xl p-6 dark:text-white text-slate-800 shadow-md transform transition hover:-translate-y-1 hover:shadow-lg flex flex-col justify-between group"
+               class="cursor-pointer dark:bg-[#151c2c] bg-white border dark:border-slate-800/80 border-slate-200 rounded-2xl p-6 dark:text-white text-slate-800 shadow-md transform transition hover:-translate-y-1 hover:shadow-lg flex flex-col justify-between group"
                :class="`hover:border-opacity-50 dark:hover:${categoryMeta[categoryName]?.borderHighlight} hover:border-slate-300`">
             <div>
               <div class="flex justify-between items-center mb-6">
-                <div class="w-12 h-12 rounded-xl dark:bg-slate-800 bg-slate-100 border border-slate-200 dark:border-slate-700/50 flex items-center justify-center text-2xl group-hover:scale-105 transition-transform duration-300">
+                <div class="w-12 h-12 rounded-xl dark:bg-slate-800 bg-slate-100 border border-slate-200 dark:border-slate-800/80 flex items-center justify-center text-2xl group-hover:scale-105 transition-transform duration-300">
                   {{ categoryMeta[categoryName]?.emoji || '📊' }}
                 </div>
                 <div v-if="categoryPerformance[categoryName] !== undefined" 
@@ -118,9 +118,9 @@
               <h3 class="text-xl font-extrabold mb-2">{{ categoryName }}</h3>
               <p class="text-sm dark:text-slate-400 text-slate-500 font-semibold mb-6 leading-relaxed">{{ categoryMeta[categoryName]?.desc || 'Ver activos de esta categoría' }}</p>
             </div>
-            <div class="flex items-center justify-between text-xs font-bold bg-slate-50 dark:bg-[#080b11]/40 rounded-xl p-3 mt-auto border border-slate-100 dark:border-slate-800/60/40 dark:text-slate-400 text-slate-500">
+            <div class="flex items-center justify-between text-xs font-bold bg-slate-50 dark:bg-[#0a0f1d]/40 rounded-xl p-3 mt-auto border border-slate-100 dark:border-slate-800/80 dark:text-slate-400 text-slate-500">
               <span>{{ assets.length }} activos listados</span>
-              <span class="text-indigo-500 dark:text-indigo-400">Ver detalle ➔</span>
+              <span class="text-blue-600 dark:text-blue-400">Ver detalle ➔</span>
             </div>
           </div>
         </div>
@@ -134,9 +134,9 @@
             ← Volver al Explorador de Mercados
           </button>
           
-          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white dark:bg-[#111622] border dark:border-white/5 border-slate-200 p-6 rounded-2xl shadow-sm">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white dark:bg-[#151c2c] border dark:border-slate-800/80 border-slate-200 p-6 rounded-2xl shadow-sm">
             <div class="flex items-center gap-4">
-              <div class="w-12 h-12 rounded-xl dark:bg-slate-800 bg-slate-100 border border-slate-200 dark:border-slate-700/50 flex items-center justify-center text-2xl shrink-0">
+              <div class="w-12 h-12 rounded-xl dark:bg-slate-800 bg-slate-100 border border-slate-200 dark:border-slate-800/80 flex items-center justify-center text-2xl shrink-0">
                 {{ categoryMeta[selectedCategory]?.emoji || '📊' }}
               </div>
               <div>
@@ -153,13 +153,13 @@
               <div class="relative min-w-[220px] sm:min-w-[280px]">
                 <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 dark:text-slate-500 pointer-events-none text-xs">🔍</span>
                 <input v-model="assetSearchQuery" type="text" placeholder="Buscar por símbolo o nombre..." 
-                       class="w-full bg-slate-50 dark:bg-[#080b11] border dark:border-slate-800/60/80 border-slate-300 rounded-xl py-2.5 pl-9 pr-4 text-xs font-bold dark:text-white text-slate-900 placeholder-slate-400 outline-none focus:ring-1 focus:ring-indigo-500" />
+                       class="w-full bg-slate-50 dark:bg-[#0a0f1d] border dark:border-slate-800/80 border-slate-300 rounded-xl py-2.5 pl-9 pr-4 text-xs font-bold dark:text-white text-slate-900 placeholder-slate-400 outline-none focus:ring-1 focus:ring-blue-600" />
               </div>
               
               <!-- Selector de Período -->
-              <div class="flex items-center gap-2 bg-slate-50 dark:bg-[#080b11] px-3 py-2 rounded-xl border dark:border-slate-800/60/80 border-slate-300">
+              <div class="flex items-center gap-2 bg-slate-50 dark:bg-[#0a0f1d] px-3 py-2 rounded-xl border dark:border-slate-800/80 border-slate-300">
                 <span class="text-xs font-semibold uppercase tracking-wider dark:text-slate-400 text-slate-500 pl-1">Período:</span>
-                <select v-model="marketPeriod" class="dark:bg-[#111622] bg-white border dark:border-slate-800/60/85 border-slate-300 dark:text-white text-slate-900 rounded-lg px-2.5 py-1.5 outline-none focus:ring-1 focus:ring-indigo-500 font-bold text-xs">
+                <select v-model="marketPeriod" class="dark:bg-[#151c2c] bg-white border dark:border-slate-800/80 border-slate-300 dark:text-white text-slate-900 rounded-lg px-2.5 py-1.5 outline-none focus:ring-1 focus:ring-blue-600 font-bold text-xs">
                   <option value="1w">1 Semana</option>
                   <option value="1m">1 Mes</option>
                   <option value="3m">3 Meses</option>
@@ -175,17 +175,17 @@
         </div>
         
         <!-- Panel Resumen de Real Estate (M2 / Alquiler) -->
-        <div v-if="selectedCategory === 'Real Estate'" class="dark:bg-[#111622] bg-white border dark:border-white/5 border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col gap-4 animate-fade-in">
+        <div v-if="selectedCategory === 'Real Estate'" class="dark:bg-[#151c2c] bg-white border dark:border-slate-800/80 border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col gap-4 animate-fade-in">
           <!-- Tabs Internos -->
-          <div class="flex justify-center border-b border-slate-200 dark:border-slate-800/60">
+          <div class="flex justify-center border-b border-slate-200 dark:border-slate-800/80">
             <div class="flex gap-6 -mb-px">
               <button @click="realEstateTab = 'm2'" 
-                      :class="realEstateTab === 'm2' ? 'border-indigo-500 dark:border-indigo-400 text-indigo-600 dark:text-indigo-400 font-bold' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'"
+                      :class="realEstateTab === 'm2' ? 'border-blue-700 dark:border-blue-500 text-blue-700 dark:text-blue-400 font-bold' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'"
                       class="px-4 py-3 border-b-2 text-sm transition-all duration-200 flex items-center gap-2 outline-none">
                 🏢 Valor M2
               </button>
               <button @click="realEstateTab = 'alquiler'" 
-                      :class="realEstateTab === 'alquiler' ? 'border-indigo-500 dark:border-indigo-400 text-indigo-600 dark:text-indigo-400 font-bold' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'"
+                      :class="realEstateTab === 'alquiler' ? 'border-blue-700 dark:border-blue-500 text-blue-700 dark:text-blue-400 font-bold' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'"
                       class="px-4 py-3 border-b-2 text-sm transition-all duration-200 flex items-center gap-2 outline-none">
                 🔑 Rendimiento Alquiler
               </button>
@@ -216,11 +216,11 @@
         </div>
         
         <!-- Tabla de Activos de la Categoría (Desktop) -->
-        <div class="hidden md:block dark:bg-[#111622] bg-white border dark:border-white/5 border-slate-200 rounded-2xl shadow-sm overflow-hidden border-t-0">
+        <div class="hidden md:block dark:bg-[#151c2c] bg-white border dark:border-slate-800/80 border-slate-200 rounded-2xl shadow-sm overflow-hidden border-t-0">
           <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
               <thead>
-                <tr class="border-b border-slate-200 dark:border-slate-800/60 text-[10px] font-black uppercase tracking-wider dark:text-slate-400 text-slate-500 bg-slate-50/50 dark:bg-[#080b11]/40">
+                <tr class="border-b border-slate-200 dark:border-slate-800/80 text-[10px] font-black uppercase tracking-wider dark:text-slate-400 text-slate-500 bg-slate-50/50 dark:bg-[#0a0f1d]/40">
                   <th class="py-4 px-6">Activo</th>
                   <th class="py-4 px-6 text-right">Precio Actual</th>
                   <th class="py-4 px-6 text-right hidden sm:table-cell">Precio Hace {{ marketPeriodLabels[marketPeriod] }}</th>
@@ -272,7 +272,7 @@
             No se encontraron activos que coincidan con tu búsqueda.
           </div>
           <div v-for="activo in filteredAssetsForCategory" :key="activo.id" 
-               class="dark:bg-[#111622] bg-white border dark:border-white/5 border-slate-200 rounded-xl p-4 shadow-sm flex items-center justify-between gap-4">
+               class="dark:bg-[#151c2c] bg-white border dark:border-slate-800/80 border-slate-200 rounded-xl p-4 shadow-sm flex items-center justify-between gap-4">
             <div class="flex items-center gap-3">
               <span class="text-2xl shrink-0">{{ activo.emoji }}</span>
               <div>
@@ -300,7 +300,7 @@
       <!-- PESTAÑA: CALCULADORA -->
       <div v-if="currentTab === 'calculadora'" class="space-y-10 animate-fade-in">
       <!-- Calculadora de Retorno Histórico -->
-      <section class="dark:bg-[#111622] bg-white border border-slate-200 dark:border-slate-800/60 rounded-2xl p-6 md:p-8 shadow-md relative overflow-hidden dark:text-white text-slate-900 transition-all duration-300">
+      <section class="dark:bg-[#151c2c] bg-white border border-slate-200 dark:border-slate-800/80 rounded-2xl p-6 md:p-8 shadow-md relative overflow-hidden dark:text-white text-slate-900 transition-all duration-300">
         <div class="absolute top-0 right-0 -mt-10 -mr-10 opacity-10 text-9xl pointer-events-none">📊📈</div>
         
         <!-- Cabecera colapsable -->
@@ -308,7 +308,7 @@
           <h2 class="text-2xl md:text-3xl font-bold flex items-center gap-2 md:gap-3 leading-tight">
             <span>⏱️</span> Calculadora de Retorno Histórico
           </h2>
-          <button class="dark:text-slate-400 text-slate-600 dark:hover:text-white hover:text-slate-900 dark:bg-slate-800 bg-slate-100 border dark:border-white/5 border-slate-300 px-4 py-2 rounded-xl transition text-sm font-bold w-full sm:w-fit" @click.stop="showCalculator = !showCalculator">
+          <button class="dark:text-slate-400 text-slate-600 dark:hover:text-white hover:text-slate-900 dark:bg-slate-800 bg-slate-100 border dark:border-slate-800/80 border-slate-300 px-4 py-2 rounded-xl transition text-sm font-bold w-full sm:w-fit" @click.stop="showCalculator = !showCalculator">
             {{ showCalculator ? 'Ocultar Calculadora ⬆️' : 'Abrir Calculadora ⬇️' }}
           </button>
         </div>
@@ -323,18 +323,18 @@
             <div class="flex flex-col gap-2">
               <label class="text-sm font-semibold uppercase tracking-wider dark:text-slate-400 text-slate-500">Monto Inicial</label>
               <div class="flex">
-                <select v-model="currency" @change="handleCurrencyChange" class="dark:bg-[#080b11] bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-l-xl px-2 sm:px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 w-24 sm:w-auto font-bold">
+                <select v-model="currency" @change="handleCurrencyChange" class="dark:bg-[#0a0f1d] bg-slate-50 border dark:border-slate-800/80 border-slate-300 dark:text-white text-slate-900 rounded-l-xl px-2 sm:px-4 py-3 outline-none focus:ring-2 focus:ring-blue-600 w-24 sm:w-auto font-bold">
                   <option value="USD">U$D</option>
                   <option value="ARS">AR$</option>
                 </select>
-                <input type="number" v-model.number="amount" class="w-full dark:bg-[#080b11] bg-slate-50 border border-l-0 dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-r-xl px-3 sm:px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 font-bold" placeholder="1000" />
+                <input type="number" v-model.number="amount" class="w-full dark:bg-[#0a0f1d] bg-slate-50 border border-l-0 dark:border-slate-800/80 border-slate-300 dark:text-white text-slate-900 rounded-r-xl px-3 sm:px-4 py-3 outline-none focus:ring-2 focus:ring-blue-600 font-bold" placeholder="1000" />
               </div>
             </div>
 
             <!-- Años -->
             <div class="flex flex-col gap-2">
               <label class="text-sm font-semibold uppercase tracking-wider dark:text-slate-400 text-slate-500">¿Hace cuánto?</label>
-              <select v-model="selectedPeriod" @change="calculateTravel" class="dark:bg-[#080b11] bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 font-bold">
+              <select v-model="selectedPeriod" @change="calculateTravel" class="dark:bg-[#0a0f1d] bg-slate-50 border dark:border-slate-800/80 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-600 font-bold">
                 <option value="1w">Hace 1 semana</option>
                 <option value="1m">Hace 1 mes</option>
                 <option value="3m">Hace 3 meses</option>
@@ -355,10 +355,10 @@
           </div>
 
           <!-- Resultados del Delorean -->
-          <div v-if="results.length > 0" class="mt-10 dark:bg-[#080b11]/50 bg-slate-50 rounded-2xl p-6 border dark:border-slate-800/60 border-slate-200 backdrop-blur-sm animate-fade-in">
-            <h3 class="text-lg md:text-xl font-bold mb-6 text-center text-slate-900 dark:text-indigo-400 leading-relaxed">
+          <div v-if="results.length > 0" class="mt-10 dark:bg-[#0a0f1d]/50 bg-slate-50 rounded-2xl p-6 border dark:border-slate-800/80 border-slate-200 backdrop-blur-sm animate-fade-in">
+            <h3 class="text-lg md:text-xl font-bold mb-6 text-center text-slate-900 dark:text-blue-400 leading-relaxed">
               {{ funnyPhrase }}
-              <div v-if="equivalencyText" class="block mt-3 text-sm md:text-base font-semibold dark:text-slate-300 text-slate-700 bg-slate-100 dark:bg-[#111622] rounded-lg py-2.5 border dark:border-slate-800/60 border-slate-200">
+              <div v-if="equivalencyText" class="block mt-3 text-sm md:text-base font-semibold dark:text-slate-300 text-slate-700 bg-slate-100 dark:bg-[#151c2c] rounded-lg py-2.5 border dark:border-slate-800/80 border-slate-200">
                 {{ equivalencyText }}
               </div>
             </h3>
@@ -366,7 +366,7 @@
             <div class="space-y-4">
               <div v-for="(result, index) in results" :key="result.id" 
                    class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl transition-all duration-300"
-                   :class="[index === 0 ? 'bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800/40 p-6 shadow-md dark:shadow-emerald-500/5' : result.id === 'efectivo' ? 'dark:bg-red-950/20 bg-red-50 border border-red-500/30 p-4 opacity-90' : 'dark:bg-slate-800/40 bg-white border dark:border-white/5 border-slate-200 shadow-sm p-4']">
+                   :class="[index === 0 ? 'bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800/40 p-6 shadow-md dark:shadow-emerald-500/5' : result.id === 'efectivo' ? 'dark:bg-red-950/20 bg-red-50 border border-red-500/30 p-4 opacity-90' : 'dark:bg-slate-800/40 bg-white border dark:border-slate-800/80 border-slate-200 shadow-sm p-4']">
                 <div class="flex items-center gap-4">
                   <span :class="index === 0 ? 'text-4xl md:text-5xl' : 'text-3xl'">{{ result.emoji }}</span>
                   <div>
@@ -374,7 +374,7 @@
                     <span class="text-xs sm:text-sm font-bold tracking-wide" :class="result.returnPercent >= 0 ? 'dark:text-emerald-400 text-emerald-600' : 'dark:text-red-400 text-red-600'">RENDIMIENTO: {{ result.returnPercent >= 0 ? '+' : '' }}{{ result.returnPercent }}%</span>
                   </div>
                 </div>
-                <div class="flex flex-row sm:flex-col items-center sm:items-end justify-between border-t dark:border-slate-700/50 border-slate-200 sm:border-0 pt-3 sm:pt-0 w-full sm:w-auto">
+                <div class="flex flex-row sm:flex-col items-center sm:items-end justify-between border-t dark:border-slate-800/80 border-slate-200 sm:border-0 pt-3 sm:pt-0 w-full sm:w-auto">
                   <div class="flex flex-col items-start sm:items-end">
                     <div class="text-[10px] sm:text-xs dark:text-slate-400 text-slate-500 uppercase font-bold tracking-wider mb-0 sm:mb-1">Total Acumulado</div>
                     <p class="font-black mb-0 sm:mb-1 drop-shadow-md" :class="index === 0 ? 'text-3xl sm:text-4xl dark:text-emerald-400 text-emerald-600' : 'text-xl sm:text-2xl dark:text-white text-slate-800'">
@@ -397,9 +397,9 @@
       <div v-if="currentTab === 'comparador'" class="space-y-10 animate-fade-in">
         
         <!-- Perfil Patrimonial -->
-        <section class="dark:bg-[#111622] bg-white border dark:border-white/5 border-slate-200 rounded-2xl p-6 md:p-8 shadow-md flex flex-col md:flex-row items-center justify-between gap-6">
+        <section class="dark:bg-[#151c2c] bg-white border dark:border-slate-800/80 border-slate-200 rounded-2xl p-6 md:p-8 shadow-md flex flex-col md:flex-row items-center justify-between gap-6">
           <div class="space-y-2 text-center md:text-left">
-            <h2 class="text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500">
+            <h2 class="text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-emerald-600 dark:from-blue-500 dark:to-emerald-400">
               Perfil Patrimonial & Recomendaciones
             </h2>
             <p class="text-sm dark:text-slate-400 text-slate-500 font-medium">
@@ -407,19 +407,19 @@
             </p>
           </div>
           
-          <div class="flex flex-wrap justify-center gap-2 bg-slate-100 dark:bg-[#080b11] p-1.5 rounded-2xl border dark:border-slate-800/60 border-slate-300">
+          <div class="flex flex-wrap justify-center gap-2 bg-slate-100 dark:bg-[#0a0f1d] p-1.5 rounded-2xl border dark:border-slate-800/80 border-slate-300">
             <button @click="userPreference = 'seguridad'" 
-                    :class="userPreference === 'seguridad' ? 'bg-indigo-500 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'"
+                    :class="userPreference === 'seguridad' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'"
                     class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-300 flex items-center gap-2">
               🛡️ Priorizar Seguridad
             </button>
             <button @click="userPreference = 'balanceado'" 
-                    :class="userPreference === 'balanceado' ? 'bg-indigo-500 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'"
+                    :class="userPreference === 'balanceado' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'"
                     class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-300 flex items-center gap-2">
               ⚖️ Perfil Balanceado
             </button>
             <button @click="userPreference = 'rendimiento'" 
-                    :class="userPreference === 'rendimiento' ? 'bg-indigo-500 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'"
+                    :class="userPreference === 'rendimiento' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'"
                     class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-300 flex items-center gap-2">
               📈 Priorizar Rendimiento
             </button>
@@ -435,9 +435,9 @@
               <h3 class="text-xl font-bold dark:text-white text-slate-800">
                 Clasificación de Rendimientos (USD)
               </h3>
-              <div class="flex items-center gap-2 bg-slate-100 dark:bg-[#080b11] px-2.5 py-1.5 rounded-xl border dark:border-slate-800/60 border-slate-300">
+              <div class="flex items-center gap-2 bg-slate-100 dark:bg-[#0a0f1d] px-2.5 py-1.5 rounded-xl border dark:border-slate-800/80 border-slate-300">
                 <span class="text-xs font-semibold uppercase tracking-wider dark:text-slate-400 text-slate-500 pl-1">Período:</span>
-                <select v-model="comparisonPeriod" class="dark:bg-[#111622] bg-white border dark:border-slate-800/60 border-slate-300 dark:text-white text-slate-900 rounded-lg px-2.5 py-1 outline-none focus:ring-1 focus:ring-indigo-500 font-bold text-xs">
+                <select v-model="comparisonPeriod" class="dark:bg-[#151c2c] bg-white border dark:border-slate-800/80 border-slate-300 dark:text-white text-slate-900 rounded-lg px-2.5 py-1 outline-none focus:ring-1 focus:ring-blue-600 font-bold text-xs">
                   <option value="1w">1 Semana</option>
                   <option value="1m">1 Mes</option>
                   <option value="3m">3 Meses</option>
@@ -452,21 +452,21 @@
 
             <div class="space-y-4">
               <div v-for="(asset, index) in comparisonData" :key="asset.id"
-                   class="dark:bg-[#111622] bg-white border rounded-2xl p-5 md:p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all duration-300 relative overflow-hidden"
+                   class="dark:bg-[#151c2c] bg-white border rounded-2xl p-5 md:p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all duration-300 relative overflow-hidden"
                    :class="[
                      asset.id === bestMatchAsset?.id 
-                       ? 'ring-2 ring-indigo-500 dark:border-indigo-500/50 border-indigo-400' 
-                       : 'dark:border-white/5 border-slate-200 hover:border-slate-300 dark:hover:border-slate-800'
+                       ? 'ring-2 ring-blue-600 dark:border-blue-700/50 border-blue-500' 
+                       : 'dark:border-slate-800/80 border-slate-200 hover:border-slate-300 dark:hover:border-slate-800'
                    ]">
                 
                 <!-- Badge de Activo Recomendado para el perfil -->
                 <div v-if="asset.id === bestMatchAsset?.id" 
-                     class="absolute top-0 right-0 bg-indigo-500 text-white font-extrabold text-[10px] uppercase tracking-widest px-3 py-1 rounded-bl-xl shadow-md">
+                     class="absolute top-0 right-0 bg-blue-600 text-white font-extrabold text-[10px] uppercase tracking-widest px-3 py-1 rounded-bl-xl shadow-md">
                   ⭐ Recomendado para ti
                 </div>
 
                 <div class="flex items-start gap-4">
-                  <span class="text-3xl md:text-4xl dark:bg-[#080b11] bg-slate-50 p-2.5 rounded-xl border dark:border-white/5 border-slate-200">
+                  <span class="text-3xl md:text-4xl dark:bg-[#0a0f1d] bg-slate-50 p-2.5 rounded-xl border dark:border-slate-800/80 border-slate-200">
                     {{ asset.emoji }}
                   </span>
                   <div class="space-y-1 max-w-[280px] sm:max-w-xs md:max-w-sm">
@@ -479,13 +479,13 @@
                     <p class="text-xs dark:text-slate-400 text-slate-500 font-semibold leading-relaxed">
                       {{ asset.desc }}
                     </p>
-                    <div v-if="asset.detail" class="text-[10px] dark:text-slate-500 text-slate-400 font-bold bg-slate-50 dark:bg-[#080b11] px-2 py-1 rounded w-fit border dark:border-white/5 border-slate-200">
+                    <div v-if="asset.detail" class="text-[10px] dark:text-slate-500 text-slate-400 font-bold bg-slate-50 dark:bg-[#0a0f1d] px-2 py-1 rounded w-fit border dark:border-slate-800/80 border-slate-200">
                       {{ asset.detail }}
                     </div>
                   </div>
                 </div>
 
-                <div class="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-center border-t sm:border-0 border-slate-100 dark:border-slate-800/60 pt-3 sm:pt-0 gap-3">
+                <div class="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-center border-t sm:border-0 border-slate-100 dark:border-slate-800/80 pt-3 sm:pt-0 gap-3">
                   <div class="text-left sm:text-right">
                     <span class="block text-[10px] dark:text-slate-500 text-slate-400 font-black uppercase tracking-wider">Retorno Acumulado</span>
                     <span class="text-lg md:text-xl font-black" 
@@ -522,7 +522,7 @@
           <div class="lg:col-span-5 space-y-8">
             
             <!-- Gráfico Comparativo -->
-            <div class="dark:bg-[#111622] bg-white border dark:border-white/5 border-slate-200 rounded-2xl p-6 shadow-md space-y-4">
+            <div class="dark:bg-[#151c2c] bg-white border dark:border-slate-800/80 border-slate-200 rounded-2xl p-6 shadow-md space-y-4">
               <h3 class="text-lg font-bold dark:text-white text-slate-800 flex items-center gap-2">
                 📊 Rendimiento Visual Comparado (USD)
               </h3>
@@ -532,28 +532,28 @@
             </div>
 
             <!-- Veredicto AI Patrimonial -->
-            <div class="dark:bg-[#111622] bg-white border dark:border-white/5 border-slate-200 rounded-2xl p-6 shadow-md space-y-4 relative overflow-hidden">
+            <div class="dark:bg-[#151c2c] bg-white border dark:border-slate-800/80 border-slate-200 rounded-2xl p-6 shadow-md space-y-4 relative overflow-hidden">
               <div class="absolute top-0 right-0 -mt-6 -mr-6 opacity-5 text-7xl pointer-events-none">⚖️</div>
               <h3 class="text-lg font-bold dark:text-white text-slate-800 flex items-center gap-2">
                 ⚖️ Asesoramiento Patrimonial
               </h3>
               <div class="space-y-3 text-sm dark:text-slate-300 text-slate-600 leading-relaxed font-medium">
                 <p>
-                  Para el período seleccionado de <span class="text-indigo-500 dark:text-indigo-400 font-bold">{{ marketPeriodLabels[comparisonPeriod] }}</span>, 
+                  Para el período seleccionado de <span class="text-blue-600 dark:text-blue-400 font-bold">{{ marketPeriodLabels[comparisonPeriod] }}</span>, 
                   el activo con mejor rendimiento histórico absoluto es <span class="font-extrabold text-slate-800 dark:text-white">{{ comparisonData[0]?.name }}</span> con un retorno de <span class="font-black text-emerald-500">{{ comparisonData[0]?.returnUSD >= 0 ? '+' : '' }}{{ comparisonData[0]?.returnUSD.toFixed(2) }}%</span> en dólares.
                 </p>
                 <p>
-                  Según tu preferencia por <span class="text-indigo-500 dark:text-indigo-400 font-bold">{{ userPreference === 'seguridad' ? 'minimizar riesgos (Seguridad)' : userPreference === 'rendimiento' ? 'maximizar ganancias (Rendimiento)' : 'un balance equilibrado' }}</span>, 
+                  Según tu preferencia por <span class="text-blue-600 dark:text-blue-400 font-bold">{{ userPreference === 'seguridad' ? 'minimizar riesgos (Seguridad)' : userPreference === 'rendimiento' ? 'maximizar ganancias (Rendimiento)' : 'un balance equilibrado' }}</span>, 
                   la inversión óptima sugerida para ti es <span class="font-extrabold text-slate-800 dark:text-white">{{ bestMatchAsset?.name }}</span> (Compatibilidad del {{ bestMatchAsset?.matchScore }}%).
                 </p>
-                <p class="pt-3 border-t border-slate-200 dark:border-slate-800/60 text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                <p class="pt-3 border-t border-slate-200 dark:border-slate-800/80 text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
                   💡 **Análisis de Bienes Raíces (Ladrillo)**: Aporta un retorno total compuesto de <span class="font-bold dark:text-slate-300 text-slate-700">{{ comparisonData.find(a => a.id === 'realestate')?.returnUSD.toFixed(2) }}% USD</span> en este horizonte. Al ser un activo de baja volatilidad histórica en comparación con la timba bursátil o criptográfica, representa una opción óptima para la preservación de riqueza y resguardo de capital.
                 </p>
               </div>
             </div>
 
             <!-- Ranking Inmobiliario por Barrio -->
-            <div class="dark:bg-[#111622] bg-white border dark:border-white/5 border-slate-200 rounded-2xl p-6 shadow-md space-y-5">
+            <div class="dark:bg-[#151c2c] bg-white border dark:border-slate-800/80 border-slate-200 rounded-2xl p-6 shadow-md space-y-5">
               <div class="space-y-1">
                 <h3 class="text-lg font-bold dark:text-white text-slate-800 flex items-center gap-2">
                   🏢 Rendimiento por Barrio (CABA)
@@ -605,7 +605,7 @@
                 </div>
               </div>
 
-              <p class="text-[10px] text-slate-500 dark:text-slate-500 font-semibold bg-slate-50 dark:bg-[#080b11]/50 p-3 rounded-xl border dark:border-white/5 border-slate-200">
+              <p class="text-[10px] text-slate-500 dark:text-slate-500 font-semibold bg-slate-50 dark:bg-[#0a0f1d]/50 p-3 rounded-xl border dark:border-slate-800/80 border-slate-200">
                 ℹ️ **Nota metodológica**: El rendimiento anual se calcula proyectando los alquileres en pesos a USD MEP divididos por el valor total estimado de la unidad.
               </p>
             </div>
@@ -619,16 +619,16 @@
       <div v-if="currentTab === 'cartera'" class="space-y-10 animate-fade-in">
         <!-- Pantalla de Bloqueo -->
         <div v-if="!isPortfolioUnlocked" class="flex flex-col items-center justify-center py-10 md:py-20 animate-fade-in relative z-10">
-          <div class="dark:bg-[#111622] bg-white p-8 rounded-2xl shadow-md border dark:border-slate-800/60 border-slate-200 max-w-md w-full text-center relative overflow-hidden">
+          <div class="dark:bg-[#151c2c] bg-white p-8 rounded-2xl shadow-md border dark:border-slate-800/80 border-slate-200 max-w-md w-full text-center relative overflow-hidden">
             <div class="absolute top-0 right-0 -mt-8 -mr-8 opacity-5 text-8xl pointer-events-none">🔒</div>
             <div class="text-6xl mb-6 relative z-10">🤫</div>
             <h2 class="text-2xl font-bold dark:text-white text-slate-800 mb-2 relative z-10">Área Privada</h2>
             <p class="dark:text-slate-400 text-slate-500 mb-8 relative z-10">Ingresá tu usuario y contraseña.</p>
             <form @submit.prevent="unlockPortfolio" class="flex flex-col gap-4 relative z-10">
-              <input type="text" v-model="loginUser" required placeholder="Usuario" class="w-full dark:bg-[#080b11] bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-center font-bold" />
-              <input type="password" v-model="portfolioPassword" required placeholder="Contraseña" class="w-full dark:bg-[#080b11] bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-center font-bold tracking-widest" />
+              <input type="text" v-model="loginUser" required placeholder="Usuario" class="w-full dark:bg-[#0a0f1d] bg-slate-50 border dark:border-slate-800/80 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-600 text-center font-bold" />
+              <input type="password" v-model="portfolioPassword" required placeholder="Contraseña" class="w-full dark:bg-[#0a0f1d] bg-slate-50 border dark:border-slate-800/80 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-600 text-center font-bold tracking-widest" />
               <p v-if="portfolioError" class="text-red-500 text-sm font-bold animate-pulse">{{ portfolioError }}</p>
-              <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-xl transition-all shadow-md">
+              <button type="submit" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 rounded-xl transition-all shadow-md">
                 Desbloquear
               </button>
             </form>
@@ -641,8 +641,8 @@
             <h2 class="text-3xl font-bold dark:text-white text-slate-800 flex items-center gap-3">
               💼 Mi Cartera <span class="text-sm dark:bg-slate-800 bg-slate-200 px-3 py-1 rounded-full dark:text-slate-300 text-slate-600 font-semibold tracking-widest uppercase">Tech & AI</span>
             </h2>
-            <div class="flex items-center gap-2 bg-slate-200/50 dark:bg-slate-800/50 p-1.5 rounded-xl border border-slate-300 dark:border-slate-700 shadow-sm">
-              <span class="text-sm font-bold dark:text-slate-400 text-slate-600 pl-2">👤 Perfil: <span class="text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">{{ currentUser }}</span></span>
+            <div class="flex items-center gap-2 bg-slate-200/50 dark:bg-slate-800/50 p-1.5 rounded-xl border border-slate-300 dark:border-slate-800/80 shadow-sm">
+              <span class="text-sm font-bold dark:text-slate-400 text-slate-600 pl-2">👤 Perfil: <span class="text-blue-700 dark:text-blue-400 uppercase tracking-wider">{{ currentUser }}</span></span>
               <button @click="logoutPortfolio" class="bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 px-3 py-1.5 rounded-lg font-bold text-xs transition ml-2">Cerrar Sesión</button>
             </div>
           </div>
@@ -650,7 +650,7 @@
           <!-- KPI Cards -->
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <!-- Tarjeta 1: Valor Consolidado -->
-            <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl p-6 shadow-md flex flex-col justify-center transform transition-transform">
+            <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-800/80 border-slate-200 rounded-2xl p-6 shadow-md flex flex-col justify-center transform transition-transform">
               <div class="text-sm font-bold dark:text-slate-400 text-slate-500 uppercase tracking-wider mb-2">Valor Consolidado</div>
               <div class="font-mono font-black text-3xl md:text-4xl dark:text-white text-slate-900 tracking-tight">
                 {{ formatUSD(portfolioTotalValue) }}
@@ -658,7 +658,7 @@
             </div>
             
             <!-- Tarjeta 2: P&L Histórico -->
-            <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl p-6 shadow-md flex flex-col justify-center transform transition-transform">
+            <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-800/80 border-slate-200 rounded-2xl p-6 shadow-md flex flex-col justify-center transform transition-transform">
               <div class="text-sm font-bold dark:text-slate-400 text-slate-500 uppercase tracking-wider mb-2">P&L Histórico</div>
               <div class="font-black text-2xl md:text-3xl flex items-center gap-2" :class="portfolioTotalPL >= 0 ? 'text-emerald-400' : 'text-red-400'">
                 <span>{{ portfolioTotalPL >= 0 ? '▲' : '▼' }} {{ formatUSD(Math.abs(portfolioTotalPL)) }}</span>
@@ -669,11 +669,11 @@
             </div>
             
             <!-- Tarjeta 3: Asignación de Activos -->
-            <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl p-6 shadow-md flex flex-col justify-center transform transition-transform">
+            <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-800/80 border-slate-200 rounded-2xl p-6 shadow-md flex flex-col justify-center transform transition-transform">
               <div class="text-sm font-bold dark:text-slate-400 text-slate-500 uppercase tracking-wider mb-2">Asignación de Activos</div>
               <div class="flex items-center gap-3">
                 <div class="flex-1 bg-slate-200 dark:bg-slate-700 rounded-full h-3 overflow-hidden flex">
-                  <div class="bg-indigo-500 w-[55%]" title="Semiconductores"></div>
+                  <div class="bg-blue-600 w-[55%]" title="Semiconductores"></div>
                   <div class="bg-cyan-400 w-[45%]" title="Software & AI"></div>
                 </div>
               </div>
@@ -685,47 +685,47 @@
           </div>
 
           <!-- Gráfico de Evolución Temporal -->
-          <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl p-6 shadow-md mb-6 h-72 relative">
+          <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-800/80 border-slate-200 rounded-2xl p-6 shadow-md mb-6 h-72 relative">
              <canvas id="portfolioChart" ref="portfolioChartRef"></canvas>
           </div>
 
           <!-- Formulario para Registrar Transacción -->
-          <div id="tx-form-section" class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl p-6 shadow-md mb-6 transition-all duration-300" :class="editingTxId ? 'ring-2 ring-indigo-500' : ''">
+          <div id="tx-form-section" class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-800/80 border-slate-200 rounded-2xl p-6 shadow-md mb-6 transition-all duration-300" :class="editingTxId ? 'ring-2 ring-blue-600' : ''">
             <h3 class="text-lg font-bold dark:text-white text-slate-800 mb-4 flex items-center gap-2">
               {{ editingTxId ? '✏️ Editar Transacción' : '📝 Registrar Transacción' }}
             </h3>
             <form @submit.prevent="submitTxForm" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 items-end">
               <div>
                 <label class="block text-xs font-bold dark:text-slate-400 text-slate-500 mb-1 uppercase tracking-wider">Activo</label>
-                <input v-model="txForm.simbolo" required placeholder="Ej: AAPL" class="w-full dark:bg-[#080b11] bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-indigo-500 uppercase font-bold text-sm" />
+                <input v-model="txForm.simbolo" required placeholder="Ej: AAPL" class="w-full dark:bg-[#0a0f1d] bg-slate-50 border dark:border-slate-800/80 border-slate-300 dark:text-white text-slate-900 rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-blue-600 uppercase font-bold text-sm" />
               </div>
               <div>
                 <label class="block text-xs font-bold dark:text-slate-400 text-slate-500 mb-1 uppercase tracking-wider">Tipo</label>
-                <select v-model="txForm.tipo" required class="w-full dark:bg-[#080b11] bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-sm appearance-none cursor-pointer">
+                <select v-model="txForm.tipo" required class="w-full dark:bg-[#0a0f1d] bg-slate-50 border dark:border-slate-800/80 border-slate-300 dark:text-white text-slate-900 rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-blue-600 font-bold text-sm appearance-none cursor-pointer">
                   <option value="COMPRA">COMPRA</option>
                   <option value="VENTA">VENTA</option>
                 </select>
               </div>
               <div>
                 <label class="block text-xs font-bold dark:text-slate-400 text-slate-500 mb-1 uppercase tracking-wider">Cantidad</label>
-                <input type="number" step="any" v-model.number="txForm.cantidad" required placeholder="0.00" class="w-full dark:bg-[#080b11] bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-sm" />
+                <input type="number" step="any" v-model.number="txForm.cantidad" required placeholder="0.00" class="w-full dark:bg-[#0a0f1d] bg-slate-50 border dark:border-slate-800/80 border-slate-300 dark:text-white text-slate-900 rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-blue-600 font-bold text-sm" />
               </div>
               <div>
                 <label class="block text-xs font-bold dark:text-slate-400 text-slate-500 mb-1 uppercase tracking-wider">Precio Unit. (USD)</label>
                 <div class="relative">
-                  <input type="number" step="any" v-model.number="txForm.precio_compra" required placeholder="0.00" :disabled="isFetchingPrice" class="w-full dark:bg-[#080b11] bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-sm disabled:opacity-50 disabled:cursor-wait transition-opacity" />
+                  <input type="number" step="any" v-model.number="txForm.precio_compra" required placeholder="0.00" :disabled="isFetchingPrice" class="w-full dark:bg-[#0a0f1d] bg-slate-50 border dark:border-slate-800/80 border-slate-300 dark:text-white text-slate-900 rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-blue-600 font-bold text-sm disabled:opacity-50 disabled:cursor-wait transition-opacity" />
                   <div v-if="isFetchingPrice" class="absolute right-3 top-1/2 -translate-y-1/2">
-                    <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-indigo-400"></div>
+                    <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500"></div>
                   </div>
                 </div>
               </div>
               <div>
                 <label class="block text-xs font-bold dark:text-slate-400 text-slate-500 mb-1 uppercase tracking-wider">Comisiones</label>
-                <input type="number" step="any" v-model.number="txForm.comisiones" placeholder="0.00" class="w-full dark:bg-[#080b11] bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-sm" />
+                <input type="number" step="any" v-model.number="txForm.comisiones" placeholder="0.00" class="w-full dark:bg-[#0a0f1d] bg-slate-50 border dark:border-slate-800/80 border-slate-300 dark:text-white text-slate-900 rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-blue-600 font-bold text-sm" />
               </div>
               <div>
                 <label class="block text-xs font-bold dark:text-slate-400 text-slate-500 mb-1 uppercase tracking-wider">Fecha</label>
-                <input type="date" v-model="txForm.fecha" required class="w-full dark:bg-[#080b11] bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-sm cursor-pointer" />
+                <input type="date" v-model="txForm.fecha" required class="w-full dark:bg-[#0a0f1d] bg-slate-50 border dark:border-slate-800/80 border-slate-300 dark:text-white text-slate-900 rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-blue-600 font-bold text-sm cursor-pointer" />
               </div>
               <div class="lg:col-span-1 flex gap-2">
                 <button v-if="editingTxId" @click="cancelEdit" type="button" class="w-full bg-slate-500 hover:bg-slate-400 text-white font-black text-sm py-2.5 px-2 rounded-xl transition-all shadow-md flex items-center justify-center" title="Cancelar Edición">
@@ -741,10 +741,10 @@
           </div>
 
           <!-- Tabla de Tenencias -->
-          <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl overflow-hidden shadow-md overflow-x-auto mb-6">
+          <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-800/80 border-slate-200 rounded-2xl overflow-hidden shadow-md overflow-x-auto mb-6">
             <table class="w-full text-left border-collapse whitespace-nowrap">
               <thead>
-                <tr class="dark:bg-slate-800/80 bg-slate-100 border-b dark:border-slate-700 border-slate-200 text-xs uppercase tracking-wider dark:text-slate-400 text-slate-500 font-bold">
+                <tr class="dark:bg-slate-800/80 bg-slate-100 border-b dark:border-slate-800/80 border-slate-200 text-xs uppercase tracking-wider dark:text-slate-400 text-slate-500 font-bold">
                   <th class="px-6 py-4">Activo</th>
                   <th class="px-6 py-4 text-right">Cantidad</th>
                   <th class="px-6 py-4 text-right">PPC</th>
@@ -778,13 +778,13 @@
           </div>
 
           <!-- Historial de Transacciones -->
-          <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-700 border-slate-200 rounded-2xl overflow-hidden shadow-md overflow-x-auto mb-16">
-            <div class="p-6 border-b dark:border-slate-700 border-slate-200 flex justify-between items-center">
+          <div class="dark:bg-slate-800/50 bg-white backdrop-blur border dark:border-slate-800/80 border-slate-200 rounded-2xl overflow-hidden shadow-md overflow-x-auto mb-16">
+            <div class="p-6 border-b dark:border-slate-800/80 border-slate-200 flex justify-between items-center">
               <h3 class="text-lg font-bold dark:text-white text-slate-800 flex items-center gap-2">⏱️ Historial de Movimientos</h3>
             </div>
             <table class="w-full text-left border-collapse whitespace-nowrap">
               <thead>
-                <tr class="dark:bg-slate-800/80 bg-slate-100 border-b dark:border-slate-700 border-slate-200 text-xs uppercase tracking-wider dark:text-slate-400 text-slate-500 font-bold">
+                <tr class="dark:bg-slate-800/80 bg-slate-100 border-b dark:border-slate-800/80 border-slate-200 text-xs uppercase tracking-wider dark:text-slate-400 text-slate-500 font-bold">
                   <th class="px-6 py-4">Fecha</th>
                   <th class="px-6 py-4">Operación</th>
                   <th class="px-6 py-4">Activo</th>
@@ -794,7 +794,7 @@
                 </tr>
               </thead>
               <tbody class="divide-y dark:divide-slate-700/50 divide-slate-200">
-                <tr v-for="tx in transactionHistory" :key="tx.id" class="dark:hover:bg-slate-800/40 hover:bg-slate-50 transition-colors group" :class="editingTxId === tx.id ? 'dark:bg-indigo-900/20 bg-indigo-50' : ''">
+                <tr v-for="tx in transactionHistory" :key="tx.id" class="dark:hover:bg-slate-800/40 hover:bg-slate-50 transition-colors group" :class="editingTxId === tx.id ? 'dark:bg-blue-900/20 bg-blue-50' : ''">
                   <td class="px-6 py-4 font-medium dark:text-slate-300 text-slate-700">{{ formatDisplayDate(tx.fecha) }}</td>
                   <td class="px-6 py-4">
                     <span class="px-2 py-1 rounded text-xs font-bold" :class="tx.tipo === 'COMPRA' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'">{{ tx.tipo }}</span>
@@ -803,7 +803,7 @@
                   <td class="px-6 py-4 text-right font-medium dark:text-slate-300 text-slate-700">{{ tx.cantidad }}</td>
                   <td class="px-6 py-4 text-right font-medium dark:text-slate-300 text-slate-700">{{ formatUSD(tx.precio_compra) }}</td>
                   <td class="px-6 py-4 flex justify-center gap-2">
-                    <button @click="editTx(tx)" class="text-indigo-500 hover:text-indigo-600 bg-indigo-500/10 hover:bg-indigo-500/20 px-3 py-1.5 rounded transition text-xs font-bold uppercase tracking-wider">Editar</button>
+                    <button @click="editTx(tx)" class="text-blue-600 hover:text-blue-700 bg-blue-600/10 hover:bg-blue-600/20 px-3 py-1.5 rounded transition text-xs font-bold uppercase tracking-wider">Editar</button>
                     <button @click="deleteTx(tx.id)" class="text-red-500 hover:text-red-600 bg-red-500/10 hover:bg-red-500/20 px-3 py-1.5 rounded transition text-xs font-bold uppercase tracking-wider">Borrar</button>
                   </td>
                 </tr>
@@ -822,7 +822,7 @@
       <div v-if="currentTab === 'add_ticker' && isAdmin" class="space-y-10 animate-fade-in relative z-10 py-8">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
           <!-- Columna 1: Agregar Activo -->
-          <section class="dark:bg-[#111622] bg-white p-8 rounded-2xl shadow-md border dark:border-slate-800/60 border-slate-200 h-fit">
+          <section class="dark:bg-[#151c2c] bg-white p-8 rounded-2xl shadow-md border dark:border-slate-800/80 border-slate-200 h-fit">
             <h2 class="text-3xl font-bold dark:text-white text-slate-800 flex items-center gap-3">
               ⚙️ Agregar Activo
             </h2>
@@ -834,15 +834,15 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label class="block text-sm font-bold dark:text-slate-400 text-slate-500 mb-1">Símbolo (Ticker)</label>
-                <input v-model="adminForm.simbolo" required placeholder="Ej: TSLA" class="w-full dark:bg-[#080b11] bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 uppercase font-bold" />
+                <input v-model="adminForm.simbolo" required placeholder="Ej: TSLA" class="w-full dark:bg-[#0a0f1d] bg-slate-50 border dark:border-slate-800/80 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-600 uppercase font-bold" />
               </div>
               <div>
                 <label class="block text-sm font-bold dark:text-slate-400 text-slate-500 mb-1">Nombre</label>
-                <input v-model="adminForm.nombre" required placeholder="Ej: Tesla Inc." class="w-full dark:bg-[#080b11] bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 font-bold" />
+                <input v-model="adminForm.nombre" required placeholder="Ej: Tesla Inc." class="w-full dark:bg-[#0a0f1d] bg-slate-50 border dark:border-slate-800/80 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-600 font-bold" />
               </div>
               <div>
                 <label class="block text-sm font-bold dark:text-slate-400 text-slate-500 mb-1">Categoría</label>
-                <select v-model="adminForm.categoria" required class="w-full dark:bg-[#080b11] bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 font-bold appearance-none cursor-pointer">
+                <select v-model="adminForm.categoria" required class="w-full dark:bg-[#0a0f1d] bg-slate-50 border dark:border-slate-800/80 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-600 font-bold appearance-none cursor-pointer">
                   <option value="Wall Street">🗽 Wall Street (Acciones de EE.UU.)</option>
                   <option value="Big Tech">🦅 Big Tech (Gigantes Tecnológicas)</option>
                   <option value="Cripto">₿ Cripto (Criptomonedas)</option>
@@ -854,7 +854,7 @@
               </div>
               <div>
                 <label class="block text-sm font-bold dark:text-slate-400 text-slate-500 mb-1">Emoji</label>
-                <select v-model="adminForm.emoji" required class="w-full dark:bg-[#080b11] bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-lg appearance-none cursor-pointer">
+                <select v-model="adminForm.emoji" required class="w-full dark:bg-[#0a0f1d] bg-slate-50 border dark:border-slate-800/80 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-600 font-bold text-lg appearance-none cursor-pointer">
                   <optgroup label="Finanzas y Cripto">
                     <option value="📈">📈 Gráfico Subiendo</option>
                     <option value="📉">📉 Gráfico Bajando</option>
@@ -901,7 +901,7 @@
                 </select>
               </div>
             </div>
-            <button type="submit" :disabled="isSubmittingAdmin" class="w-full mt-4 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-bold py-3 rounded-xl transition-all shadow-md">
+            <button type="submit" :disabled="isSubmittingAdmin" class="w-full mt-4 bg-blue-700 hover:bg-blue-800 disabled:opacity-50 text-white font-bold py-3 rounded-xl transition-all shadow-md">
               {{ isSubmittingAdmin ? 'Guardando...' : 'Guardar en Base de Datos' }}
             </button>
             <p v-if="adminError" class="text-red-500 font-bold text-center mt-4 bg-red-500/10 p-2 rounded-lg">{{ adminError }}</p>
@@ -910,7 +910,7 @@
         </section>
 
           <!-- Columna 2: Crear Usuario -->
-          <section class="dark:bg-[#111622] bg-white p-8 rounded-2xl shadow-md border dark:border-slate-800/60 border-slate-200 h-fit">
+          <section class="dark:bg-[#151c2c] bg-white p-8 rounded-2xl shadow-md border dark:border-slate-800/80 border-slate-200 h-fit">
             <h2 class="text-3xl font-bold dark:text-white text-slate-800 flex items-center gap-3 mb-2">
               👤 Crear Usuario
             </h2>
@@ -920,13 +920,13 @@
             <form @submit.prevent="submitUserForm" class="space-y-4">
               <div>
                 <label class="block text-sm font-bold dark:text-slate-400 text-slate-500 mb-1">Nombre de Usuario</label>
-                <input v-model="userForm.username" required placeholder="Ej: MATIAS" class="w-full dark:bg-[#080b11] bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 uppercase font-bold" />
+                <input v-model="userForm.username" required placeholder="Ej: MATIAS" class="w-full dark:bg-[#0a0f1d] bg-slate-50 border dark:border-slate-800/80 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-600 uppercase font-bold" />
               </div>
               <div>
                 <label class="block text-sm font-bold dark:text-slate-400 text-slate-500 mb-1">Contraseña</label>
-                <input type="password" v-model="userForm.password" required placeholder="Contraseña segura" class="w-full dark:bg-[#080b11] bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 font-bold tracking-widest" />
+                <input type="password" v-model="userForm.password" required placeholder="Contraseña segura" class="w-full dark:bg-[#0a0f1d] bg-slate-50 border dark:border-slate-800/80 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-600 font-bold tracking-widest" />
               </div>
-              <button type="submit" :disabled="isSubmittingUser" class="w-full mt-4 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-bold py-3 rounded-xl transition-all shadow-md">
+              <button type="submit" :disabled="isSubmittingUser" class="w-full mt-4 bg-blue-700 hover:bg-blue-800 disabled:opacity-50 text-white font-bold py-3 rounded-xl transition-all shadow-md">
                 {{ isSubmittingUser ? 'Guardando...' : 'Crear Usuario' }}
               </button>
               <p v-if="userError" class="text-red-500 font-bold text-center mt-4 bg-red-500/10 p-2 rounded-lg">{{ userError }}</p>
@@ -938,17 +938,17 @@
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:col-span-2">
             <!-- Lista de Usuarios (Col-span 2) -->
             <div class="lg:col-span-2">
-              <section class="dark:bg-[#111622] bg-white p-8 rounded-[2rem] shadow-2xl border dark:border-slate-800/60 border-slate-200 h-full">
+              <section class="dark:bg-[#151c2c] bg-white p-8 rounded-[2rem] shadow-2xl border dark:border-slate-800/80 border-slate-200 h-full">
                 <div class="flex justify-between items-center mb-6">
                   <h3 class="text-2xl font-bold dark:text-white text-slate-800 flex items-center gap-2">👥 Inversores Registrados</h3>
-                  <button @click="fetchUsers" class="text-sm font-bold bg-indigo-500/10 text-indigo-500 px-3 py-1.5 rounded-lg hover:bg-indigo-500/20 transition">↻ Actualizar</button>
+                  <button @click="fetchUsers" class="text-sm font-bold bg-blue-600/10 text-blue-600 px-3 py-1.5 rounded-lg hover:bg-blue-600/20 transition">↻ Actualizar</button>
                 </div>
                 <div v-if="usersList.length === 0" class="text-slate-500 font-medium text-center py-4">No hay usuarios creados aún en la base de datos.</div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div v-for="user in usersList" :key="user.id" class="flex justify-between items-center dark:bg-[#080b11] bg-slate-50 p-4 rounded-xl border dark:border-slate-800/60 border-slate-200 shadow-sm transition hover:border-slate-400 dark:hover:border-slate-600">
+                  <div v-for="user in usersList" :key="user.id" class="flex justify-between items-center dark:bg-[#0a0f1d] bg-slate-50 p-4 rounded-xl border dark:border-slate-800/80 border-slate-200 shadow-sm transition hover:border-slate-400 dark:hover:border-slate-600">
                     <span class="font-bold dark:text-white text-slate-800 text-lg">👤 {{ user.username }}</span>
                     <div class="flex gap-2">
-                      <button @click="viewUserPortfolio(user.username)" class="text-indigo-500 hover:text-indigo-600 font-bold bg-indigo-500/10 hover:bg-indigo-500/20 px-3 py-1.5 rounded-lg transition-colors text-xs uppercase tracking-wider">Ver</button>
+                      <button @click="viewUserPortfolio(user.username)" class="text-blue-600 hover:text-blue-700 font-bold bg-blue-600/10 hover:bg-blue-600/20 px-3 py-1.5 rounded-lg transition-colors text-xs uppercase tracking-wider">Ver</button>
                       <button @click="deleteUser(user.username)" class="text-red-500 hover:text-red-600 font-bold bg-red-500/10 hover:bg-red-500/20 px-3 py-1.5 rounded-lg transition-colors text-xs uppercase tracking-wider">Borrar</button>
                     </div>
                   </div>
@@ -958,7 +958,7 @@
 
             <!-- Actualizador Manual de Precios (Col-span 1) -->
             <div class="lg:col-span-1">
-              <section class="dark:bg-[#111622] bg-white p-8 rounded-[2rem] shadow-2xl border dark:border-slate-800/60 border-slate-200 h-full flex flex-col justify-between">
+              <section class="dark:bg-[#151c2c] bg-white p-8 rounded-[2rem] shadow-2xl border dark:border-slate-800/80 border-slate-200 h-full flex flex-col justify-between">
                 <div>
                   <h3 class="text-2xl font-bold dark:text-white text-slate-800 flex items-center gap-2 mb-4">
                     🔄 Actualizar Precios
@@ -984,7 +984,7 @@
 
       <!-- Footer sutil para acceder al Panel Admin -->
       <footer class="mt-20 pt-8 pb-4 text-center opacity-30 hover:opacity-100 transition-opacity duration-300 relative z-10">
-        <button v-if="!isAdmin" @click="showAdminLoginModal = true" class="text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 mx-auto dark:text-slate-400 text-slate-500 hover:text-indigo-500 transition-colors">
+        <button v-if="!isAdmin" @click="showAdminLoginModal = true" class="text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 mx-auto dark:text-slate-400 text-slate-500 hover:text-blue-600 transition-colors">
           ⚙️ Acceso Administrador
         </button>
         <button v-else @click="logoutAdmin" class="text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 mx-auto text-red-500 hover:text-red-600 transition-colors">
@@ -995,14 +995,14 @@
       <!-- Modal Global de Login Administrador -->
       <Transition name="modal-fade">
         <div v-if="showAdminLoginModal && !isAdmin" class="fixed inset-0 z-50 flex items-center justify-center p-4 dark:bg-black/80 bg-slate-900/60 backdrop-blur-md" @click.self="showAdminLoginModal = false">
-          <div class="dark:bg-[#111622] bg-white p-8 rounded-[2rem] shadow-2xl border dark:border-slate-800/60 border-slate-200 max-w-md w-full mx-auto text-center relative">
+          <div class="dark:bg-[#151c2c] bg-white p-8 rounded-[2rem] shadow-2xl border dark:border-slate-800/80 border-slate-200 max-w-md w-full mx-auto text-center relative">
             <button @click="showAdminLoginModal = false" class="absolute top-4 right-4 dark:text-white/80 text-slate-500 dark:hover:text-white hover:text-slate-900 bg-slate-100 dark:bg-slate-800 rounded-full w-8 h-8 flex items-center justify-center transition font-bold">✕</button>
             <div class="text-6xl mb-6">🔐</div>
             <h2 class="text-3xl font-bold dark:text-white text-slate-800 mb-2">Modo Dios</h2>
             <p class="dark:text-slate-400 text-slate-500 mb-8">Gestión de la base de datos de TiDB.</p>
             <form @submit.prevent="loginAdmin" class="flex flex-col gap-4">
-              <input type="text" v-model="adminLoginUser" required placeholder="Usuario" class="w-full dark:bg-[#080b11] bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-center font-bold" />
-              <input type="password" v-model="adminLoginPass" required placeholder="Contraseña" class="w-full dark:bg-[#080b11] bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-center font-bold tracking-widest" />
+              <input type="text" v-model="adminLoginUser" required placeholder="Usuario" class="w-full dark:bg-[#0a0f1d] bg-slate-50 border dark:border-slate-800/80 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-600 text-center font-bold" />
+              <input type="password" v-model="adminLoginPass" required placeholder="Contraseña" class="w-full dark:bg-[#0a0f1d] bg-slate-50 border dark:border-slate-800/80 border-slate-300 dark:text-white text-slate-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-600 text-center font-bold tracking-widest" />
               <p v-if="adminLoginError" class="text-red-500 text-sm font-bold animate-pulse">{{ adminLoginError }}</p>
               <button type="submit" class="w-full bg-gradient-to-r from-slate-700 to-slate-900 hover:from-slate-600 hover:to-slate-800 text-white font-black text-lg py-3 rounded-xl transition-all transform hover:scale-105 shadow-lg">
                 Ingresar
@@ -1379,12 +1379,12 @@ const renderComparisonChart = async () => {
   const recommendedId = bestMatchAsset.value?.id;
   const backgroundColors = comparisonData.value.map(a => 
     a.id === recommendedId 
-      ? 'rgba(99, 102, 241, 0.85)' 
-      : 'rgba(51, 65, 85, 0.6)'
+      ? 'rgba(16, 185, 129, 0.85)' 
+      : 'rgba(71, 85, 105, 0.6)'
   );
   const borderColors = comparisonData.value.map(a => 
     a.id === recommendedId 
-      ? 'rgb(99, 102, 241)' 
+      ? 'rgb(16, 185, 129)' 
       : 'rgb(71, 85, 105)'
   );
 
@@ -1624,7 +1624,7 @@ const renderChart = async () => {
   const intervalsDays = {};
   allIntervals.forEach(i => intervalsDays[i.id] = i.days);
   
-  const colors = ['#06b6d4', '#eab308', '#818cf8', '#10b981']; // MU (cyan), GOOGL (yellow), MSFT (indigo), TSM (emerald)
+  const colors = ['#06b6d4', '#eab308', '#2563eb', '#10b981']; // MU (cyan), GOOGL (yellow), MSFT (indigo), TSM (emerald)
   
   const datasets = portfolioHoldings.value.map((holding, index) => {
     const liveData = livePrices.value.find(p => p.simbolo === holding.symbol);
@@ -1707,7 +1707,7 @@ const renderChart = async () => {
 };
 
 const categoryMeta = {
-  'Merval': { emoji: '🇦🇷', gradient: 'dark:from-indigo-900/50 dark:to-purple-900/50 from-indigo-100 to-purple-100', borderHighlight: 'border-indigo-500/50', desc: 'Acciones locales y ADRs.' },
+  'Merval': { emoji: '🇦🇷', gradient: 'dark:from-blue-900/50 dark:to-emerald-900/50 from-blue-100 to-emerald-100', borderHighlight: 'border-blue-700/50', desc: 'Acciones locales y ADRs.' },
   'Big Tech': { emoji: '🦅', gradient: 'dark:from-blue-900/50 dark:to-cyan-900/50 from-blue-100 to-cyan-100', borderHighlight: 'border-blue-500/50', desc: 'Las gigantes tecnológicas globales.' },
   'Wall Street': { emoji: '🗽', gradient: 'dark:from-slate-700/50 dark:to-slate-800/50 from-slate-200 to-slate-300', borderHighlight: 'border-slate-500/50', desc: 'Otras acciones del mercado de EE.UU.' },
   'Moneda': { emoji: '💵', gradient: 'dark:from-emerald-900/50 dark:to-green-900/50 from-emerald-100 to-green-100', borderHighlight: 'border-emerald-500/50', desc: 'Cotizaciones del dólar en el país.' },
