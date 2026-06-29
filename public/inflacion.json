@@ -1,0 +1,327 @@
+[
+  {
+    "year": 2021,
+    "month": "Enero",
+    "rate": 1.4
+  },
+  {
+    "year": 2021,
+    "month": "Febrero",
+    "rate": 1.7
+  },
+  {
+    "year": 2021,
+    "month": "Marzo",
+    "rate": 2.6
+  },
+  {
+    "year": 2021,
+    "month": "Abril",
+    "rate": 4.2
+  },
+  {
+    "year": 2021,
+    "month": "Mayo",
+    "rate": 5
+  },
+  {
+    "year": 2021,
+    "month": "Junio",
+    "rate": 5.4
+  },
+  {
+    "year": 2021,
+    "month": "Julio",
+    "rate": 5.4
+  },
+  {
+    "year": 2021,
+    "month": "Agosto",
+    "rate": 5.3
+  },
+  {
+    "year": 2021,
+    "month": "Septiembre",
+    "rate": 5.4
+  },
+  {
+    "year": 2021,
+    "month": "Octubre",
+    "rate": 6.2
+  },
+  {
+    "year": 2021,
+    "month": "Noviembre",
+    "rate": 6.8
+  },
+  {
+    "year": 2021,
+    "month": "Diciembre",
+    "rate": 7
+  },
+  {
+    "year": 2022,
+    "month": "Enero",
+    "rate": 7.5
+  },
+  {
+    "year": 2022,
+    "month": "Febrero",
+    "rate": 7.9
+  },
+  {
+    "year": 2022,
+    "month": "Marzo",
+    "rate": 8.5
+  },
+  {
+    "year": 2022,
+    "month": "Abril",
+    "rate": 8.3
+  },
+  {
+    "year": 2022,
+    "month": "Mayo",
+    "rate": 8.6
+  },
+  {
+    "year": 2022,
+    "month": "Junio",
+    "rate": 9.1
+  },
+  {
+    "year": 2022,
+    "month": "Julio",
+    "rate": 8.5
+  },
+  {
+    "year": 2022,
+    "month": "Agosto",
+    "rate": 8.3
+  },
+  {
+    "year": 2022,
+    "month": "Septiembre",
+    "rate": 8.2
+  },
+  {
+    "year": 2022,
+    "month": "Octubre",
+    "rate": 7.7
+  },
+  {
+    "year": 2022,
+    "month": "Noviembre",
+    "rate": 7.1
+  },
+  {
+    "year": 2022,
+    "month": "Diciembre",
+    "rate": 6.5
+  },
+  {
+    "year": 2023,
+    "month": "Enero",
+    "rate": 6.4
+  },
+  {
+    "year": 2023,
+    "month": "Febrero",
+    "rate": 6
+  },
+  {
+    "year": 2023,
+    "month": "Marzo",
+    "rate": 5
+  },
+  {
+    "year": 2023,
+    "month": "Abril",
+    "rate": 4.9
+  },
+  {
+    "year": 2023,
+    "month": "Mayo",
+    "rate": 4
+  },
+  {
+    "year": 2023,
+    "month": "Junio",
+    "rate": 3
+  },
+  {
+    "year": 2023,
+    "month": "Julio",
+    "rate": 3.2
+  },
+  {
+    "year": 2023,
+    "month": "Agosto",
+    "rate": 3.7
+  },
+  {
+    "year": 2023,
+    "month": "Septiembre",
+    "rate": 3.7
+  },
+  {
+    "year": 2023,
+    "month": "Octubre",
+    "rate": 3.2
+  },
+  {
+    "year": 2023,
+    "month": "Noviembre",
+    "rate": 3.1
+  },
+  {
+    "year": 2023,
+    "month": "Diciembre",
+    "rate": 3.4
+  },
+  {
+    "year": 2024,
+    "month": "Enero",
+    "rate": 3.1
+  },
+  {
+    "year": 2024,
+    "month": "Febrero",
+    "rate": 3.2
+  },
+  {
+    "year": 2024,
+    "month": "Marzo",
+    "rate": 3.5
+  },
+  {
+    "year": 2024,
+    "month": "Abril",
+    "rate": 3.4
+  },
+  {
+    "year": 2024,
+    "month": "Mayo",
+    "rate": 3.3
+  },
+  {
+    "year": 2024,
+    "month": "Junio",
+    "rate": 3
+  },
+  {
+    "year": 2024,
+    "month": "Julio",
+    "rate": 2.9
+  },
+  {
+    "year": 2024,
+    "month": "Agosto",
+    "rate": 2.5
+  },
+  {
+    "year": 2024,
+    "month": "Septiembre",
+    "rate": 2.4
+  },
+  {
+    "year": 2024,
+    "month": "Octubre",
+    "rate": 2.6
+  },
+  {
+    "year": 2024,
+    "month": "Noviembre",
+    "rate": 2.7
+  },
+  {
+    "year": 2024,
+    "month": "Diciembre",
+    "rate": 2.9
+  },
+  {
+    "year": 2025,
+    "month": "Enero",
+    "rate": 2.8
+  },
+  {
+    "year": 2025,
+    "month": "Febrero",
+    "rate": 2.6
+  },
+  {
+    "year": 2025,
+    "month": "Marzo",
+    "rate": 2.5
+  },
+  {
+    "year": 2025,
+    "month": "Abril",
+    "rate": 2.7
+  },
+  {
+    "year": 2025,
+    "month": "Mayo",
+    "rate": 2.6
+  },
+  {
+    "year": 2025,
+    "month": "Junio",
+    "rate": 2.5
+  },
+  {
+    "year": 2025,
+    "month": "Julio",
+    "rate": 2.6
+  },
+  {
+    "year": 2025,
+    "month": "Agosto",
+    "rate": 2.6
+  },
+  {
+    "year": 2025,
+    "month": "Septiembre",
+    "rate": 2.5
+  },
+  {
+    "year": 2025,
+    "month": "Octubre",
+    "rate": 2.6
+  },
+  {
+    "year": 2025,
+    "month": "Noviembre",
+    "rate": 2.7
+  },
+  {
+    "year": 2025,
+    "month": "Diciembre",
+    "rate": 2.7
+  },
+  {
+    "year": 2026,
+    "month": "Enero",
+    "rate": 3.2
+  },
+  {
+    "year": 2026,
+    "month": "Febrero",
+    "rate": 3.6
+  },
+  {
+    "year": 2026,
+    "month": "Marzo",
+    "rate": 3.9
+  },
+  {
+    "year": 2026,
+    "month": "Abril",
+    "rate": 4.1
+  },
+  {
+    "year": 2026,
+    "month": "Mayo",
+    "rate": 4.2
+  }
+]

@@ -3,9 +3,14 @@ import cors from 'cors';
 import mysql from 'mysql2/promise';
 import dotenv from 'dotenv';
 import crypto from 'crypto';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { actualizarPrecios } from './updater.js';
 
 dotenv.config();
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin';
 
@@ -62,8 +67,39 @@ app.get('/', (req, res) => {
     estado: 'online',
     mensaje: '🚀 API de Reporte Financiero funcionando correctamente en Vercel',
     version: '1.0.0',
-    endpoints: ['/api/precios', '/api/cartera', '/api/activos', '/api/historical-price', '/api/historial']
+    endpoints: ['/api/precios', '/api/cartera', '/api/activos', '/api/historical-price', '/api/historial', '/api/inflacion']
   });
+});
+
+// Endpoint para obtener los datos históricos de inflación de EE.UU.
+app.get('/api/inflacion', async (req, res) => {
+  try {
+    const csvPath = path.join(__dirname, 'inflacion.csv');
+    if (fs.existsSync(csvPath)) {
+      const csvContent = fs.readFileSync(csvPath, 'utf8');
+      const lines = csvContent.split('\n');
+      const inflationData = [];
+      
+      for (let i = 1; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+        const parts = line.split(',');
+        if (parts.length >= 3) {
+          inflationData.push({
+            year: parseInt(parts[0]),
+            month: parts[1].trim(),
+            rate: parseFloat(parts[2])
+          });
+        }
+      }
+      res.json(inflationData);
+    } else {
+      res.status(404).json({ error: 'Archivo inflacion.csv no encontrado' });
+    }
+  } catch (error) {
+    console.error('Error al leer inflacion.csv:', error.message);
+    res.status(500).json({ error: 'Error interno del servidor al procesar la inflación' });
+  }
 });
 
 // Endpoint para obtener todos los activos con su último precio guardado

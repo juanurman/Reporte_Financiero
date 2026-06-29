@@ -116,6 +116,36 @@ const buildApi = async () => {
     fs.writeFileSync(path.join(publicDir, 'cartera.json'), JSON.stringify(carteraData, null, 2));
     console.log('✅ Archivo public/cartera.json generado con éxito.');
 
+    // Leer y parsear inflacion.csv
+    try {
+      const csvPath = path.join(__dirname, 'inflacion.csv');
+      if (fs.existsSync(csvPath)) {
+        const csvContent = fs.readFileSync(csvPath, 'utf8');
+        const lines = csvContent.split('\n');
+        const inflationData = [];
+        
+        for (let i = 1; i < lines.length; i++) {
+          const line = lines[i].trim();
+          if (!line) continue;
+          const parts = line.split(',');
+          if (parts.length >= 3) {
+            inflationData.push({
+              year: parseInt(parts[0]),
+              month: parts[1].trim(),
+              rate: parseFloat(parts[2])
+            });
+          }
+        }
+        
+        fs.writeFileSync(path.join(publicDir, 'inflacion.json'), JSON.stringify(inflationData, null, 2));
+        console.log('✅ Archivo public/inflacion.json generado con éxito.');
+      } else {
+        console.warn('⚠️ No se encontró inflacion.csv para procesar.');
+      }
+    } catch (csvError) {
+      console.error('❌ Error al parsear inflacion.csv:', csvError.message);
+    }
+
     console.log('✅ Archivo public/precios.json generado con éxito para ser servido estáticamente.');
 
     await connection.end();
@@ -127,6 +157,7 @@ const buildApi = async () => {
     if (!fs.existsSync(publicDir)) fs.mkdirSync(publicDir);
     if (!fs.existsSync(path.join(publicDir, 'precios.json'))) fs.writeFileSync(path.join(publicDir, 'precios.json'), '[]');
     if (!fs.existsSync(path.join(publicDir, 'cartera.json'))) fs.writeFileSync(path.join(publicDir, 'cartera.json'), '[]');
+    if (!fs.existsSync(path.join(publicDir, 'inflacion.json'))) fs.writeFileSync(path.join(publicDir, 'inflacion.json'), '[]');
     console.warn('⚠️ Se generaron archivos vacíos. El build de Vite continuará de todos modos.');
   } finally {
     if (connection && connection.end) {

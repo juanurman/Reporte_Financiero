@@ -394,15 +394,15 @@
       </div> <!-- Fin Pestaña Calculadora -->
       
       <!-- PESTAÑA: COMPARADOR DE INVERSIONES -->
-      <div v-if="currentTab === 'comparador'" class="space-y-10 animate-fade-in">
+      <div v-if="currentTab === 'comparador'" class="space-y-6 animate-fade-in">
         
-        <!-- Perfil Patrimonial -->
+        <!-- Perfil Patrimonial / Estrategia -->
         <section class="dark:bg-[#151c2c] bg-white border dark:border-slate-800/80 border-slate-200 rounded-2xl p-6 md:p-8 shadow-md flex flex-col md:flex-row items-center justify-between gap-6">
           <div class="space-y-2 text-center md:text-left">
             <h2 class="text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-emerald-600 dark:from-blue-500 dark:to-emerald-400">
               Perfil Patrimonial & Recomendaciones
             </h2>
-            <p class="text-sm dark:text-slate-400 text-slate-500 font-medium">
+            <p class="text-sm dark:text-slate-400 text-slate-500 font-semibold">
               Selecciona tu prioridad estratégica para contrastar la rentabilidad frente a la seguridad.
             </p>
           </div>
@@ -426,136 +426,102 @@
           </div>
         </section>
 
-        <!-- Contenido Principal en Dos Columnas -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          
-          <!-- Clasificación de Rendimientos (Columna Izquierda - 7/12) -->
-          <div class="lg:col-span-7 space-y-6">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2">
-              <h3 class="text-xl font-bold dark:text-white text-slate-800">
-                Clasificación de Rendimientos (USD)
-              </h3>
-              <div class="flex items-center gap-2 bg-slate-100 dark:bg-[#0a0f1d] px-2.5 py-1.5 rounded-xl border dark:border-slate-800/80 border-slate-300">
-                <span class="text-xs font-semibold uppercase tracking-wider dark:text-slate-400 text-slate-500 pl-1">Período:</span>
-                <select v-model="comparisonPeriod" class="dark:bg-[#151c2c] bg-white border dark:border-slate-800/80 border-slate-300 dark:text-white text-slate-900 rounded-lg px-2.5 py-1 outline-none focus:ring-1 focus:ring-blue-600 font-bold text-xs">
-                  <option value="1w">1 Semana</option>
-                  <option value="1m">1 Mes</option>
-                  <option value="3m">3 Meses</option>
-                  <option value="6m">6 Meses</option>
-                  <option value="ytd">YTD (Desde enero)</option>
-                  <option value="1y">1 Año</option>
-                  <option value="3y">3 Años</option>
-                  <option value="5y">5 Años</option>
+        <!-- Simulador de Inversión Indexada (Barra de Control Superior) -->
+        <div class="bg-white dark:bg-[#151c2c] border border-slate-200 dark:border-slate-800/80 rounded-2xl p-6 shadow-sm">
+          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <!-- Entrada de Capital -->
+            <div class="flex-1">
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Simular Inversión Inicial</label>
+              <div class="flex max-w-xs shadow-sm rounded-xl overflow-hidden">
+                <select v-model="comparisonCurrency" class="bg-slate-100 dark:bg-[#0a0f1d] border border-slate-300 dark:border-slate-700 dark:text-white text-slate-900 rounded-l-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-blue-600 font-extrabold text-xs cursor-pointer">
+                  <option value="USD">U$D</option>
+                  <option value="ARS">AR$</option>
                 </select>
+                <input type="number" v-model.number="simulatedCapital" class="block w-full px-3 py-2.5 bg-slate-50 dark:bg-[#0a0f1d] border border-l-0 border-slate-300 dark:border-slate-700 rounded-r-xl text-slate-900 dark:text-white font-extrabold focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm" />
               </div>
             </div>
+            
+            <!-- Selectores Temporales Indexados -->
+            <div class="flex flex-wrap gap-1.5 p-1 bg-slate-100 dark:bg-[#0a0f1d] rounded-xl self-end">
+              <button v-for="p in ['1m', 'ytd', '1y', '3y', '5y']" :key="p"
+                      @click="comparisonPeriod = p"
+                      :class="comparisonPeriod === p ? 'bg-white dark:bg-[#151c2c] text-blue-700 dark:text-blue-400 shadow-sm font-extrabold' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-bold'"
+                      class="px-4 py-2 text-xs rounded-lg transition-all">
+                {{ marketPeriodLabels[p] || p.toUpperCase() }}
+              </button>
+            </div>
+          </div>
+        </div>
 
-            <div class="space-y-4">
-              <div v-for="(asset, index) in comparisonData" :key="asset.id"
-                   class="dark:bg-[#151c2c] bg-white border rounded-2xl p-5 md:p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all duration-300 relative overflow-hidden"
-                   :class="[
-                     asset.id === bestMatchAsset?.id 
-                       ? 'ring-2 ring-blue-600 dark:border-blue-700/50 border-blue-500' 
-                       : 'dark:border-slate-800/80 border-slate-200 hover:border-slate-300 dark:hover:border-slate-800'
-                   ]">
+        <!-- Layout de Inversiones de Dos Columnas (Gráfico y Veredictos) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          
+          <!-- Matriz de Eficiencia (Columna Izquierda - 7/12) -->
+          <div class="lg:col-span-7 bg-white dark:bg-[#151c2c] border border-slate-200 dark:border-slate-800/80 rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Matriz de Eficiencia (Riesgo vs. Retorno)</h3>
+                <span class="text-[10px] bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 px-2 py-0.5 rounded-full font-bold">Interactivo</span>
+              </div>
+              
+              <!-- Contenedor del Canvas y Cuadrantes Visuales de Fondo -->
+              <div class="relative h-[320px] w-full border border-slate-100 dark:border-slate-800 rounded-lg overflow-hidden">
+                <!-- Capa de Cuadrantes en el fondo (Opcional, o dibujados en Chart.js Canvas) -->
+                <div class="absolute inset-0 grid grid-cols-2 grid-rows-2 opacity-5 pointer-events-none">
+                  <!-- Top-Left: Óptimo (Alto Retorno, Bajo Riesgo) -->
+                  <div class="bg-emerald-500 border-r border-b border-dashed border-slate-400"></div>
+                  <!-- Top-Right: Especulativo (Alto Retorno, Alto Riesgo) -->
+                  <div class="bg-blue-500 border-l border-b border-dashed border-slate-400"></div>
+                  <!-- Bottom-Left: Conservador (Bajo Retorno, Bajo Riesgo) -->
+                  <div class="bg-slate-500 border-r border-t border-dashed border-slate-400"></div>
+                  <!-- Bottom-Right: Subóptimo (Bajo Retorno, Alto Riesgo) -->
+                  <div class="bg-red-500 border-l border-t border-dashed border-slate-400"></div>
+                </div>
                 
-                <!-- Badge de Activo Recomendado para el perfil -->
-                <div v-if="asset.id === bestMatchAsset?.id" 
-                     class="absolute top-0 right-0 bg-blue-600 text-white font-extrabold text-[10px] uppercase tracking-widest px-3 py-1 rounded-bl-xl shadow-md">
-                  ⭐ Recomendado para ti
-                </div>
-
-                <div class="flex items-start gap-4">
-                  <span class="text-3xl md:text-4xl dark:bg-[#0a0f1d] bg-slate-50 p-2.5 rounded-xl border dark:border-slate-800/80 border-slate-200">
-                    {{ asset.emoji }}
-                  </span>
-                  <div class="space-y-1 max-w-[280px] sm:max-w-xs md:max-w-sm">
-                    <div class="flex items-center gap-2">
-                      <span class="text-sm font-black text-slate-400">#{{ index + 1 }}</span>
-                      <h4 class="font-extrabold text-base md:text-lg dark:text-white text-slate-800 leading-tight">
-                        {{ asset.name }}
-                      </h4>
-                    </div>
-                    <p class="text-xs dark:text-slate-400 text-slate-500 font-semibold leading-relaxed">
-                      {{ asset.desc }}
-                    </p>
-                    <div v-if="asset.detail" class="text-[10px] dark:text-slate-500 text-slate-400 font-bold bg-slate-50 dark:bg-[#0a0f1d] px-2 py-1 rounded w-fit border dark:border-slate-800/80 border-slate-200">
-                      {{ asset.detail }}
-                    </div>
-                  </div>
-                </div>
-
-                <div class="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-center border-t sm:border-0 border-slate-100 dark:border-slate-800/80 pt-3 sm:pt-0 gap-3">
-                  <div class="text-left sm:text-right">
-                    <span class="block text-[10px] dark:text-slate-500 text-slate-400 font-black uppercase tracking-wider">Retorno Acumulado</span>
-                    <span class="text-lg md:text-xl font-black" 
-                          :class="asset.returnUSD >= 0 ? 'text-emerald-500' : 'text-red-500'">
-                      {{ asset.returnUSD >= 0 ? '+' : '' }}{{ asset.returnUSD.toFixed(2) }}%
-                    </span>
-                  </div>
-                  
-                  <div class="flex flex-col items-end gap-1.5">
-                    <span class="text-[10px] font-black px-2 py-1 rounded-lg border shadow-inner flex items-center gap-1"
-                          :class="[
-                            asset.matchScore >= 80 
-                              ? 'dark:bg-emerald-500/20 bg-emerald-50 text-emerald-600 dark:text-emerald-400 dark:border-emerald-500/30 border-emerald-300' 
-                              : asset.matchScore >= 50 
-                                ? 'dark:bg-amber-500/20 bg-amber-50 text-amber-600 dark:text-amber-400 dark:border-amber-500/30 border-amber-300' 
-                                : 'dark:bg-red-500/20 bg-red-50 text-red-600 dark:text-red-400 dark:border-red-500/30 border-red-300'
-                          ]">
-                      Compatibilidad: {{ asset.matchScore }}%
-                    </span>
-                    
-                    <div class="flex items-center gap-2 text-[10px] font-bold text-slate-400">
-                      <span title="Seguridad (Paz Mental)">🛡️ {{ asset.safety }}/10</span>
-                      <span>•</span>
-                      <span title="Riesgo / Volatilidad">🎲 {{ asset.volatility }}/10</span>
-                    </div>
-                  </div>
-                </div>
-
+                <canvas id="comparisonChart" ref="comparisonChartRef" class="relative z-10 w-full h-full"></canvas>
+              </div>
+            </div>
+            
+            <!-- Leyenda Explicativa Amigable de los Cuadrantes -->
+            <div class="grid grid-cols-2 gap-3 mt-4 text-[11px]">
+              <div class="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-bold">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0"></span>
+                <span>Eficiente: Mayor ganancia por menor riesgo.</span>
+              </div>
+              <div class="flex items-center gap-1.5 text-blue-600 dark:text-blue-400 font-bold">
+                <span class="w-2.5 h-2.5 rounded-full bg-blue-500 shrink-0"></span>
+                <span>Especulativo: Alto potencial, volatilidad alta.</span>
               </div>
             </div>
           </div>
-
-          <!-- Asesoramiento y Gráfico (Columna Derecha - 5/12) -->
-          <div class="lg:col-span-5 space-y-8">
-            
-            <!-- Gráfico Comparativo -->
-            <div class="dark:bg-[#151c2c] bg-white border dark:border-slate-800/80 border-slate-200 rounded-2xl p-6 shadow-md space-y-4">
-              <h3 class="text-lg font-bold dark:text-white text-slate-800 flex items-center gap-2">
-                📊 Rendimiento Visual Comparado (USD)
-              </h3>
-              <div class="h-64 relative">
-                <canvas id="comparisonChart" ref="comparisonChartRef"></canvas>
-              </div>
-            </div>
-
+          
+          <!-- Asesoramiento y Barrios (Columna Derecha - 5/12) -->
+          <div class="lg:col-span-5 space-y-6">
             <!-- Veredicto AI Patrimonial -->
-            <div class="dark:bg-[#151c2c] bg-white border dark:border-slate-800/80 border-slate-200 rounded-2xl p-6 shadow-md space-y-4 relative overflow-hidden">
+            <div class="dark:bg-[#151c2c] bg-white border border-slate-200 dark:border-slate-800/80 rounded-2xl p-6 shadow-sm relative overflow-hidden">
               <div class="absolute top-0 right-0 -mt-6 -mr-6 opacity-5 text-7xl pointer-events-none">⚖️</div>
-              <h3 class="text-lg font-bold dark:text-white text-slate-800 flex items-center gap-2">
+              <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-4">
                 ⚖️ Asesoramiento Patrimonial
               </h3>
-              <div class="space-y-3 text-sm dark:text-slate-300 text-slate-600 leading-relaxed font-medium">
+              <div class="space-y-3 text-sm dark:text-slate-300 text-slate-600 leading-relaxed font-semibold">
                 <p>
                   Para el período seleccionado de <span class="text-blue-600 dark:text-blue-400 font-bold">{{ marketPeriodLabels[comparisonPeriod] }}</span>, 
-                  el activo con mejor rendimiento histórico absoluto es <span class="font-extrabold text-slate-800 dark:text-white">{{ comparisonData[0]?.name }}</span> con un retorno de <span class="font-black text-emerald-500">{{ comparisonData[0]?.returnUSD >= 0 ? '+' : '' }}{{ comparisonData[0]?.returnUSD.toFixed(2) }}%</span> en dólares.
+                  el activo con mejor rendimiento histórico absoluto es <span class="font-extrabold text-slate-800 dark:text-white">{{ comparisonData[0]?.name }}</span> con un retorno de <span class="font-black text-emerald-500">{{ comparisonData[0]?.displayReturn >= 0 ? '+' : '' }}{{ comparisonData[0]?.displayReturn.toFixed(2) }}%</span> en {{ comparisonCurrency === 'USD' ? 'dólares' : 'pesos' }}.
                 </p>
                 <p>
                   Según tu preferencia por <span class="text-blue-600 dark:text-blue-400 font-bold">{{ userPreference === 'seguridad' ? 'minimizar riesgos (Seguridad)' : userPreference === 'rendimiento' ? 'maximizar ganancias (Rendimiento)' : 'un balance equilibrado' }}</span>, 
                   la inversión óptima sugerida para ti es <span class="font-extrabold text-slate-800 dark:text-white">{{ bestMatchAsset?.name }}</span> (Compatibilidad del {{ bestMatchAsset?.matchScore }}%).
                 </p>
                 <p class="pt-3 border-t border-slate-200 dark:border-slate-800/80 text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                  💡 **Análisis de Bienes Raíces (Ladrillo)**: Aporta un retorno total compuesto de <span class="font-bold dark:text-slate-300 text-slate-700">{{ comparisonData.find(a => a.id === 'realestate')?.returnUSD.toFixed(2) }}% USD</span> en este horizonte. Al ser un activo de baja volatilidad histórica en comparación con la timba bursátil o criptográfica, representa una opción óptima para la preservación de riqueza y resguardo de capital.
+                  💡 **Análisis de Bienes Raíces (Ladrillo)**: Aporta un retorno total compuesto de <span class="font-bold dark:text-slate-300 text-slate-700">{{ comparisonData.find(a => a.id === 'realestate')?.displayReturn.toFixed(2) }}% {{ comparisonCurrency === 'USD' ? 'USD' : 'ARS' }}</span> en este horizonte. Al ser un activo de baja volatilidad histórica en comparación con la timba bursátil o criptográfica, representa una opción óptima para la preservación de riqueza y resguardo de capital.
                 </p>
               </div>
             </div>
 
-            <!-- Ranking Inmobiliario por Barrio -->
+            <!-- Ranking Inmobiliario por Barrio (CABA) -->
             <div class="dark:bg-[#151c2c] bg-white border dark:border-slate-800/80 border-slate-200 rounded-2xl p-6 shadow-md space-y-5">
               <div class="space-y-1">
-                <h3 class="text-lg font-bold dark:text-white text-slate-800 flex items-center gap-2">
+                <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
                   🏢 Rendimiento por Barrio (CABA)
                 </h3>
                 <p class="text-[10px] dark:text-slate-500 text-slate-400 font-bold uppercase tracking-wider">
@@ -571,7 +537,7 @@
                   </h4>
                   <div class="space-y-2">
                     <div v-for="(b, idx) in top3NeighborhoodYields" :key="b.code"
-                         class="flex items-center justify-between p-3 rounded-xl bg-emerald-500/5 dark:bg-emerald-950/20 border border-emerald-500/10 text-sm">
+                         class="flex items-center justify-between p-3 rounded-xl bg-emerald-500/5 dark:bg-emerald-950/20 border border-emerald-500/10 text-sm font-bold">
                       <div class="flex items-center gap-2">
                         <span class="font-bold text-slate-400 text-xs">#{{ idx + 1 }}</span>
                         <span class="font-bold dark:text-white text-slate-800">{{ b.name }}</span>
@@ -591,7 +557,7 @@
                   </h4>
                   <div class="space-y-2">
                     <div v-for="(b, idx) in bottom3NeighborhoodYields" :key="b.code"
-                         class="flex items-center justify-between p-3 rounded-xl bg-red-500/5 dark:bg-red-950/20 border border-red-500/10 text-sm">
+                         class="flex items-center justify-between p-3 rounded-xl bg-red-500/5 dark:bg-red-950/20 border border-red-500/10 text-sm font-bold">
                       <div class="flex items-center gap-2">
                         <span class="font-bold text-slate-400 text-xs">#{{ idx + 1 }}</span>
                         <span class="font-bold dark:text-white text-slate-800">{{ b.name }}</span>
@@ -609,10 +575,113 @@
                 ℹ️ **Nota metodológica**: El rendimiento anual se calcula proyectando los alquileres en pesos a USD MEP divididos por el valor total estimado de la unidad.
               </p>
             </div>
-
           </div>
         </div>
-        
+
+        <!-- Tabla Comparativa Interactiva con Métricas y Tooltips -->
+        <div class="bg-white dark:bg-[#151c2c] border border-slate-200 dark:border-slate-800/80 rounded-2xl shadow-sm overflow-hidden mt-6">
+          <div class="p-6 border-b border-slate-200 dark:border-slate-800/80 flex justify-between items-center">
+            <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Tabla Comparativa de Activos y Benchmarks</h3>
+            <span class="text-xs text-slate-400 font-semibold">Toca el nombre de una métrica para conocer su significado.</span>
+          </div>
+          <table class="w-full table-auto divide-y divide-slate-200 dark:divide-slate-800">
+              <thead class="bg-slate-50 dark:bg-[#0a0f1d]">
+                <tr class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                  <th scope="col" class="px-4 py-3 text-left cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800/50 w-1/3 min-w-[220px]" @click="sortBy('name')">
+                    Activo <span v-if="sortKey === 'name'">{{ sortOrder === 'asc' ? '▲' : '▼' }}</span>
+                  </th>
+                  <th scope="col" class="px-4 py-3 text-left cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800/50 whitespace-nowrap" @click="sortBy('displayReturn')">
+                    Retorno <span v-if="sortKey === 'displayReturn'">{{ sortOrder === 'asc' ? '▲' : '▼' }}</span>
+                  </th>
+                  <th scope="col" class="px-4 py-3 text-left cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800/50 whitespace-nowrap" @click="openMetricInfo('capitalSimulado')">
+                    <span class="group relative cursor-help border-b border-dotted border-slate-400">
+                      Capital Simulado
+                    </span>
+                  </th>
+                  <th scope="col" class="px-4 py-3 text-left cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800/50 whitespace-nowrap" @click="sortBy('volatilityVal')">
+                    <span class="group relative cursor-help border-b border-dotted border-slate-400" @click.stop="openMetricInfo('volatilidad')">
+                      Volatilidad <span v-if="sortKey === 'volatilityVal'">{{ sortOrder === 'asc' ? '▲' : '▼' }}</span>
+                      <!-- Tooltip Hover (Solo Escritorio) -->
+                      <span class="hidden md:block pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 bg-slate-900 text-slate-200 text-xs font-medium p-3 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-50 normal-case leading-relaxed">
+                        <strong>¿Qué es?</strong> Mide cuánto fluctúa el precio. A menor porcentaje, más estable y predecible es el activo.
+                      </span>
+                    </span>
+                  </th>
+                  <th scope="col" class="px-4 py-3 text-left cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800/50 whitespace-nowrap" @click="sortBy('sharpe')">
+                    <span class="group relative cursor-help border-b border-dotted border-slate-400" @click.stop="openMetricInfo('sharpe')">
+                      Sharpe Ratio <span v-if="sortKey === 'sharpe'">{{ sortOrder === 'asc' ? '▲' : '▼' }}</span>
+                      <!-- Tooltip Hover (Solo Escritorio) -->
+                      <span class="hidden md:block pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 bg-slate-900 text-slate-200 text-xs font-medium p-3 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-50 normal-case leading-relaxed">
+                        <strong>¿Vale la pena el riesgo?</strong> Mide la ganancia obtenida por cada unidad de volatilidad asumida. Un ratio mayor a 1.0 es óptimo.
+                      </span>
+                    </span>
+                  </th>
+
+
+                </tr>
+              </thead>
+              
+              <!-- Cuerpo de la Tabla -->
+              <tbody class="divide-y divide-slate-100 dark:divide-slate-800 text-sm font-bold text-slate-900 dark:text-slate-100">
+                <!-- Filas de Activos Comerciales -->
+                <tr v-for="asset in sortedComparisonData" :key="asset.id" class="hover:bg-slate-50 dark:hover:bg-slate-800/30">
+                  <td class="px-4 py-3 whitespace-normal w-1/3 min-w-[220px]">
+                    <div class="flex items-center gap-2">
+                      <span class="text-xl shrink-0">{{ asset.emoji }}</span>
+                      <div>
+                        <p class="font-extrabold text-slate-900 dark:text-white">{{ asset.name }}</p>
+                        <p class="text-[10px] text-slate-500 font-normal leading-tight whitespace-normal break-words">{{ asset.desc }}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-4 py-3 whitespace-nowrap">
+                    <span :class="asset.beatsInflation ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'">
+                      {{ asset.displayReturn >= 0 ? '+' : '' }}{{ asset.displayReturn.toFixed(2) }}%
+                    </span>
+                  </td>
+                  <td class="px-4 py-3 text-slate-700 dark:text-slate-300 font-mono whitespace-nowrap">
+                    {{ comparisonCurrency === 'USD' ? 'US$' : 'AR$' }} {{ (simulatedCapital * (1 + asset.displayReturn / 100)).toFixed(2) }}
+                  </td>
+                  <td class="px-4 py-3 text-slate-700 dark:text-slate-300 whitespace-nowrap">
+                    {{ asset.volatilityVal.toFixed(2) }}% 
+                    <span class="text-[10px] font-normal text-slate-500">({{ asset.riskClass }})</span>
+                  </td>
+                  <td class="px-4 py-3 whitespace-nowrap">
+                    <span :class="asset.sharpe >= 1.0 ? 'text-blue-600 dark:text-blue-400 font-black' : 'text-slate-700 dark:text-slate-300'">
+                      {{ typeof asset.sharpe === 'number' ? asset.sharpe.toFixed(2) : asset.sharpe }}
+                      <span v-if="asset.sharpe >= 1.0" class="text-[10px] font-normal text-blue-600 dark:text-blue-400 ml-1">★</span>
+                    </span>
+                  </td>
+
+                </tr>
+
+                <!-- Filas de Benchmarks de Referencia (Contraste Fijo abajo) -->
+                <tr v-for="bench in benchmarksList" :key="bench.id" class="bg-slate-50/80 dark:bg-[#0a0f1d]/60 border-t-2 border-slate-200 dark:border-slate-800/80 font-bold">
+                  <td class="px-4 py-3 whitespace-normal w-1/3 min-w-[220px]">
+                    <div class="flex items-center gap-2">
+                      <span class="text-xl shrink-0">{{ bench.emoji }}</span>
+                      <div>
+                        <p class="font-extrabold text-slate-900 dark:text-white">{{ bench.name }}</p>
+                        <p class="text-[10px] text-slate-500 font-normal leading-tight whitespace-normal break-words">{{ bench.category }}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-4 py-3 text-slate-600 dark:text-slate-400 whitespace-nowrap">
+                    {{ bench.displayReturn >= 0 ? '+' : '' }}{{ bench.displayReturn.toFixed(2) }}%
+                  </td>
+                  <td class="px-4 py-3 text-slate-600 dark:text-slate-400 font-mono whitespace-nowrap">
+                    {{ comparisonCurrency === 'USD' ? 'US$' : 'AR$' }} {{ (simulatedCapital * (1 + bench.displayReturn / 100)).toFixed(2) }}
+                  </td>
+                  <td class="px-4 py-3 text-slate-500 whitespace-nowrap">
+                    {{ bench.volatilityVal.toFixed(2) }}%
+                    <span class="text-[10px] font-normal text-slate-500">({{ bench.riskClass }})</span>
+                  </td>
+                  <td class="px-4 py-3 text-slate-400 whitespace-nowrap">-</td>
+                </tr>
+              </tbody>
+            </table>
+        </div>
+
       </div> <!-- Fin Pestaña Comparador -->
 
       <!-- PESTAÑA: PORTAFOLIO -->
@@ -1015,10 +1084,228 @@
     </div>
     </div>
   </div>
-</template>
+
+    <!-- Modal Educativo Móvil para Métricas -->
+    <div v-if="showMetricModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm flex items-end justify-center z-50 animate-fade-in" @click="showMetricModal = false">
+      <div class="bg-white dark:bg-[#151c2c] border-t border-slate-200 dark:border-slate-800 rounded-t-3xl p-6 w-full max-w-lg shadow-2xl animate-slide-up" @click.stop>
+        <div class="w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto mb-4"></div>
+        <h4 class="text-lg font-black text-slate-900 dark:text-white mb-2 uppercase tracking-wide">
+          {{ selectedMetricInfo.title }}
+        </h4>
+        <p class="text-sm text-slate-600 dark:text-slate-300 font-semibold leading-relaxed mb-6">
+          {{ selectedMetricInfo.desc }}
+        </p>
+        <button @click="showMetricModal = false" class="w-full py-3 bg-blue-700 hover:bg-blue-800 text-white font-bold rounded-xl transition-all shadow-md">
+          Entendido
+        </button>
+      </div>
+    </div>
+    </template>
 
 <script setup>
-import { ref, onMounted, computed, watch, nextTick } from 'vue';
+import { ref, onMounted, onUnmounted, computed, watch, nextTick } from 'vue';
+const usInflationRates = ref([]);
+
+const fetchUSInflation = async () => {
+  try {
+    let data = null;
+    try {
+      const resLocal = await fetch(`${API_BASE_URL}/api/inflacion`);
+      if (resLocal.ok) data = await resLocal.json();
+    } catch (e) {
+      // Falla silenciosa
+    }
+
+    if (!data) {
+      if (import.meta.env.DEV) {
+        data = [];
+      } else {
+        const apiUrl = `${import.meta.env.BASE_URL || '/'}inflacion.json?t=${Date.now()}`;
+        const response = await fetch(apiUrl);
+        if (response.ok) {
+          try {
+            data = await response.json();
+          } catch (e) {
+            console.warn('⚠️ El respaldo inflacion.json falló. Asumiendo vacío.');
+            data = [];
+          }
+        } else {
+          data = [];
+        }
+      }
+    }
+
+    usInflationRates.value = data;
+  } catch (error) {
+    console.error('Error al obtener inflación de EE.UU.:', error);
+  }
+};
+
+const getUSInflationForPeriod = (period) => {
+  if (usInflationRates.value.length === 0) {
+    return 3.0 * getYearsForPeriod(period);
+  }
+
+  const getRate = (year, month = 'Mayo') => {
+    const item = usInflationRates.value.find(r => r.year === year && r.month === month);
+    return item ? item.rate : null;
+  };
+
+  const r2026 = getRate(2026) || 4.2;
+
+  if (period === '1y') {
+    return r2026;
+  }
+  if (period === '3y') {
+    const r2025 = getRate(2025) || 2.6;
+    const r2024 = getRate(2024) || 3.3;
+    return ((1 + r2026/100) * (1 + r2025/100) * (1 + r2024/100) - 1) * 100;
+  }
+  if (period === '5y') {
+    const r2025 = getRate(2025) || 2.6;
+    const r2024 = getRate(2024) || 3.3;
+    const r2023 = getRate(2023) || 4.0;
+    const r2022 = getRate(2022) || 8.6;
+    return ((1 + r2026/100) * (1 + r2025/100) * (1 + r2024/100) * (1 + r2023/100) * (1 + r2022/100) - 1) * 100;
+  }
+  
+  // Períodos cortos (1w, 1m, 3m, 6m, ytd)
+  const fraction = getYearsForPeriod(period);
+  return (Math.pow(1 + r2026 / 100, fraction) - 1) * 100;
+};
+
+const simulatedCapital = ref(100);
+const comparisonCurrency = ref('USD');
+const sortKey = ref('displayReturn');
+const sortOrder = ref('desc');
+const showMetricModal = ref(false);
+const selectedMetricInfo = ref({ title: '', desc: '' });
+
+const assetFinancials = {
+  realestate: { sharpe: 1.25, volatilityVal: 5.80, pe: '-', divYield: '4.50%', riskClass: 'Bajo' },
+  bonos:      { sharpe: 0.35, volatilityVal: 4.20, pe: '-', divYield: '4.20%', riskClass: 'Muy Bajo' },
+  sp500:      { sharpe: 0.95, volatilityVal: 14.50, pe: '24.8x', divYield: '1.35%', riskClass: 'Medio' },
+  big6:       { sharpe: 1.15, volatilityVal: 18.50, pe: '32.1x', divYield: '0.55%', riskClass: 'Medio-Alto' },
+  merval:     { sharpe: 0.75, volatilityVal: 28.20, pe: '8.5x', divYield: '2.10%', riskClass: 'Alto' },
+  cripto:     { sharpe: 0.85, volatilityVal: 52.00, pe: '-', divYield: '-', riskClass: 'Muy Alto' },
+  efectivo:   { sharpe: -0.10, volatilityVal: 1.50, pe: '-', divYield: '-', riskClass: 'Muy Bajo' }
+};
+
+const metricExplanations = {
+  volatilidad: {
+    title: 'Volatilidad (Riesgo)',
+    desc: 'Mide cuánto fluctúa el precio del activo. A menor volatilidad, el precio es más estable y predecible. Es ideal para inversores conservadores que quieren evitar saltos bruscos.'
+  },
+  sharpe: {
+    title: 'Sharpe Ratio (Eficiencia)',
+    desc: 'Mide la relación retorno/riesgo de una inversión. Nos dice cuánta rentabilidad ganamos por cada unidad de volatilidad asumida. Un Sharpe superior a 1.0 es excelente y significa que el riesgo vale la pena.'
+  },
+  pe: {
+    title: 'Ratio P/E (Valuación)',
+    desc: 'Precio a Ganancias (Price-to-Earnings). Compara el precio de una empresa con sus ganancias anuales. Un P/E bajo indica que el activo está barato respecto a lo que genera, mientras que un P/E alto puede indicar sobrevaloración o expectativas de alto crecimiento.'
+  },
+  yield: {
+    title: 'Dividend Yield (Rendimiento por Dividendo)',
+    desc: 'Rendimiento por Dividendos. El porcentaje anual de ganancias que la empresa o propiedad distribuye en efectivo directamente a sus inversores.'
+  },
+  capitalSimulado: {
+    title: 'Capital Simulado Final',
+    desc: 'El valor proyectado de tu inversión inicial al finalizar el período seleccionado, considerando el rendimiento histórico acumulado del activo.'
+  }
+};
+
+const openMetricInfo = (metricKey) => {
+  const info = metricExplanations[metricKey];
+  if (info) {
+    selectedMetricInfo.value = info;
+    showMetricModal.value = true;
+    history.pushState({ modalOpen: 'metric-info' }, '');
+  }
+};
+
+const sortBy = (key) => {
+  if (sortKey.value === key) {
+    sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc';
+  } else {
+    sortKey.value = key;
+    sortOrder.value = 'desc';
+  }
+};
+
+const sortedComparisonData = computed(() => {
+  const data = comparisonData.value.map(asset => {
+    const financials = assetFinancials[asset.id] || { sharpe: 0, volatilityVal: 0, pe: '-', divYield: '-', riskClass: 'N/A' };
+    return {
+      ...asset,
+      sharpe: financials.sharpe,
+      volatilityVal: financials.volatilityVal,
+      pe: financials.pe,
+      divYield: financials.divYield,
+      riskClass: financials.riskClass
+    };
+  });
+
+  const key = sortKey.value;
+  const order = sortOrder.value === 'asc' ? 1 : -1;
+
+  return data.sort((a, b) => {
+    let valA = a[key];
+    let valB = b[key];
+
+    if (typeof valA === 'string' && valA === '-') valA = -999999;
+    if (typeof valB === 'string' && valB === '-') valB = -999999;
+    if (typeof valA === 'string' && valA.endsWith('x')) valA = parseFloat(valA.replace('x', '')) || 0;
+    if (typeof valB === 'string' && valB.endsWith('x')) valB = parseFloat(valB.replace('x', '')) || 0;
+
+    if (valA < valB) return 1 * order;
+    if (valA > valB) return -1 * order;
+    return 0;
+  });
+});
+
+const benchmarksList = computed(() => {
+  const mepAsset = livePrices.value.find(a => a.simbolo === 'DOLAR_MEP');
+  const varMEP = mepAsset ? Number(mepAsset.variaciones[comparisonPeriod.value] || 0) : 12.30;
+  
+  let mepReturn = 0;
+  let inflationReturn = 0;
+
+  if (comparisonCurrency.value === 'USD') {
+    mepReturn = 0.0;
+    inflationReturn = getUSInflationForPeriod(comparisonPeriod.value);
+  } else {
+    mepReturn = varMEP;
+    inflationReturn = (((1 + varMEP / 100) * 1.15) - 1) * 100;
+  }
+
+  return [
+    {
+      id: 'dolar_billete',
+      name: 'Dólar Billete (Libre)',
+      category: 'Benchmark Cambiario',
+      emoji: '💵',
+      displayReturn: mepReturn,
+      volatilityVal: 8.50,
+      riskClass: 'Bajo',
+      sharpe: '-',
+      pe: '-',
+      divYield: '-'
+    },
+    {
+      id: 'inflacion_usd',
+      name: comparisonCurrency.value === 'USD' ? 'Inflación Acumulada (USD)' : 'Inflación Acumulada (ARS)',
+      category: 'Benchmark Inflacionario',
+      emoji: '🎈',
+      displayReturn: inflationReturn,
+      volatilityVal: 0.50,
+      riskClass: 'Estable',
+      sharpe: '-',
+      pe: '-',
+      divYield: '-'
+    }
+  ];
+});
+
 
 const isDarkMode = ref(true);
 const currentTab = ref('mercados');
@@ -1103,7 +1390,7 @@ const calculateTravel = () => {
   }
   
   // Inflación US ~3% anual. (Un activo dólar quieto pierde 3% por año frente al índice de precios yanqui)
-  const inflacionUS = -3 * yearsNum;
+  const inflacionUS = -getUSInflationForPeriod(selectedPeriod.value);
   
   // Proxies para el Peso: Asumimos que la inflación real es aprox la devaluación del MEP más un desfasaje (ej 15%).
   const inflacionAR_acumulada = ((1 + varMEP / 100) * 1.15) - 1; 
@@ -1278,8 +1565,7 @@ const comparisonData = computed(() => {
   const bonosTotal = tnxYield * years;
 
   // 7. Dólar Colchón
-  const inflacionUSAnual = 3;
-  const efectivoTotal = -inflacionUSAnual * years;
+  const efectivoTotal = -getUSInflationForPeriod(comparisonPeriod.value);
 
   const rawAssets = [
     { id: 'realestate', name: 'Bienes Raíces (Ladrillo CABA)', emoji: '🏢', returnUSD: realEstateTotal, detail: `Apreciación M2: ${m2Appreciation.toFixed(2)}% | Alquileres: ${rentAccumulated.toFixed(2)}%` },
@@ -1290,6 +1576,12 @@ const comparisonData = computed(() => {
     { id: 'bonos', name: 'Bonos del Tesoro EE.UU. (10Y)', emoji: '📜', returnUSD: bonosTotal, detail: `Rendimiento de renta fija libre de riesgo acumulado.` },
     { id: 'efectivo', name: 'Dólar Colchón (Efectivo)', emoji: '💵', returnUSD: efectivoTotal, detail: `Pérdida por inflación estadounidense acumulada.` }
   ];
+
+  const mepAsset = livePrices.value.find(a => a.simbolo === 'DOLAR_MEP');
+  const varMEP = mepAsset ? Number(mepAsset.variaciones[comparisonPeriod.value] || 0) : 12.30;
+  const inflationThreshold = comparisonCurrency.value === 'USD'
+    ? getUSInflationForPeriod(comparisonPeriod.value)
+    : (((1 + varMEP / 100) * 1.15) - 1) * 100;
 
   return rawAssets.map(asset => {
     const metrics = assetMetrics[asset.id];
@@ -1307,19 +1599,32 @@ const comparisonData = computed(() => {
 
     matchScore = Math.max(0, Math.min(100, Math.round(matchScore)));
 
+    let displayReturn = 0;
+    if (comparisonCurrency.value === 'USD') {
+      displayReturn = asset.returnUSD;
+    } else {
+      if (asset.id === 'efectivo') {
+        displayReturn = varMEP;
+      } else {
+        displayReturn = (((1 + asset.returnUSD / 100) * (1 + varMEP / 100)) - 1) * 100;
+      }
+    }
+
     return {
       ...asset,
       safety: metrics.safety,
       volatility: metrics.volatility,
       matchScore,
-      desc: assetDescriptions[asset.id]
+      desc: assetDescriptions[asset.id],
+      displayReturn,
+      beatsInflation: displayReturn >= inflationThreshold
     };
-  }).sort((a, b) => b.returnUSD - a.returnUSD);
+  }).sort((a, b) => b.displayReturn - a.displayReturn);
 });
 
 const bestMatchAsset = computed(() => {
   if (comparisonData.value.length === 0) return null;
-  return [...comparisonData.value].sort((a, b) => b.matchScore - a.matchScore || b.returnUSD - a.returnUSD)[0];
+  return [...comparisonData.value].sort((a, b) => b.matchScore - a.matchScore || b.displayReturn - a.displayReturn)[0];
 });
 
 const neighborhoodYields = computed(() => {
@@ -1373,43 +1678,42 @@ const renderComparisonChart = async () => {
   if (!comparisonChartRef.value) return;
   const ChartJS = await loadChartJs();
 
-  const labels = comparisonData.value.map(a => a.emoji + ' ' + a.name.split(' (')[0]);
-  const data = comparisonData.value.map(a => a.returnUSD);
-  
   const recommendedId = bestMatchAsset.value?.id;
-  const backgroundColors = comparisonData.value.map(a => 
-    a.id === recommendedId 
-      ? 'rgba(16, 185, 129, 0.85)' 
-      : 'rgba(71, 85, 105, 0.6)'
-  );
-  const borderColors = comparisonData.value.map(a => 
-    a.id === recommendedId 
-      ? 'rgb(16, 185, 129)' 
-      : 'rgb(71, 85, 105)'
-  );
+  const datasets = comparisonData.value.map(a => {
+    const financials = assetFinancials[a.id] || { sharpe: 0, volatilityVal: 0, pe: '-', divYield: '-', riskClass: 'N/A' };
+    const isRecommended = a.id === recommendedId;
+    return {
+      label: a.emoji + ' ' + a.name.split(' (')[0],
+      data: [{ x: financials.volatilityVal, y: a.returnUSD }],
+      backgroundColor: isRecommended ? 'rgba(16, 185, 129, 0.85)' : 'rgba(37, 99, 235, 0.7)',
+      borderColor: isRecommended ? 'rgb(16, 185, 129)' : 'rgb(37, 99, 235)',
+      borderWidth: 2,
+      pointRadius: isRecommended ? 10 : 7,
+      pointHoverRadius: isRecommended ? 12 : 9
+    };
+  });
 
   if (window.comparisonChartInstance) window.comparisonChartInstance.destroy();
   const ctx = comparisonChartRef.value.getContext('2d');
-  
+
   window.comparisonChartInstance = new ChartJS(ctx, {
-    type: 'bar',
+    type: 'scatter',
     data: {
-      labels,
-      datasets: [{
-        label: 'Retorno Total (USD %)',
-        data,
-        backgroundColor: backgroundColors,
-        borderColor: borderColors,
-        borderWidth: 1.5,
-        borderRadius: 8
-      }]
+      datasets
     },
     options: {
-      indexAxis: 'y',
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: { display: false },
+        legend: {
+          display: true,
+          position: 'bottom',
+          labels: {
+            color: '#cbd5e1',
+            boxWidth: 10,
+            font: { size: 10, weight: 'bold' }
+          }
+        },
         tooltip: {
           backgroundColor: 'rgba(15, 23, 42, 0.95)',
           titleColor: '#fff',
@@ -1419,25 +1723,41 @@ const renderComparisonChart = async () => {
           padding: 10,
           callbacks: {
             label: function(context) {
-              return ` Retorno: ${context.parsed.x >= 0 ? '+' : ''}${context.parsed.x.toFixed(2)}% USD`;
+              const label = context.dataset.label || '';
+              return ` ${label} • Volatilidad: ${context.parsed.x}%, Retorno: ${context.parsed.y >= 0 ? '+' : ''}${context.parsed.y.toFixed(2)}% USD`;
             }
           }
         }
       },
       scales: {
         x: {
-          grid: { color: 'rgba(51, 65, 85, 0.3)' },
+          min: 0,
+          max: 60,
+          grid: { color: 'rgba(51, 65, 85, 0.2)' },
+          title: {
+            display: true,
+            text: 'Volatilidad / Riesgo (%)',
+            color: '#94a3b8',
+            font: { weight: 'bold', size: 10 }
+          },
           ticks: {
-            color: '#64748b',
+            color: '#cbd5e1',
             font: { family: 'monospace' },
             callback: function(value) { return value + '%'; }
           }
         },
         y: {
-          grid: { display: false },
+          grid: { color: 'rgba(51, 65, 85, 0.2)' },
+          title: {
+            display: true,
+            text: 'Retorno USD (%)',
+            color: '#94a3b8',
+            font: { weight: 'bold', size: 10 }
+          },
           ticks: {
             color: '#cbd5e1',
-            font: { weight: 'bold' }
+            font: { family: 'monospace' },
+            callback: function(value) { return value + '%'; }
           }
         }
       }
@@ -2225,9 +2545,33 @@ const fetchLivePrices = async () => {
   }
 };
 
+const handlePopState = (event) => {
+  if (showMetricModal.value) {
+    showMetricModal.value = false;
+  }
+};
+
 onMounted(() => {
   fetchLivePrices();
   fetchPortfolio();
+  fetchUSInflation();
+  window.addEventListener('popstate', handlePopState);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('popstate', handlePopState);
+  document.body.classList.remove('overflow-hidden');
+});
+
+watch(showMetricModal, (isOpen) => {
+  if (isOpen) {
+    document.body.classList.add('overflow-hidden');
+  } else {
+    document.body.classList.remove('overflow-hidden');
+    if (history.state?.modalOpen === 'metric-info') {
+      history.back();
+    }
+  }
 });
 </script>
 
